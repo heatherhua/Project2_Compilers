@@ -1,5 +1,6 @@
 Terminals unused in grammar
 
+   T_Void
    T_Bool
    T_Int
    T_Float
@@ -21,7 +22,6 @@ Terminals unused in grammar
    T_Switch
    T_Case
    T_Default
-   T_Identifier
    T_IntConstant
    T_FloatConstant
    T_BoolConstant
@@ -36,14 +36,16 @@ Grammar
     2 DeclList: DeclList Decl
     3         | Decl
 
-    4 Decl: T_Void
+    4 Decl: VarIdent
+
+    5 VarIdent: T_Identifier
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-T_Void (258) 4
+T_Void (258)
 T_Bool (259)
 T_Int (260)
 T_Float (261)
@@ -65,7 +67,7 @@ T_Dec (276)
 T_Switch (277)
 T_Case (278)
 T_Default (279)
-T_Identifier (280)
+T_Identifier (280) 5
 T_IntConstant (281)
 T_FloatConstant (282)
 T_BoolConstant (283)
@@ -81,31 +83,34 @@ DeclList (31)
     on left: 2 3, on right: 1 2
 Decl (32)
     on left: 4, on right: 2 3
+VarIdent (33)
+    on left: 5, on right: 4
 
 
 state 0
 
     0 $accept: . Program $end
 
-    T_Void  shift, and go to state 1
+    T_Identifier  shift, and go to state 1
 
     Program   go to state 2
     DeclList  go to state 3
     Decl      go to state 4
+    VarIdent  go to state 5
 
 
 state 1
 
-    4 Decl: T_Void .
+    5 VarIdent: T_Identifier .
 
-    $default  reduce using rule 4 (Decl)
+    $default  reduce using rule 5 (VarIdent)
 
 
 state 2
 
     0 $accept: Program . $end
 
-    $end  shift, and go to state 5
+    $end  shift, and go to state 6
 
 
 state 3
@@ -113,11 +118,12 @@ state 3
     1 Program: DeclList .
     2 DeclList: DeclList . Decl
 
-    T_Void  shift, and go to state 1
+    T_Identifier  shift, and go to state 1
 
     $default  reduce using rule 1 (Program)
 
-    Decl  go to state 6
+    Decl      go to state 7
+    VarIdent  go to state 5
 
 
 state 4
@@ -129,12 +135,19 @@ state 4
 
 state 5
 
+    4 Decl: VarIdent .
+
+    $default  reduce using rule 4 (Decl)
+
+
+state 6
+
     0 $accept: Program $end .
 
     $default  accept
 
 
-state 6
+state 7
 
     2 DeclList: DeclList Decl .
 

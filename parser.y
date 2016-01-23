@@ -79,7 +79,7 @@ void yyerror(const char *msg); // standard error-handling routine
  * pp2: You'll need to add many of these of your own.
  */
 %type <declList>  DeclList 
-%type <decl>      Decl
+%type <decl>      Decl VarIdent
 
 %%
 /* Rules
@@ -104,12 +104,20 @@ DeclList  :    DeclList Decl        { ($$=$1)->Append($2); }
           |    Decl                 { ($$ = new List<Decl*>)->Append($1); }
           ;
 
-Decl      :    T_Void               { $$ = new VarDecl(); /* pp2: test only. Replace with correct rules  */ } 
+Decl      :    VarIdent             { $$=$1; }
           ;
-          
 
+VarIdent  :     T_Identifier        { $$ = new VarDecl(); 
+                                      printf("Got it!");
+                                    }
+          ;
 
 %%
+
+/*
+Decl      :    T_Void               { $$ = new VarDecl(); pp2: test only. Replace with correct rules  } 
+          ;
+*/
 
 /* The closing %% above marks the end of the Rules section and the beginning
  * of the User Subroutines section. All text from here to the end of the
