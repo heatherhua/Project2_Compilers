@@ -61,6 +61,10 @@ void yyerror(const char *msg); // standard error-handling routine
 %token   T_While T_For T_If T_Else T_Return T_Break
 %token   T_Inc T_Dec T_Switch T_Case T_Default
 
+/* Added tokens */
+%token   T_LeftParen T_RightParen T_LeftBracket T_RightBracket
+
+/* These were already here */
 %token   <identifier> T_Identifier
 %token   <integerConstant> T_IntConstant
 %token   <floatConstant> T_FloatConstant
@@ -79,7 +83,7 @@ void yyerror(const char *msg); // standard error-handling routine
  * pp2: You'll need to add many of these of your own.
  */
 %type <declList>  DeclList 
-%type <decl>      Decl VarIdent
+%type <decl>      Decl VarIdent PrimExpr //Expr
 
 %%
 /* Rules
@@ -88,29 +92,41 @@ void yyerror(const char *msg); // standard error-handling routine
  * %% markers which delimit the Rules section.
 	 
  */
-Program   :    DeclList            { 
-                                      @1; 
-                                      /* pp2: The @1 is needed to convince 
-                                       * yacc to set up yylloc. You can remove 
-                                       * it once you have other uses of @n*/
-                                      Program *program = new Program($1);
-                                      // if no errors, advance to next phase
-                                      if (ReportError::NumErrors() == 0) 
-                                          program->Print(0);
-                                    }
+Program   :    DeclList                           { 
+                                                    @1; 
+                                                    /* pp2: The @1 is needed to convince 
+                                                     * yacc to set up yylloc. You can remove 
+                                                     * it once you have other uses of @n*/
+                                                    Program *program = new Program($1);
+                                                    // if no errors, advance to next phase
+                                                    if (ReportError::NumErrors() == 0) 
+                                                        program->Print(0);
+                                                  }   
           ;
 
-DeclList  :    DeclList Decl        { ($$=$1)->Append($2); }
-          |    Decl                 { ($$ = new List<Decl*>)->Append($1); }
+DeclList  :    DeclList Decl                      { ($$=$1)->Append($2); }
+          |    Decl                               { ($$ = new List<Decl*>)->Append($1); }
           ;
 
-Decl      :    VarIdent             { $$=$1; }
+Decl      :    VarIdent                           { $$=$1; }
+          |    PrimExpr                           { $$=$1; }
+          ;
+          
+VarIdent  :    T_Identifier                       { $$ = new VarDecl(); 
+                                                    printf("Got it!");
+                                                  }
           ;
 
-VarIdent  :     T_Identifier        { $$ = new VarDecl(); 
-                                      printf("Got it!");
-                                    }
+PrimExpr  :    VarIdent                           { $$=$1; }
+          |    T_IntConstant                      { $$ = new VarDecl(); }
+          |    T_FloatConstant                    { $$ = new VarDecl(); }
+          |    T_BoolConstant                     { $$ = new VarDecl(); }
+          // |    T_LeftParen Expr T_RightParen      { $$ = new VarDecl(); }
           ;
+
+
+// Expr      :     
+//           ;
 
 %%
 

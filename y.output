@@ -22,9 +22,18 @@ Terminals unused in grammar
    T_Switch
    T_Case
    T_Default
-   T_IntConstant
-   T_FloatConstant
-   T_BoolConstant
+   T_LeftParen
+   T_RightParen
+   T_LeftBracket
+   T_RightBracket
+
+
+Rules useless in parser due to conflicts
+
+    7 PrimExpr: VarIdent
+
+
+State 8 conflicts: 5 reduce/reduce
 
 
 Grammar
@@ -37,8 +46,14 @@ Grammar
     3         | Decl
 
     4 Decl: VarIdent
+    5     | PrimExpr
 
-    5 VarIdent: T_Identifier
+    6 VarIdent: T_Identifier
+
+    7 PrimExpr: VarIdent
+    8         | T_IntConstant
+    9         | T_FloatConstant
+   10         | T_BoolConstant
 
 
 Terminals, with rules where they appear
@@ -67,87 +82,140 @@ T_Dec (276)
 T_Switch (277)
 T_Case (278)
 T_Default (279)
-T_Identifier (280) 5
-T_IntConstant (281)
-T_FloatConstant (282)
-T_BoolConstant (283)
+T_LeftParen (280)
+T_RightParen (281)
+T_LeftBracket (282)
+T_RightBracket (283)
+T_Identifier (284) 6
+T_IntConstant (285) 8
+T_FloatConstant (286) 9
+T_BoolConstant (287) 10
 
 
 Nonterminals, with rules where they appear
 
-$accept (29)
+$accept (33)
     on left: 0
-Program (30)
+Program (34)
     on left: 1, on right: 0
-DeclList (31)
+DeclList (35)
     on left: 2 3, on right: 1 2
-Decl (32)
-    on left: 4, on right: 2 3
-VarIdent (33)
-    on left: 5, on right: 4
+Decl (36)
+    on left: 4 5, on right: 2 3
+VarIdent (37)
+    on left: 6, on right: 4 7
+PrimExpr (38)
+    on left: 7 8 9 10, on right: 5
 
 
 state 0
 
     0 $accept: . Program $end
 
-    T_Identifier  shift, and go to state 1
+    T_Identifier     shift, and go to state 1
+    T_IntConstant    shift, and go to state 2
+    T_FloatConstant  shift, and go to state 3
+    T_BoolConstant   shift, and go to state 4
 
-    Program   go to state 2
-    DeclList  go to state 3
-    Decl      go to state 4
-    VarIdent  go to state 5
+    Program   go to state 5
+    DeclList  go to state 6
+    Decl      go to state 7
+    VarIdent  go to state 8
+    PrimExpr  go to state 9
 
 
 state 1
 
-    5 VarIdent: T_Identifier .
+    6 VarIdent: T_Identifier .
 
-    $default  reduce using rule 5 (VarIdent)
+    $default  reduce using rule 6 (VarIdent)
 
 
 state 2
 
-    0 $accept: Program . $end
+    8 PrimExpr: T_IntConstant .
 
-    $end  shift, and go to state 6
+    $default  reduce using rule 8 (PrimExpr)
 
 
 state 3
 
-    1 Program: DeclList .
-    2 DeclList: DeclList . Decl
+    9 PrimExpr: T_FloatConstant .
 
-    T_Identifier  shift, and go to state 1
-
-    $default  reduce using rule 1 (Program)
-
-    Decl      go to state 7
-    VarIdent  go to state 5
+    $default  reduce using rule 9 (PrimExpr)
 
 
 state 4
+
+   10 PrimExpr: T_BoolConstant .
+
+    $default  reduce using rule 10 (PrimExpr)
+
+
+state 5
+
+    0 $accept: Program . $end
+
+    $end  shift, and go to state 10
+
+
+state 6
+
+    1 Program: DeclList .
+    2 DeclList: DeclList . Decl
+
+    T_Identifier     shift, and go to state 1
+    T_IntConstant    shift, and go to state 2
+    T_FloatConstant  shift, and go to state 3
+    T_BoolConstant   shift, and go to state 4
+
+    $default  reduce using rule 1 (Program)
+
+    Decl      go to state 11
+    VarIdent  go to state 8
+    PrimExpr  go to state 9
+
+
+state 7
 
     3 DeclList: Decl .
 
     $default  reduce using rule 3 (DeclList)
 
 
-state 5
+state 8
 
     4 Decl: VarIdent .
+    7 PrimExpr: VarIdent .
 
-    $default  reduce using rule 4 (Decl)
+    $end             reduce using rule 4 (Decl)
+    $end             [reduce using rule 7 (PrimExpr)]
+    T_Identifier     reduce using rule 4 (Decl)
+    T_Identifier     [reduce using rule 7 (PrimExpr)]
+    T_IntConstant    reduce using rule 4 (Decl)
+    T_IntConstant    [reduce using rule 7 (PrimExpr)]
+    T_FloatConstant  reduce using rule 4 (Decl)
+    T_FloatConstant  [reduce using rule 7 (PrimExpr)]
+    T_BoolConstant   reduce using rule 4 (Decl)
+    T_BoolConstant   [reduce using rule 7 (PrimExpr)]
+    $default         reduce using rule 4 (Decl)
 
 
-state 6
+state 9
+
+    5 Decl: PrimExpr .
+
+    $default  reduce using rule 5 (Decl)
+
+
+state 10
 
     0 $accept: Program $end .
 
     $default  accept
 
 
-state 7
+state 11
 
     2 DeclList: DeclList Decl .
 

@@ -61,10 +61,14 @@
      T_Switch = 277,
      T_Case = 278,
      T_Default = 279,
-     T_Identifier = 280,
-     T_IntConstant = 281,
-     T_FloatConstant = 282,
-     T_BoolConstant = 283
+     T_LeftParen = 280,
+     T_RightParen = 281,
+     T_LeftBracket = 282,
+     T_RightBracket = 283,
+     T_Identifier = 284,
+     T_IntConstant = 285,
+     T_FloatConstant = 286,
+     T_BoolConstant = 287
    };
 #endif
 /* Tokens.  */
@@ -90,10 +94,14 @@
 #define T_Switch 277
 #define T_Case 278
 #define T_Default 279
-#define T_Identifier 280
-#define T_IntConstant 281
-#define T_FloatConstant 282
-#define T_BoolConstant 283
+#define T_LeftParen 280
+#define T_RightParen 281
+#define T_LeftBracket 282
+#define T_RightBracket 283
+#define T_Identifier 284
+#define T_IntConstant 285
+#define T_FloatConstant 286
+#define T_BoolConstant 287
 
 
 
@@ -116,7 +124,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 120 "y.tab.h"
+#line 128 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
