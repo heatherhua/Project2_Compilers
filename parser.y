@@ -63,6 +63,7 @@ void yyerror(const char *msg); // standard error-handling routine
 
 /* Added tokens */
 %token   T_LeftParen T_RightParen T_LeftBracket T_RightBracket
+%token   T_Dot T_FieldSelection
 
 /* These were already here */
 %token   <identifier> T_Identifier
@@ -83,7 +84,8 @@ void yyerror(const char *msg); // standard error-handling routine
  * pp2: You'll need to add many of these of your own.
  */
 %type <declList>  DeclList 
-%type <decl>      Decl VarIdent PrimExpr //Expr
+%type <decl>      Decl VarIdent PrimExpr PostExpr IntExpr 
+%type <decl>      FunctCall FunctCallOrMethod FunctCallGeneric
 
 %%
 /* Rules
@@ -110,6 +112,7 @@ DeclList  :    DeclList Decl                      { ($$=$1)->Append($2); }
 
 Decl      :    VarIdent                           { $$=$1; }
           |    PrimExpr                           { $$=$1; }
+          |    PostExpr                           { $$=$1; }
           ;
           
 VarIdent  :    T_Identifier                       { $$ = new VarDecl(); 
@@ -123,6 +126,26 @@ PrimExpr  :    VarIdent                           { $$=$1; }
           |    T_BoolConstant                     { $$ = new VarDecl(); }
           // |    T_LeftParen Expr T_RightParen      { $$ = new VarDecl(); }
           ;
+
+PostExpr  :    PrimExpr                           { $$=$1; }
+          |    PostExpr T_LeftBracket IntExpr 
+               T_RightBracket                     {
+                                                    $$ = new VarDecl();       
+                                                  } 
+          |    FunctCall                          { $$=$1; }
+          |    PostExpr T_Dot T_FieldSelection    { $$=$1; }
+          |    PostExpr T_Inc                     { $$=$1; }  
+          |    PostExpr T_Dec                     { $$=$1; }  
+          ;
+
+IntExpr   :    Expr                               { $$=$1; }
+          ;
+
+FunctCall :    FunctCallOrMethod                  { $$=$1; }
+          ;
+
+FunctCallOrMethod : FunctCallGeneric              { $$=$1; }
+                  ;
 
 
 // Expr      :     
