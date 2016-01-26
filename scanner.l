@@ -92,6 +92,7 @@ SINGLE_COMMENT    ("//"[^\n]*)
 "switch"            { return T_Switch;      }
 "case"              { return T_Case;        }
 "default"           { return T_Default;     }
+";"                 { return T_Semicolon;   }
 
 
 
@@ -114,7 +115,7 @@ SINGLE_COMMENT    ("//"[^\n]*)
                          return T_IntConstant; }
 {HEX_INTEGER}       { yylval.integerConstant = strtol(yytext, NULL, 16);
                          return T_IntConstant; }
-{FLOAT}             { yylval.doubleConstant = atof(yytext);
+{FLOAT}             { yylval.floatConstant = atof(yytext);
                          return T_FloatConstant; }
 
 

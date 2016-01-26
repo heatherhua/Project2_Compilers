@@ -1,5 +1,6 @@
 Terminals unused in grammar
 
+   T_Bool
    T_LessEqual
    T_GreaterEqual
    T_Equal
@@ -24,29 +25,27 @@ Terminals unused in grammar
    T_RightBracket
    T_Dot
    T_FieldSelection
+   T_Uint
    T_Bvec2
    T_Bvec3
    T_Bvec4
-   T_Ivec2
-   T_Ivec3
-   T_Ivec4
    T_Uvec2
    T_Uvec3
    T_Uvec4
+   T_Vec2
+   T_Vec3
+   T_Vec4
    T_Mat2
    T_Mat3
    T_Mat4
    T_Struct
    T_In
    T_Out
-   T_Inout
    T_Const
    T_Uniform
    T_Layout
    T_Continue
    T_Do
-   T_Semicolon
-   T_Identifier
    T_IntConstant
    T_FloatConstant
    T_BoolConstant
@@ -61,37 +60,25 @@ Grammar
     2 DeclList: DeclList Decl
     3         | Decl
 
-    4 Decl: declaration
+    4 Decl: FnDecl
+    5     | VarDecl
 
-    5 declaration: init_declarator_list ';'
+    6 VarDecl: VarType T_Identifier T_Semicolon
 
-    6 init_declarator_list: single_declaration
+    7 VarType: T_Int
+    8        | T_Float
 
-    7 single_declaration: fully_specified_type
-
-    8 fully_specified_type: type_specifier
-
-    9 type_specifier: type_specifier_nonarray
-
-   10 type_specifier_nonarray: T_Void
-   11                        | T_Float
-   12                        | T_Int
-   13                        | T_Uint
-   14                        | T_Bool
-   15                        | T_Vec2
-   16                        | T_Vec3
-   17                        | T_Vec4
+    9 FnDecl: T_Void
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-';' (59) 5
 error (256)
-T_Void (258) 10
-T_Bool (259) 14
-T_Int (260) 12
-T_Float (261) 11
+T_Void (258) 9
+T_Bool (259)
+T_Int (260) 7
+T_Float (261) 8
 T_LessEqual (262)
 T_GreaterEqual (263)
 T_Equal (264)
@@ -116,60 +103,50 @@ T_LeftBracket (282)
 T_RightBracket (283)
 T_Dot (284)
 T_FieldSelection (285)
-T_Uint (286) 13
+T_Uint (286)
 T_Bvec2 (287)
 T_Bvec3 (288)
 T_Bvec4 (289)
-T_Ivec2 (290)
-T_Ivec3 (291)
-T_Ivec4 (292)
-T_Uvec2 (293)
-T_Uvec3 (294)
-T_Uvec4 (295)
-T_Vec2 (296) 15
-T_Vec3 (297) 16
-T_Vec4 (298) 17
-T_Mat2 (299)
-T_Mat3 (300)
-T_Mat4 (301)
-T_Struct (302)
-T_In (303)
-T_Out (304)
-T_Inout (305)
-T_Const (306)
-T_Uniform (307)
-T_Layout (308)
-T_Continue (309)
-T_Do (310)
-T_Semicolon (311)
-T_Identifier (312)
-T_IntConstant (313)
-T_FloatConstant (314)
-T_BoolConstant (315)
+T_Uvec2 (290)
+T_Uvec3 (291)
+T_Uvec4 (292)
+T_Vec2 (293)
+T_Vec3 (294)
+T_Vec4 (295)
+T_Mat2 (296)
+T_Mat3 (297)
+T_Mat4 (298)
+T_Struct (299)
+T_In (300)
+T_Out (301)
+T_Const (302)
+T_Uniform (303)
+T_Layout (304)
+T_Continue (305)
+T_Do (306)
+T_Semicolon (307) 6
+T_Identifier (308) 6
+T_IntConstant (309)
+T_FloatConstant (310)
+T_BoolConstant (311)
 
 
 Nonterminals, with rules where they appear
 
-$accept (62)
+$accept (57)
     on left: 0
-Program (63)
+Program (58)
     on left: 1, on right: 0
-DeclList (64)
+DeclList (59)
     on left: 2 3, on right: 1 2
-Decl (65)
-    on left: 4, on right: 2 3
-declaration (66)
-    on left: 5, on right: 4
-init_declarator_list (67)
+Decl (60)
+    on left: 4 5, on right: 2 3
+VarDecl (61)
     on left: 6, on right: 5
-single_declaration (68)
-    on left: 7, on right: 6
-fully_specified_type (69)
-    on left: 8, on right: 7
-type_specifier (70)
-    on left: 9, on right: 8
-type_specifier_nonarray (71)
-    on left: 10 11 12 13 14 15 16 17, on right: 9
+VarType (62)
+    on left: 7 8, on right: 6
+FnDecl (63)
+    on left: 9, on right: 4
 
 
 state 0
@@ -177,178 +154,113 @@ state 0
     0 $accept: . Program $end
 
     T_Void   shift, and go to state 1
-    T_Bool   shift, and go to state 2
-    T_Int    shift, and go to state 3
-    T_Float  shift, and go to state 4
-    T_Uint   shift, and go to state 5
-    T_Vec2   shift, and go to state 6
-    T_Vec3   shift, and go to state 7
-    T_Vec4   shift, and go to state 8
+    T_Int    shift, and go to state 2
+    T_Float  shift, and go to state 3
 
-    Program                  go to state 9
-    DeclList                 go to state 10
-    Decl                     go to state 11
-    declaration              go to state 12
-    init_declarator_list     go to state 13
-    single_declaration       go to state 14
-    fully_specified_type     go to state 15
-    type_specifier           go to state 16
-    type_specifier_nonarray  go to state 17
+    Program   go to state 4
+    DeclList  go to state 5
+    Decl      go to state 6
+    VarDecl   go to state 7
+    VarType   go to state 8
+    FnDecl    go to state 9
 
 
 state 1
 
-   10 type_specifier_nonarray: T_Void .
+    9 FnDecl: T_Void .
 
-    $default  reduce using rule 10 (type_specifier_nonarray)
+    $default  reduce using rule 9 (FnDecl)
 
 
 state 2
 
-   14 type_specifier_nonarray: T_Bool .
+    7 VarType: T_Int .
 
-    $default  reduce using rule 14 (type_specifier_nonarray)
+    $default  reduce using rule 7 (VarType)
 
 
 state 3
 
-   12 type_specifier_nonarray: T_Int .
+    8 VarType: T_Float .
 
-    $default  reduce using rule 12 (type_specifier_nonarray)
+    $default  reduce using rule 8 (VarType)
 
 
 state 4
 
-   11 type_specifier_nonarray: T_Float .
+    0 $accept: Program . $end
 
-    $default  reduce using rule 11 (type_specifier_nonarray)
+    $end  shift, and go to state 10
 
 
 state 5
-
-   13 type_specifier_nonarray: T_Uint .
-
-    $default  reduce using rule 13 (type_specifier_nonarray)
-
-
-state 6
-
-   15 type_specifier_nonarray: T_Vec2 .
-
-    $default  reduce using rule 15 (type_specifier_nonarray)
-
-
-state 7
-
-   16 type_specifier_nonarray: T_Vec3 .
-
-    $default  reduce using rule 16 (type_specifier_nonarray)
-
-
-state 8
-
-   17 type_specifier_nonarray: T_Vec4 .
-
-    $default  reduce using rule 17 (type_specifier_nonarray)
-
-
-state 9
-
-    0 $accept: Program . $end
-
-    $end  shift, and go to state 18
-
-
-state 10
 
     1 Program: DeclList .
     2 DeclList: DeclList . Decl
 
     T_Void   shift, and go to state 1
-    T_Bool   shift, and go to state 2
-    T_Int    shift, and go to state 3
-    T_Float  shift, and go to state 4
-    T_Uint   shift, and go to state 5
-    T_Vec2   shift, and go to state 6
-    T_Vec3   shift, and go to state 7
-    T_Vec4   shift, and go to state 8
+    T_Int    shift, and go to state 2
+    T_Float  shift, and go to state 3
 
     $default  reduce using rule 1 (Program)
 
-    Decl                     go to state 19
-    declaration              go to state 12
-    init_declarator_list     go to state 13
-    single_declaration       go to state 14
-    fully_specified_type     go to state 15
-    type_specifier           go to state 16
-    type_specifier_nonarray  go to state 17
+    Decl     go to state 11
+    VarDecl  go to state 7
+    VarType  go to state 8
+    FnDecl   go to state 9
 
 
-state 11
+state 6
 
     3 DeclList: Decl .
 
     $default  reduce using rule 3 (DeclList)
 
 
-state 12
+state 7
 
-    4 Decl: declaration .
+    5 Decl: VarDecl .
+
+    $default  reduce using rule 5 (Decl)
+
+
+state 8
+
+    6 VarDecl: VarType . T_Identifier T_Semicolon
+
+    T_Identifier  shift, and go to state 12
+
+
+state 9
+
+    4 Decl: FnDecl .
 
     $default  reduce using rule 4 (Decl)
 
 
-state 13
-
-    5 declaration: init_declarator_list . ';'
-
-    ';'  shift, and go to state 20
-
-
-state 14
-
-    6 init_declarator_list: single_declaration .
-
-    $default  reduce using rule 6 (init_declarator_list)
-
-
-state 15
-
-    7 single_declaration: fully_specified_type .
-
-    $default  reduce using rule 7 (single_declaration)
-
-
-state 16
-
-    8 fully_specified_type: type_specifier .
-
-    $default  reduce using rule 8 (fully_specified_type)
-
-
-state 17
-
-    9 type_specifier: type_specifier_nonarray .
-
-    $default  reduce using rule 9 (type_specifier)
-
-
-state 18
+state 10
 
     0 $accept: Program $end .
 
     $default  accept
 
 
-state 19
+state 11
 
     2 DeclList: DeclList Decl .
 
     $default  reduce using rule 2 (DeclList)
 
 
-state 20
+state 12
 
-    5 declaration: init_declarator_list ';' .
+    6 VarDecl: VarType T_Identifier . T_Semicolon
 
-    $default  reduce using rule 5 (declaration)
+    T_Semicolon  shift, and go to state 13
+
+
+state 13
+
+    6 VarDecl: VarType T_Identifier T_Semicolon .
+
+    $default  reduce using rule 6 (VarDecl)

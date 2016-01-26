@@ -71,32 +71,28 @@
      T_Bvec2 = 287,
      T_Bvec3 = 288,
      T_Bvec4 = 289,
-     T_Ivec2 = 290,
-     T_Ivec3 = 291,
-     T_Ivec4 = 292,
-     T_Uvec2 = 293,
-     T_Uvec3 = 294,
-     T_Uvec4 = 295,
-     T_Vec2 = 296,
-     T_Vec3 = 297,
-     T_Vec4 = 298,
-     T_Mat2 = 299,
-     T_Mat3 = 300,
-     T_Mat4 = 301,
-     T_Struct = 302,
-     T_In = 303,
-     T_Out = 304,
-     T_Inout = 305,
-     T_Const = 306,
-     T_Uniform = 307,
-     T_Layout = 308,
-     T_Continue = 309,
-     T_Do = 310,
-     T_Semicolon = 311,
-     T_Identifier = 312,
-     T_IntConstant = 313,
-     T_FloatConstant = 314,
-     T_BoolConstant = 315
+     T_Uvec2 = 290,
+     T_Uvec3 = 291,
+     T_Uvec4 = 292,
+     T_Vec2 = 293,
+     T_Vec3 = 294,
+     T_Vec4 = 295,
+     T_Mat2 = 296,
+     T_Mat3 = 297,
+     T_Mat4 = 298,
+     T_Struct = 299,
+     T_In = 300,
+     T_Out = 301,
+     T_Const = 302,
+     T_Uniform = 303,
+     T_Layout = 304,
+     T_Continue = 305,
+     T_Do = 306,
+     T_Semicolon = 307,
+     T_Identifier = 308,
+     T_IntConstant = 309,
+     T_FloatConstant = 310,
+     T_BoolConstant = 311
    };
 #endif
 /* Tokens.  */
@@ -132,32 +128,28 @@
 #define T_Bvec2 287
 #define T_Bvec3 288
 #define T_Bvec4 289
-#define T_Ivec2 290
-#define T_Ivec3 291
-#define T_Ivec4 292
-#define T_Uvec2 293
-#define T_Uvec3 294
-#define T_Uvec4 295
-#define T_Vec2 296
-#define T_Vec3 297
-#define T_Vec4 298
-#define T_Mat2 299
-#define T_Mat3 300
-#define T_Mat4 301
-#define T_Struct 302
-#define T_In 303
-#define T_Out 304
-#define T_Inout 305
-#define T_Const 306
-#define T_Uniform 307
-#define T_Layout 308
-#define T_Continue 309
-#define T_Do 310
-#define T_Semicolon 311
-#define T_Identifier 312
-#define T_IntConstant 313
-#define T_FloatConstant 314
-#define T_BoolConstant 315
+#define T_Uvec2 290
+#define T_Uvec3 291
+#define T_Uvec4 292
+#define T_Vec2 293
+#define T_Vec3 294
+#define T_Vec4 295
+#define T_Mat2 296
+#define T_Mat3 297
+#define T_Mat4 298
+#define T_Struct 299
+#define T_In 300
+#define T_Out 301
+#define T_Const 302
+#define T_Uniform 303
+#define T_Layout 304
+#define T_Continue 305
+#define T_Do 306
+#define T_Semicolon 307
+#define T_Identifier 308
+#define T_IntConstant 309
+#define T_FloatConstant 310
+#define T_BoolConstant 311
 
 
 
@@ -171,16 +163,18 @@ typedef union YYSTYPE
 
     int integerConstant;
     bool boolConstant;
-    char *stringConstant;
-    double doubleConstant;
+    double floatConstant;
     char identifier[MaxIdentLen+1]; // +1 for terminating null
     Decl *decl;
     List<Decl*> *declList;
+    List<VarDecl*> *formals;
+    Stmt *body;
+    Type *type;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 184 "y.tab.h"
+#line 178 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

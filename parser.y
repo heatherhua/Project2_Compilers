@@ -41,11 +41,13 @@ void yyerror(const char *msg); // standard error-handling routine
 %union {
     int integerConstant;
     bool boolConstant;
-    char *stringConstant;
-    double doubleConstant;
+    double floatConstant;
     char identifier[MaxIdentLen+1]; // +1 for terminating null
     Decl *decl;
     List<Decl*> *declList;
+    List<VarDecl*> *formals;
+    Stmt *body;
+    Type *type;
 }
 
 
@@ -96,9 +98,10 @@ void yyerror(const char *msg); // standard error-handling routine
  * pp2: You'll need to add many of these of your own.
  */
 %type <declList>  DeclList
-%type <decl>      Decl declaration init_declarator_list single_declaration fully_specified_type
-                  type_specifier type_specifier_nonarray
+%type <decl>      Decl FnDecl VarDecl //declaration init_declarator_list single_declaration fully_specified_type
+                  // type_specifier type_specifier_nonarray
 
+%type <type>       VarType
 
 
 %%
@@ -124,78 +127,51 @@ DeclList  :    DeclList Decl                      { ($$=$1)->Append($2); }
           |    Decl                               { ($$ = new List<Decl*>)->Append($1); }
           ;
 
-Decl      :  declaration                        { } 
+Decl      :     FnDecl                        { }  // <--- Prety these two are the correct ways to divide a declaration based on OH 
+          |     VarDecl                       { }  // <---^^
           ;
 
-declaration : init_declarator_list ';'// T_Semicolon { } <--- Need to figure out how to use T_Semicolon and not ';'
-            ;
 
-init_declarator_list : single_declaration {}
-                    ;
+VarDecl   :     VarType T_Identifier T_Semicolon         { $$ = new VarDecl(new Identifier(yylloc, $2), $1);}
+          ;
 
-single_declaration : fully_specified_type {}
-                   ;
+VarType   :     T_Int                         { $$ = Type::intType;}
+          |     T_Float                       { $$ = Type::floatType;}
+          ;
 
-fully_specified_type : type_specifier {}
-                    ;
 
-type_specifier : type_specifier_nonarray        {}
-               ;
+FnDecl    :     T_Void                          {}
+          ;
+// declaration : init_declarator_list T_Semicolon { }
+//             ;
 
-type_specifier_nonarray : T_Void      { 
-                                       // $$ = new VarDecl();
-                                        // Identifier *id = new Identifier(yylloc, "main");      
-                                        // $$ = new VarDecl(id, Type::voidType);
+// init_declarator_list : single_declaration {}
+//                     ;
+
+// single_declaration : fully_specified_type {}
+//                    ;
+
+// fully_specified_type : type_specifier {}
+//                     ;
+
+// type_specifier : type_specifier_nonarray        {}
+//                ;
+
+// type_specifier_nonarray : T_Void      { 
+//                                        // $$ = new VarDecl();
+//                                         // Identifier *id = new Identifier(yylloc, "main");      
+//                                         // $$ = new VarDecl(id, Type::voidType);
                                     
-                                      $$ = new VarDecl(new Identifier(yylloc, "main"), Type::voidType); }
+//                                       $$ = new VarDecl(new Identifier(yylloc, "main"), Type::voidType); } // <--- using "main" to test.
 
-                        | T_Float
-                        | T_Int
-                        | T_Uint
-                        | T_Bool
-                        | T_Vec2
-                        | T_Vec3
-                        | T_Vec4
-                        ;
-
-// BVEC2
-// BVEC3
-// BVEC4
-// IVEC2
-// IVEC3
-// IVEC4
-// UVEC2
-// UVEC3
-// UVEC4
-// MAT2
-// MAT3
-// MAT4
-// MAT2X2
-// MAT2X3
-// MAT2X4
-// MAT3X2
-// MAT3X3
-// MAT3X4
-// MAT4X2
-// MAT4X3
-// MAT4X4
-// ATOMIC_UINT
-// SAMPLER2D
-// SAMPLER3D
-// SAMPLERCUBE
-// SAMPLER2DSHADOW
-// SAMPLERCUBESHADOW
-// SAMPLER2DARRAY
-// SAMPLER2DARRAYSHADOW
-// SAMPLERBUFFER
-// SAMPLER2DMSARRAY
-// SAMPLERCUBEARRAY
-// SAMPLERCUBEARRAYSHADOW
-// ISAMPLER2D
-// ISAMPLER3D
-// ISAMPLERCUBE
-// ISAMPLER2DARRAY
-// ISAMPLERBUFFER
+//                         | T_Float
+//                         | T_Int
+//                         | T_Uint
+//                         | T_Bool
+//                         | T_Vec2
+//                         | T_Vec3
+//                         | T_Vec4
+//                         ;
                         
 %%
 
