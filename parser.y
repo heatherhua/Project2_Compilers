@@ -66,12 +66,11 @@ void yyerror(const char *msg); // standard error-handling routine
 %token   T_Dot T_FieldSelection
 %token   T_Uint
 %token   T_Bvec2 T_Bvec3 T_Bvec4
-%token   T_Ivec2 T_Ivec3 T_Ivec4
 %token   T_Uvec2 T_Uvec3 T_Uvec4
 %token   T_Vec2 T_Vec3 T_Vec4
 %token   T_Mat2 T_Mat3 T_Mat4
 %token   T_Struct
-%token   T_In T_Out T_Inout
+%token   T_In T_Out
 %token   T_Const T_Uniform
 %token   T_Layout
 %token   T_Continue T_Do
@@ -101,6 +100,7 @@ void yyerror(const char *msg); // standard error-handling routine
                   type_specifier type_specifier_nonarray
 
 
+
 %%
 /* Rules
  * -----
@@ -127,7 +127,7 @@ DeclList  :    DeclList Decl                      { ($$=$1)->Append($2); }
 Decl      :  declaration                        { } 
           ;
 
-declaration : init_declarator_list T_Semicolon {}
+declaration : init_declarator_list ';'// T_Semicolon { } <--- Need to figure out how to use T_Semicolon and not ';'
             ;
 
 init_declarator_list : single_declaration {}
@@ -142,8 +142,61 @@ fully_specified_type : type_specifier {}
 type_specifier : type_specifier_nonarray        {}
                ;
 
-type_specifier_nonarray : T_Void      { $$ = new VarDecl();} //$$ = new VarDecl(new Identifier(yylloc, "id"), Type::intType); }
+type_specifier_nonarray : T_Void      { 
+                                       // $$ = new VarDecl();
+                                        // Identifier *id = new Identifier(yylloc, "main");      
+                                        // $$ = new VarDecl(id, Type::voidType);
+                                    
+                                      $$ = new VarDecl(new Identifier(yylloc, "main"), Type::voidType); }
+
+                        | T_Float
+                        | T_Int
+                        | T_Uint
+                        | T_Bool
+                        | T_Vec2
+                        | T_Vec3
+                        | T_Vec4
                         ;
+
+// BVEC2
+// BVEC3
+// BVEC4
+// IVEC2
+// IVEC3
+// IVEC4
+// UVEC2
+// UVEC3
+// UVEC4
+// MAT2
+// MAT3
+// MAT4
+// MAT2X2
+// MAT2X3
+// MAT2X4
+// MAT3X2
+// MAT3X3
+// MAT3X4
+// MAT4X2
+// MAT4X3
+// MAT4X4
+// ATOMIC_UINT
+// SAMPLER2D
+// SAMPLER3D
+// SAMPLERCUBE
+// SAMPLER2DSHADOW
+// SAMPLERCUBESHADOW
+// SAMPLER2DARRAY
+// SAMPLER2DARRAYSHADOW
+// SAMPLERBUFFER
+// SAMPLER2DMSARRAY
+// SAMPLERCUBEARRAY
+// SAMPLERCUBEARRAYSHADOW
+// ISAMPLER2D
+// ISAMPLER3D
+// ISAMPLERCUBE
+// ISAMPLER2DARRAY
+// ISAMPLERBUFFER
+                        
 %%
 
 /*
