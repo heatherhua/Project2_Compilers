@@ -93,8 +93,18 @@ SINGLE_COMMENT    ("//"[^\n]*)
 "case"              { return T_Case;        }
 "default"           { return T_Default;     }
 ";"                 { return T_Semicolon;   }
-
-
+"vec2"              { return T_Vec2;        }
+"vec3"              { return T_Vec3;        }
+"vec4"              { return T_Vec4;        }
+"mat2"              { return T_Mat2;        }
+"mat3"              { return T_Mat3;        }
+"mat4"              { return T_Mat4;        }
+"in"                { return T_In;          }
+"out"               { return T_Out;         }
+"uniform"           { return T_Uniform;     }
+"layout"            { return T_Layout;      }
+"continue"          { return T_Continue;    }
+{IDENTIFIER}\.{IDENTIFIER}       { return T_FieldSelection; }
 
  /* -------------------- Operators ----------------------------- */
 "<="                { return T_LessEqual;   }
@@ -106,6 +116,10 @@ SINGLE_COMMENT    ("//"[^\n]*)
 "[]"                { return T_Dims;        }
 "++"                { return T_Inc;         }
 "--"                { return T_Dec;         }
+"+="                { return T_AddAssign;   }
+"*="                { return T_MulAssign;   }
+"/="                { return T_DivAssign;   }
+"-="                { return T_SubAssign;   }
 {OPERATOR}          { return yytext[0];     }
 
  /* -------------------- Constants ------------------------------ */
