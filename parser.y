@@ -45,8 +45,8 @@ void yyerror(const char *msg); // standard error-handling routine
     char identifier[MaxIdentLen+1]; // +1 for terminating null
     Decl *decl;
     List<Decl*> *declList;
-    List<VarDecl*> *formals;
-    Stmt *body;
+    Stmt *stmt;
+    List<Stmt*> *stmtList;
     Type *type;
 }
 
@@ -100,8 +100,9 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <declList>  DeclList
 %type <decl>      Decl FnDecl VarDecl //declaration init_declarator_list single_declaration fully_specified_type
                   // type_specifier type_specifier_nonarray
-
-%type <type>       VarType
+// %type <stmtList>  StmtList
+// %type <stmt>      Stmt
+%type <type>      VarType
 
 
 %%
@@ -142,6 +143,9 @@ VarType   :     T_Int                         { $$ = Type::intType;}
 
 FnDecl    :     T_Void                          {}
           ;
+
+
+          
 // declaration : init_declarator_list T_Semicolon { }
 //             ;
 

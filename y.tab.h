@@ -167,8 +167,8 @@ typedef union YYSTYPE
     char identifier[MaxIdentLen+1]; // +1 for terminating null
     Decl *decl;
     List<Decl*> *declList;
-    List<VarDecl*> *formals;
-    Stmt *body;
+    Stmt *stmt;
+    List<Stmt*> *stmtList;
     Type *type;
 
 

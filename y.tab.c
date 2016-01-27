@@ -241,8 +241,8 @@ typedef union YYSTYPE
     char identifier[MaxIdentLen+1]; // +1 for terminating null
     Decl *decl;
     List<Decl*> *declList;
-    List<VarDecl*> *formals;
-    Stmt *body;
+    Stmt *stmt;
+    List<Stmt*> *stmtList;
     Type *type;
 
 
@@ -565,8 +565,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   114,   114,   126,   127,   130,   131,   135,   138,   139,
-     143
+       0,   115,   115,   127,   128,   131,   132,   136,   139,   140,
+     144
 };
 #endif
 
@@ -1516,7 +1516,7 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 114 "parser.y"
+#line 115 "parser.y"
     { 
                                                     (yylsp[(1) - (1)]); 
                                                     /* pp2: The @1 is needed to convince 
@@ -1532,56 +1532,56 @@ yyreduce:
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 126 "parser.y"
+#line 127 "parser.y"
     { ((yyval.declList)=(yyvsp[(1) - (2)].declList))->Append((yyvsp[(2) - (2)].decl)); }
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 127 "parser.y"
+#line 128 "parser.y"
     { ((yyval.declList) = new List<Decl*>)->Append((yyvsp[(1) - (1)].decl)); }
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 130 "parser.y"
+#line 131 "parser.y"
     { }
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 131 "parser.y"
+#line 132 "parser.y"
     { }
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 135 "parser.y"
+#line 136 "parser.y"
     { (yyval.decl) = new VarDecl(new Identifier(yylloc, (yyvsp[(2) - (3)].identifier)), (yyvsp[(1) - (3)].type));}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 138 "parser.y"
+#line 139 "parser.y"
     { (yyval.type) = Type::intType;}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 139 "parser.y"
+#line 140 "parser.y"
     { (yyval.type) = Type::floatType;}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 143 "parser.y"
+#line 144 "parser.y"
     {}
     break;
 
@@ -1807,7 +1807,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 176 "parser.y"
+#line 180 "parser.y"
 
 
 /*
