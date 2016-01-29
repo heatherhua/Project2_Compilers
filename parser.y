@@ -60,25 +60,22 @@ void yyerror(const char *msg); // standard error-handling routine
  */
 %token   T_Void T_Bool T_Int T_Float 
 %token   T_LessEqual T_GreaterEqual T_Equal T_NotEqual T_Dims
-%token   T_And T_Or 
+%token   T_AndOp T_OrOp 
 %token   T_While T_For T_If T_Else T_Return T_Break
 %token   T_Inc T_Dec T_Switch T_Case T_Default
 
 /* Added tokens */
-%token   T_LeftParen T_RightParen T_LeftBracket T_RightBracket
+/* %token  T_LeftBracket T_RightBracket */
+%token   T_LeftParen T_RightParen
 %token   T_Dot T_FieldSelection
-%token   T_Uint
-%token   T_Bvec2 T_Bvec3 T_Bvec4
-%token   T_Uvec2 T_Uvec3 T_Uvec4
 %token   T_Vec2 T_Vec3 T_Vec4
 %token   T_Mat2 T_Mat3 T_Mat4
-%token   T_Struct
-%token   T_In T_Out
-%token   T_Const T_Uniform
-%token   T_Layout
-%token   T_Continue T_Do
+%token   T_Continue
 %token   T_Semicolon
 %token   T_AddAssign T_MulAssign T_DivAssign T_SubAssign
+%token   T_LeftBrace T_RightBrace
+%token   T_Plus T_Dash T_Star T_Slash
+%token   T_Equal T_LeftAngle T_RightAngle
 
 
 /* These were already here */

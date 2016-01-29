@@ -92,34 +92,49 @@ SINGLE_COMMENT    ("//"[^\n]*)
 "switch"            { return T_Switch;      }
 "case"              { return T_Case;        }
 "default"           { return T_Default;     }
-";"                 { return T_Semicolon;   }
 "vec2"              { return T_Vec2;        }
 "vec3"              { return T_Vec3;        }
 "vec4"              { return T_Vec4;        }
 "mat2"              { return T_Mat2;        }
 "mat3"              { return T_Mat3;        }
 "mat4"              { return T_Mat4;        }
-"in"                { return T_In;          }
-"out"               { return T_Out;         }
-"uniform"           { return T_Uniform;     }
-"layout"            { return T_Layout;      }
 "continue"          { return T_Continue;    }
-{IDENTIFIER}\.{IDENTIFIER}       { return T_FieldSelection; }
+/* covered by . in Operators {IDENTIFIER}\.{IDENTIFIER}       { return T_FieldSelection; } */
 
  /* -------------------- Operators ----------------------------- */
+"(" { return T_LeftParen; }
+")" { return T_RightParen; }
+":" { return T_Colon; }
+";" { return T_Semicolon; }
+"{" { return T_LeftBrace; }
+"}" { return T_RightBrace; }
+"." { BEGIN(FIELDS); return T_Dot; } /* this was given, how do we prevent floats? */
+"[" { return T_LeftBracket; }
+"]" { return T_RightBracket;} 
+
+
 "<="                { return T_LessEqual;   }
 ">="                { return T_GreaterEqual;}
-"=="                { return T_Equal;       }
+"=="                { return T_EqualOp;       }
 "!="                { return T_NotEqual;    }
-"&&"                { return T_And;         }
-"||"                { return T_Or;          }
+"&&"                { return T_AndOp;         }
+"||"                { return T_OrOp;          }
 "[]"                { return T_Dims;        }
 "++"                { return T_Inc;         }
 "--"                { return T_Dec;         }
+"+" { return T_Plus; }
+"-" { return T_Dash; } 
+"*" { return T_Star; }
+"/" { return T_Slash; }
+
 "+="                { return T_AddAssign;   }
 "*="                { return T_MulAssign;   }
 "/="                { return T_DivAssign;   }
 "-="                { return T_SubAssign;   }
+"=" { return T_Equal; }
+">" { return T_LeftAngle; }
+"<" { return T_RightAngle; }
+
 {OPERATOR}          { return yytext[0];     }
 
  /* -------------------- Constants ------------------------------ */
