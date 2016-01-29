@@ -53,6 +53,17 @@ class IntConstant : public Expr
     void PrintChildren(int indentLevel);
 };
 
+//class IdentifierConstant : public Expr 
+//{
+//  protected:
+//    Identifier id;
+//  
+//  public:
+//    IdentifierConstant(yyltype loc, Identifier id);
+//    const char *GetPrintNameForNode() { return "IdentifierConstant"; }
+//    void PrintChildren(int indentLevel);
+//};
+
 class FloatConstant: public Expr 
 {
   protected:

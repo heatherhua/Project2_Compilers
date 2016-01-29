@@ -48,6 +48,7 @@ void yyerror(const char *msg); // standard error-handling routine
     Stmt *stmt;
     List<Stmt*> *stmtList;
     Type *type;
+    AssignExpr *assignExpr;
 }
 
 
@@ -77,6 +78,7 @@ void yyerror(const char *msg); // standard error-handling routine
 %token   T_Layout
 %token   T_Continue T_Do
 %token   T_Semicolon
+%token   T_AddAssign T_MulAssign T_DivAssign T_SubAssign
 
 
 /* These were already here */
@@ -98,12 +100,12 @@ void yyerror(const char *msg); // standard error-handling routine
  * pp2: You'll need to add many of these of your own.
  */
 %type <declList>  DeclList
-%type <decl>      Decl FnDecl VarDecl //declaration init_declarator_list single_declaration fully_specified_type
-                  // type_specifier type_specifier_nonarray
+%type <decl>      Decl FnDecl VarDecl SingleDecl
+                  
 // %type <stmtList>  StmtList
-// %type <stmt>      Stmt
-%type <type>      VarType
-
+%type <stmt>   LayoutQualifier SingleTypeQualifier StorageQualifier
+%type <type>   TypeSpecifier FullySpecifiedType TypeQualifier 
+%type <assignExpr> LayoutQualifierId
 
 %%
 /* Rules
@@ -128,61 +130,71 @@ DeclList  :    DeclList Decl                      { ($$=$1)->Append($2); }
           |    Decl                               { ($$ = new List<Decl*>)->Append($1); }
           ;
 
-Decl      :     FnDecl                        { }  // <--- Prety these two are the correct ways to divide a declaration based on OH 
-          |     VarDecl                       { }  // <---^^
+Decl      :     FnDecl                            { }  
+                // Remember VarDecl = "declaration"
+          |     VarDecl                           { } 
           ;
 
-
-VarDecl   :     VarType T_Identifier T_Semicolon         { $$ = new VarDecl(new Identifier(yylloc, $2), $1);}
+// VarDecl = "declaration"
+VarDecl   :     TypeQualifier T_Identifier T_Semicolon  { $$ = new VarDecl(new Identifier(yylloc, $2), $1);}
+          |     SingleDecl T_Semicolon          {  }
           ;
 
-VarType   :     T_Int                         { $$ = Type::intType;}
-          |     T_Float                       { $$ = Type::floatType;}
+SingleDecl : FullySpecifiedType T_Identifier      { }
+           ;
+
+FullySpecifiedType : TypeSpecifier                { }
+                   | TypeQualifier TypeSpecifier        { }
+                   ;
+
+TypeSpecifier     : T_Void                        { $$ = Type::voidType; }
+                  ;
+
+TypeQualifier   :  SingleTypeQualifier                { }
+                |  TypeQualifier SingleTypeQualifier  { }
+                ;
+
+SingleTypeQualifier : StorageQualifier                { }
+                    | LayoutQualifier                 { }
+                    ;
+
+StorageQualifier : T_In                        { }
+                 | T_Out                       { }
+                 ;
+
+LayoutQualifier : T_Layout '(' LayoutQualifierId ')'  { }
+                ;
+
+LayoutQualifierId : T_Identifier T_Equal T_IntConstant { 
+
+                    Operator *op = new Operator(yylloc, (const char*)T_Equal);
+                    //$$ = new AssignExpr(
+                           // new IdentifierConstant(yylloc, new Identifier(yylloc, $1)), 
+                            //op, new IntConstant(yylloc, $3));
+                                                   }
+                  ;
+
+FnDecl    :     FnPrototype CompoundStatementNoNewScope                            {}
           ;
-
-
-FnDecl    :     T_Void                          {}
-          ;
-
-
           
-// declaration : init_declarator_list T_Semicolon { }
-//             ;
+          
+FnPrototype :   FnDeclarator T_RightParen {}
+            ;
+            
+FnDeclarator :  FnHeader                        {}
+             |  FnHeaderWithParameters          {}
+             ;
+             
+FnHeaderWithParameters : FnHeader ParameterDecl {}
+                       | FnHeaderWithParameters T_Comma ParameterDecl {}
+                       ;
+                      
+FnHeader    : FullySpecifiedType T_Identifier T_LeftParen {}
+            ;
 
-// init_declarator_list : single_declaration {}
-//                     ;
-
-// single_declaration : fully_specified_type {}
-//                    ;
-
-// fully_specified_type : type_specifier {}
-//                     ;
-
-// type_specifier : type_specifier_nonarray        {}
-//                ;
-
-// type_specifier_nonarray : T_Void      { 
-//                                        // $$ = new VarDecl();
-//                                         // Identifier *id = new Identifier(yylloc, "main");      
-//                                         // $$ = new VarDecl(id, Type::voidType);
-                                    
-//                                       $$ = new VarDecl(new Identifier(yylloc, "main"), Type::voidType); } // <--- using "main" to test.
-
-//                         | T_Float
-//                         | T_Int
-//                         | T_Uint
-//                         | T_Bool
-//                         | T_Vec2
-//                         | T_Vec3
-//                         | T_Vec4
-//                         ;
-                        
+            
 %%
 
-/*
-Decl      :    T_Void               { $$ = new VarDecl(); pp2: test only. Replace with correct rules  } 
-          ;
-*/
 
 /* The closing %% above marks the end of the Rules section and the beginning
  * of the User Subroutines section. All text from here to the end of the

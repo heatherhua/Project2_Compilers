@@ -89,10 +89,14 @@
      T_Continue = 305,
      T_Do = 306,
      T_Semicolon = 307,
-     T_Identifier = 308,
-     T_IntConstant = 309,
-     T_FloatConstant = 310,
-     T_BoolConstant = 311
+     T_AddAssign = 308,
+     T_MulAssign = 309,
+     T_DivAssign = 310,
+     T_SubAssign = 311,
+     T_Identifier = 312,
+     T_IntConstant = 313,
+     T_FloatConstant = 314,
+     T_BoolConstant = 315
    };
 #endif
 /* Tokens.  */
@@ -146,10 +150,14 @@
 #define T_Continue 305
 #define T_Do 306
 #define T_Semicolon 307
-#define T_Identifier 308
-#define T_IntConstant 309
-#define T_FloatConstant 310
-#define T_BoolConstant 311
+#define T_AddAssign 308
+#define T_MulAssign 309
+#define T_DivAssign 310
+#define T_SubAssign 311
+#define T_Identifier 312
+#define T_IntConstant 313
+#define T_FloatConstant 314
+#define T_BoolConstant 315
 
 
 
@@ -170,11 +178,12 @@ typedef union YYSTYPE
     Stmt *stmt;
     List<Stmt*> *stmtList;
     Type *type;
+    AssignExpr *assignExpr;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 178 "y.tab.h"
+#line 187 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -1,0 +1,12 @@
+called: g++
+	/home/linux/ieng6/cs131w/cs131wam/Project2
+	g++
+	-g
+	-Wall
+	-Wno-unused
+	-Wno-sign-compare
+	-c
+	-o
+	y.tab.o
+	y.tab.c
+

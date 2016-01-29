@@ -16,6 +16,14 @@ void IntConstant::PrintChildren(int indentLevel) {
     printf("%d", value);
 }
 
+//IdentifierConstant::IdentifierConstant(yyltype loc, Identifier val) : Expr(loc) {
+//    id = val;
+//}
+//
+//void IdentifierConstant::PrintChildren(int indentLevel) { 
+//    printf("%s", id.name);
+//}
+
 FloatConstant::FloatConstant(yyltype loc, double val) : Expr(loc) {
     value = val;
 }

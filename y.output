@@ -1,9 +1,10 @@
 Terminals unused in grammar
 
    T_Bool
+   T_Int
+   T_Float
    T_LessEqual
    T_GreaterEqual
-   T_Equal
    T_NotEqual
    T_Dims
    T_And
@@ -39,14 +40,14 @@ Terminals unused in grammar
    T_Mat3
    T_Mat4
    T_Struct
-   T_In
-   T_Out
    T_Const
    T_Uniform
-   T_Layout
    T_Continue
    T_Do
-   T_IntConstant
+   T_AddAssign
+   T_MulAssign
+   T_DivAssign
+   T_SubAssign
    T_FloatConstant
    T_BoolConstant
 
@@ -63,25 +64,45 @@ Grammar
     4 Decl: FnDecl
     5     | VarDecl
 
-    6 VarDecl: VarType T_Identifier T_Semicolon
+    6 VarDecl: TypeQualifier T_Identifier T_Semicolon
+    7        | SingleDecl T_Semicolon
 
-    7 VarType: T_Int
-    8        | T_Float
+    8 SingleDecl: FullySpecifiedType T_Identifier
 
-    9 FnDecl: T_Void
+    9 FullySpecifiedType: TypeSpecifier
+   10                   | TypeQualifier TypeSpecifier
+
+   11 TypeSpecifier: T_Void
+
+   12 TypeQualifier: SingleTypeQualifier
+   13              | TypeQualifier SingleTypeQualifier
+
+   14 SingleTypeQualifier: StorageQualifier
+   15                    | LayoutQualifier
+
+   16 StorageQualifier: T_In
+   17                 | T_Out
+
+   18 LayoutQualifier: T_Layout '(' LayoutQualifierId ')'
+
+   19 LayoutQualifierId: T_Identifier T_Equal T_IntConstant
+
+   20 FnDecl: T_Void
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
+'(' (40) 18
+')' (41) 18
 error (256)
-T_Void (258) 9
+T_Void (258) 11 20
 T_Bool (259)
-T_Int (260) 7
-T_Float (261) 8
+T_Int (260)
+T_Float (261)
 T_LessEqual (262)
 T_GreaterEqual (263)
-T_Equal (264)
+T_Equal (264) 19
 T_NotEqual (265)
 T_Dims (266)
 T_And (267)
@@ -117,150 +138,323 @@ T_Mat2 (296)
 T_Mat3 (297)
 T_Mat4 (298)
 T_Struct (299)
-T_In (300)
-T_Out (301)
+T_In (300) 16
+T_Out (301) 17
 T_Const (302)
 T_Uniform (303)
-T_Layout (304)
+T_Layout (304) 18
 T_Continue (305)
 T_Do (306)
-T_Semicolon (307) 6
-T_Identifier (308) 6
-T_IntConstant (309)
-T_FloatConstant (310)
-T_BoolConstant (311)
+T_Semicolon (307) 6 7
+T_AddAssign (308)
+T_MulAssign (309)
+T_DivAssign (310)
+T_SubAssign (311)
+T_Identifier (312) 6 8 19
+T_IntConstant (313) 19
+T_FloatConstant (314)
+T_BoolConstant (315)
 
 
 Nonterminals, with rules where they appear
 
-$accept (57)
+$accept (63)
     on left: 0
-Program (58)
+Program (64)
     on left: 1, on right: 0
-DeclList (59)
+DeclList (65)
     on left: 2 3, on right: 1 2
-Decl (60)
+Decl (66)
     on left: 4 5, on right: 2 3
-VarDecl (61)
-    on left: 6, on right: 5
-VarType (62)
-    on left: 7 8, on right: 6
-FnDecl (63)
-    on left: 9, on right: 4
+VarDecl (67)
+    on left: 6 7, on right: 5
+SingleDecl (68)
+    on left: 8, on right: 7
+FullySpecifiedType (69)
+    on left: 9 10, on right: 8
+TypeSpecifier (70)
+    on left: 11, on right: 9 10
+TypeQualifier (71)
+    on left: 12 13, on right: 6 10 13
+SingleTypeQualifier (72)
+    on left: 14 15, on right: 12 13
+StorageQualifier (73)
+    on left: 16 17, on right: 14
+LayoutQualifier (74)
+    on left: 18, on right: 15
+LayoutQualifierId (75)
+    on left: 19, on right: 18
+FnDecl (76)
+    on left: 20, on right: 4
 
 
 state 0
 
     0 $accept: . Program $end
 
-    T_Void   shift, and go to state 1
-    T_Int    shift, and go to state 2
-    T_Float  shift, and go to state 3
+    T_Void    shift, and go to state 1
+    T_In      shift, and go to state 2
+    T_Out     shift, and go to state 3
+    T_Layout  shift, and go to state 4
 
-    Program   go to state 4
-    DeclList  go to state 5
-    Decl      go to state 6
-    VarDecl   go to state 7
-    VarType   go to state 8
-    FnDecl    go to state 9
+    Program              go to state 5
+    DeclList             go to state 6
+    Decl                 go to state 7
+    VarDecl              go to state 8
+    SingleDecl           go to state 9
+    FullySpecifiedType   go to state 10
+    TypeSpecifier        go to state 11
+    TypeQualifier        go to state 12
+    SingleTypeQualifier  go to state 13
+    StorageQualifier     go to state 14
+    LayoutQualifier      go to state 15
+    FnDecl               go to state 16
 
 
 state 1
 
-    9 FnDecl: T_Void .
+   11 TypeSpecifier: T_Void .
+   20 FnDecl: T_Void .
 
-    $default  reduce using rule 9 (FnDecl)
+    T_Identifier  reduce using rule 11 (TypeSpecifier)
+    $default      reduce using rule 20 (FnDecl)
 
 
 state 2
 
-    7 VarType: T_Int .
+   16 StorageQualifier: T_In .
 
-    $default  reduce using rule 7 (VarType)
+    $default  reduce using rule 16 (StorageQualifier)
 
 
 state 3
 
-    8 VarType: T_Float .
+   17 StorageQualifier: T_Out .
 
-    $default  reduce using rule 8 (VarType)
+    $default  reduce using rule 17 (StorageQualifier)
 
 
 state 4
 
-    0 $accept: Program . $end
+   18 LayoutQualifier: T_Layout . '(' LayoutQualifierId ')'
 
-    $end  shift, and go to state 10
+    '('  shift, and go to state 17
 
 
 state 5
 
-    1 Program: DeclList .
-    2 DeclList: DeclList . Decl
+    0 $accept: Program . $end
 
-    T_Void   shift, and go to state 1
-    T_Int    shift, and go to state 2
-    T_Float  shift, and go to state 3
-
-    $default  reduce using rule 1 (Program)
-
-    Decl     go to state 11
-    VarDecl  go to state 7
-    VarType  go to state 8
-    FnDecl   go to state 9
+    $end  shift, and go to state 18
 
 
 state 6
+
+    1 Program: DeclList .
+    2 DeclList: DeclList . Decl
+
+    T_Void    shift, and go to state 1
+    T_In      shift, and go to state 2
+    T_Out     shift, and go to state 3
+    T_Layout  shift, and go to state 4
+
+    $default  reduce using rule 1 (Program)
+
+    Decl                 go to state 19
+    VarDecl              go to state 8
+    SingleDecl           go to state 9
+    FullySpecifiedType   go to state 10
+    TypeSpecifier        go to state 11
+    TypeQualifier        go to state 12
+    SingleTypeQualifier  go to state 13
+    StorageQualifier     go to state 14
+    LayoutQualifier      go to state 15
+    FnDecl               go to state 16
+
+
+state 7
 
     3 DeclList: Decl .
 
     $default  reduce using rule 3 (DeclList)
 
 
-state 7
+state 8
 
     5 Decl: VarDecl .
 
     $default  reduce using rule 5 (Decl)
 
 
-state 8
-
-    6 VarDecl: VarType . T_Identifier T_Semicolon
-
-    T_Identifier  shift, and go to state 12
-
-
 state 9
+
+    7 VarDecl: SingleDecl . T_Semicolon
+
+    T_Semicolon  shift, and go to state 20
+
+
+state 10
+
+    8 SingleDecl: FullySpecifiedType . T_Identifier
+
+    T_Identifier  shift, and go to state 21
+
+
+state 11
+
+    9 FullySpecifiedType: TypeSpecifier .
+
+    $default  reduce using rule 9 (FullySpecifiedType)
+
+
+state 12
+
+    6 VarDecl: TypeQualifier . T_Identifier T_Semicolon
+   10 FullySpecifiedType: TypeQualifier . TypeSpecifier
+   13 TypeQualifier: TypeQualifier . SingleTypeQualifier
+
+    T_Void        shift, and go to state 22
+    T_In          shift, and go to state 2
+    T_Out         shift, and go to state 3
+    T_Layout      shift, and go to state 4
+    T_Identifier  shift, and go to state 23
+
+    TypeSpecifier        go to state 24
+    SingleTypeQualifier  go to state 25
+    StorageQualifier     go to state 14
+    LayoutQualifier      go to state 15
+
+
+state 13
+
+   12 TypeQualifier: SingleTypeQualifier .
+
+    $default  reduce using rule 12 (TypeQualifier)
+
+
+state 14
+
+   14 SingleTypeQualifier: StorageQualifier .
+
+    $default  reduce using rule 14 (SingleTypeQualifier)
+
+
+state 15
+
+   15 SingleTypeQualifier: LayoutQualifier .
+
+    $default  reduce using rule 15 (SingleTypeQualifier)
+
+
+state 16
 
     4 Decl: FnDecl .
 
     $default  reduce using rule 4 (Decl)
 
 
-state 10
+state 17
+
+   18 LayoutQualifier: T_Layout '(' . LayoutQualifierId ')'
+
+    T_Identifier  shift, and go to state 26
+
+    LayoutQualifierId  go to state 27
+
+
+state 18
 
     0 $accept: Program $end .
 
     $default  accept
 
 
-state 11
+state 19
 
     2 DeclList: DeclList Decl .
 
     $default  reduce using rule 2 (DeclList)
 
 
-state 12
+state 20
 
-    6 VarDecl: VarType T_Identifier . T_Semicolon
+    7 VarDecl: SingleDecl T_Semicolon .
 
-    T_Semicolon  shift, and go to state 13
+    $default  reduce using rule 7 (VarDecl)
 
 
-state 13
+state 21
 
-    6 VarDecl: VarType T_Identifier T_Semicolon .
+    8 SingleDecl: FullySpecifiedType T_Identifier .
+
+    $default  reduce using rule 8 (SingleDecl)
+
+
+state 22
+
+   11 TypeSpecifier: T_Void .
+
+    $default  reduce using rule 11 (TypeSpecifier)
+
+
+state 23
+
+    6 VarDecl: TypeQualifier T_Identifier . T_Semicolon
+
+    T_Semicolon  shift, and go to state 28
+
+
+state 24
+
+   10 FullySpecifiedType: TypeQualifier TypeSpecifier .
+
+    $default  reduce using rule 10 (FullySpecifiedType)
+
+
+state 25
+
+   13 TypeQualifier: TypeQualifier SingleTypeQualifier .
+
+    $default  reduce using rule 13 (TypeQualifier)
+
+
+state 26
+
+   19 LayoutQualifierId: T_Identifier . T_Equal T_IntConstant
+
+    T_Equal  shift, and go to state 29
+
+
+state 27
+
+   18 LayoutQualifier: T_Layout '(' LayoutQualifierId . ')'
+
+    ')'  shift, and go to state 30
+
+
+state 28
+
+    6 VarDecl: TypeQualifier T_Identifier T_Semicolon .
 
     $default  reduce using rule 6 (VarDecl)
+
+
+state 29
+
+   19 LayoutQualifierId: T_Identifier T_Equal . T_IntConstant
+
+    T_IntConstant  shift, and go to state 31
+
+
+state 30
+
+   18 LayoutQualifier: T_Layout '(' LayoutQualifierId ')' .
+
+    $default  reduce using rule 18 (LayoutQualifier)
+
+
+state 31
+
+   19 LayoutQualifierId: T_Identifier T_Equal T_IntConstant .
+
+    $default  reduce using rule 19 (LayoutQualifierId)
