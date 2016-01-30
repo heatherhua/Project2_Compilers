@@ -102,13 +102,13 @@ void yyerror(const char *msg); // standard error-handling routine
  * pp2: You'll need to add many of these of your own.
  */
 %type <declList>  DeclList 
-%type <decl>      Decl 
+%type <decl>      Decl FnDef
 %type <vardecl>   VarDecl ParameterDecl
 %type <type>      TypeSpecifier
-%type <fndecl>    FnHeader FnHeaderWithParameters
-%type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
-%type <stmtList>  StmtList
-%type <stmt>      Stmt
+%type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype 
+%type <stmtblock> CompoundStmtNoNewScope
+%type <stmtList>  StmtList SelectionRestStmt
+%type <stmt>      Stmt SelectionStmt StmtWithScope
 %type <op>        AssignOp UnaryOp
 %type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr
                   PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr
@@ -147,33 +147,34 @@ Decl      :     FnDef                            { }
           ;
 
 /************* BEGIN FOLLOWING FNDEF **********************/
-FnDef    : FnPrototype CompoundStmtNoNewScope { }
+FnDef    : FnPrototype CompoundStmtNoNewScope { $1->SetFunctionBody($2); $$ = $1; }
          ;
 
 CompoundStmtNoNewScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>);}
                        | T_LeftBrace StmtList T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, $2); }
                        ;
 
-CompoundStmtWithScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
-                      | T_LeftBrace StmtList T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, $2); }
-                      ;
+//CompoundStmtWithScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
+//                      | T_LeftBrace StmtList T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, $2); }
+//                      ;
 
 StmtList : Stmt { ($$ = new List<Stmt*>)->Append($1); }
-         | StmtList Stmt { ($$=$1)->Append($2);}
+//         | StmtList Stmt { ($$=$1)->Append($2);}
          ;
 
-Stmt : CompoundStmtWithScope {}
-     | SimpleStmt {}
+Stmt : SimpleStmt {}
+//CompoundStmtWithScope {}
+     //| SimpleStmt {}
      ;
 
 // Simplifying: DeclarationStmt -> declaration
 // VarDecl = declaration
 SimpleStmt  : VarDecl {}
-            | ExprStmt {}
-            | SelectionStmt {}
-            | SwitchStmt {}
-            | CaseLabel {}
-            | IterStmt {}
+//            | ExprStmt {}
+//            | SelectionStmt {}
+//            | SwitchStmt {}
+//            | CaseLabel {}
+//            | IterStmt {}
             ;
             
             /******* 1 ************/
@@ -191,6 +192,7 @@ VarDecl   : FnPrototype T_Semicolon { }
 // Simplifying TypeSpecifier -> TypeSpecifierNonarray -> Terminals
 // TypeSpecifier = "type_specifier_nonarray"
 TypeSpecifier : T_Void  { $$ = Type::voidType;}
+              | T_Bool  { $$ = Type::boolType;}
               | T_Float { $$ = Type::floatType;}
               | T_Int   { $$ = Type::intType; }
               | T_Vec2  { $$ = Type::vec2Type;}
@@ -201,7 +203,7 @@ TypeSpecifier : T_Void  { $$ = Type::voidType;}
               | T_Mat4  { $$ = Type::mat4Type;}
               ;
 
-FnPrototype : FnDeclarator T_RightParen {}
+FnPrototype : FnDeclarator T_RightParen { }
             ;
 
 FnDeclarator :  FnHeader                        {}
@@ -367,12 +369,18 @@ PrimExpr : T_Identifier  { $$ = new FieldAccess(new EmptyExpr(), new Identifier(
 /**********************/
 /**********************/
 /*********************/
-/************** BEGIN SelectionStmt *********************/
-SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt {  }
+/************** BEGIN SelectionStmt *********************/              
+SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt { }
+                                         //$$ = new IfStmt();}
+                //$$ = new IfStmt($3, $5->Nth(0), NULL);}// $5->Nth(1)); }
               ;
 
-SelectionRestStmt : StmtWithScope T_Else StmtWithScope {}
-                  | StmtWithScope %prec NO_ELSE {}
+SelectionRestStmt : StmtWithScope T_Else StmtWithScope { }
+                                //($$ = new List<Stmt*>)->Append($1); }
+//                                $$->Append($3);}
+//                  | StmtWithScope %prec NO_ELSE { 
+//                                ($$ = new List<Stmt*>)->Append($1); 
+//                                $$->Append(NULL); }
                   ;
 
 StmtWithScope : CompoundStmtNoNewScope {}
