@@ -102,7 +102,9 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <decl>      Decl VarDecl
 %type <type>      TypeSpecifier
 %type <fndecl>    FnHeader
-%type <stmtblock> CompoundStmtNoNewScope
+%type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
+%type <stmtList>  StmtList
+%type <stmt>      Stmt
 
 %nonassoc NO_ELSE
 %nonassoc T_Else                 
@@ -143,15 +145,15 @@ FnDef    : FnPrototype CompoundStmtNoNewScope { }
          ;
 
 CompoundStmtNoNewScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>);}
-                       | T_LeftBrace StmtList T_RightBrace {}
+                       | T_LeftBrace StmtList T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, $2); }
                        ;
 
-CompoundStmtWithScope : T_LeftBrace T_RightBrace { }
-                      | T_LeftBrace StmtList T_RightBrace {}
+CompoundStmtWithScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
+                      | T_LeftBrace StmtList T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, $2); }
                       ;
 
-StmtList : Stmt {}
-         | StmtList Stmt {}
+StmtList : Stmt { ($$ = new List<Stmt*>)->Append($1); }
+         | StmtList Stmt { ($$=$1)->Append($2);}
          ;
 
 Stmt : CompoundStmtWithScope {}
