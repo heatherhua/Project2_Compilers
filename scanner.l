@@ -108,9 +108,10 @@ SINGLE_COMMENT    ("//"[^\n]*)
 ";" { return T_Semicolon; }
 "{" { return T_LeftBrace; }
 "}" { return T_RightBrace; }
-"." { BEGIN(FIELDS); return T_Dot; } /* this was given, how do we prevent floats? */
+"." { BEGIN(FIELDS); return T_Dot; } /* this was given, how do we prevent floats? when do we return field selection? */
 "[" { return T_LeftBracket; }
-"]" { return T_RightBracket;} 
+"]" { return T_RightBracket; }
+"," { return T_Comma; } 
 
 
 "<="                { return T_LessEqual;   }
@@ -135,7 +136,7 @@ SINGLE_COMMENT    ("//"[^\n]*)
 ">" { return T_LeftAngle; }
 "<" { return T_RightAngle; }
 
-{OPERATOR}          { return yytext[0];     }
+/*{OPERATOR}          { return yytext[0];     } */
 
  /* -------------------- Constants ------------------------------ */
 "true"|"false"      { yylval.boolConstant = (yytext[0] == 't');

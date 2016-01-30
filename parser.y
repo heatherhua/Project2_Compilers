@@ -71,11 +71,11 @@ void yyerror(const char *msg); // standard error-handling routine
 %token   T_Vec2 T_Vec3 T_Vec4
 %token   T_Mat2 T_Mat3 T_Mat4
 %token   T_Continue
-%token   T_Semicolon
+%token   T_Semicolon T_Colon T_Comma
 %token   T_AddAssign T_MulAssign T_DivAssign T_SubAssign
 %token   T_LeftBrace T_RightBrace
 %token   T_Plus T_Dash T_Star T_Slash
-%token   T_Equal T_LeftAngle T_RightAngle
+%token   T_EqualOp T_LeftAngle T_RightAngle
 
 
 /* These were already here */
@@ -123,29 +123,309 @@ Program   :    DeclList                           {
                                                   }   
           ;
 
+// DeclList = "translation_unit"
+// Decl = " external_declaration"
 DeclList  :    DeclList Decl                      { ($$=$1)->Append($2); }
           |    Decl                               { ($$ = new List<Decl*>)->Append($1); }
           ;
 
-Decl      :     FnDecl                            { }  
+// Decl = "external_declaration"
+Decl      :     FnDef                            { }  
                 // Remember VarDecl = "declaration"
           |     VarDecl                           { } 
           ;
 
+/************* BEGIN FOLLOWING FNDEF **********************/
+FnDef    : FnPrototype CompoundStmtNoNewScope {}
+         ;
+
+CompoundStmtNoNewScope : T_LeftBrace T_RightBrace { }
+                       | T_LeftBrace StmtList T_RightBrace {}
+                       ;
+
+CompoundStmtWithScope : T_LeftBrace T_RightBrace { }
+                      | T_LeftBrace StmtList T_RightBrace {}
+                      ;
+
+StmtList : Stmt {}
+         | StmtList Stmt {}
+         ;
+
+Stmt : CompoundStmtWithScope {}
+     | SimpleStmt {}
+     ;
+
+// Simplifying: DeclarationStmt -> declaration
+// VarDecl = declaration
+SimpleStmt  : VarDecl {}
+            | ExprStmt {}
+            | SelectionStmt {}
+            | SwitchStmt {}
+            | CaseLabel {}
+            | IterStmt {}
+            ;
+/******* 1 ************/
+/**********************/
+/**********************/
+/*********************/
+/************** BEGIN VARDECL *********************/
 // VarDecl = "declaration"
-VarDecl   :     TypeQualifier T_Identifier T_Semicolon  { $$ = new VarDecl(new Identifier(yylloc, $2), $1);}
-          |     SingleDecl T_Semicolon          {  }
+VarDecl   : FnPrototype T_Semicolon {}
+           // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
+          | TypeSpecifier T_Identifier T_Semicolon {}
           ;
 
-SingleDecl : FullySpecifiedType T_Identifier      { }
+// Simplifying TypeSpecifier -> TypeSpecifierNonarray -> Terminals
+// TypeSpecifier = "type_specifier_nonarray"
+TypeSpecifier : T_Void {printf("T_Void");}
+              | T_Float {printf("T_Float");}
+              | T_Int {printf("T_Int");}
+              | T_Vec2 {printf("T_Vec2");}
+              | T_Vec3 {printf("T_Vec3");}
+              | T_Vec4 {printf("T_Vec4");}
+              | T_Mat2 {printf("T_Mat2");
+              | T_Mat3 {printf("T_Mat3");}
+              | T_Mat4 {printf("T_Mat4");}
+              ;
+
+FnPrototype : FnDeclarator T_RightParen {}
+            ;
+
+FnDeclarator :  FnHeader                        {}
+             |  FnHeaderWithParameters          {}
+             ;
+
+
+// TODO: Comma isn't highlighted, do we still need to deal with second path           
+FnHeaderWithParameters : FnHeader ParameterDecl {}
+                       | FnHeaderWithParameters T_Comma ParameterDecl {}
+                       ;
+                      
+FnHeader    : TypeSpecifier T_Identifier T_LeftParen {}
+            ;
+
+// ParameterDecl = "paramater_declaration"
+// Simplifying parameterdeclarator -> typespecifier t_identifier
+ParameterDecl : TypeSpecifier T_Identifier {}
+               // Simplifying: ParameterTypeSpecifier -> TypeSpecifier
+               | TypeSpecifier {}
+               ;
+
+/***** END FOLLOWING VARDECL ************/
+
+/******* 2 ************/
+/**********************/
+/**********************/
+/*********************/
+/********** BEGIN EXPRSTMT *******************/
+
+ExprStmt : T_Semicolon {}
+         | Expr T_Semicolon {}
+         ;
+
+Expr : AssignExpr {}
+     ;
+
+// Simplifying: ConditionalExpr
+AssignExpr : ConditionalExpr {}
+           | UnaryExpr AssignOp AssignExpr {}
            ;
 
-FullySpecifiedType : TypeSpecifier                { }
-                   | TypeQualifier TypeSpecifier        { }
-                   ;
+AssignOp : T_Equal {}
+         | T_MulAssign {}
+         | T_DivAssign {}
+         | T_AddAssign {}
+         | T_SubAssign {}
+         ;
 
-TypeSpecifier     : T_Void                        { $$ = Type::voidType; }
+/******* BEGIN ConditionalExpr ********/
+ConditionalExpr : LogicalOrExpr {}
+                ;
+
+// Simplifying LogicalXorExpr -> LogicalAndExpr
+LogicalOrExpr : LogicalAndExpr {}
+              | LogicalOrExpr T_OrOp LogicalAndExpr
+              ;
+
+// Simplify: InclusiveOrExpr -> ExclusiveOrExpr -> AndExpr -> EqualExpr
+LogicalAndExpr : EqualExpr {}
+               | LogicalAndExpr T_AndOp EqualExpr {}
+               ;
+
+EqualExpr : RelationalExpr {}
+          | EqualExpr T_EqualOp RelationalExpr {}
+          | EqualExpr T_NotEqual RelationalExpr {}
+          ;
+
+// Simplifying ShiftExpr -> AddExpr
+RelationalExpr : AddExpr {}
+               | RelationalExpr T_LeftAngle AddExpr {}
+               | RelationalExpr T_RightAngle AddExpr {}
+               | RelationalExpr T_LessEqual AddExpr {}
+               | RelationalExpr T_GreaterEqual AddExpr {}
+
+AddExpr : MultExpr {}
+        | AddExpr T_Plus MultExpr {}
+        | AddExpr T_Dash MultExpr {}
+        ;
+
+MultExpr : UnaryExpr {}
+        | MultExpr T_Star UnaryExpr {}
+        | MultExpr T_Slash UnaryExpr {}
+        ;
+
+/********* BEGIN UnaryExpr *********/
+UnaryExpr : PostfixExpr {}
+          | T_Inc UnaryExpr {}
+          | T_Dec UnaryExpr {}
+          | UnaryOp UnaryExpr {}
+          ;
+
+UnaryOp : T_Plus {printf("T_Plus");}
+        | T_Dash {printf("T_Dash");}
+        ;
+
+PostfixExpr : PrimExpr {}
+            | PostfixExpr T_Dot T_FieldSelection {}
+            | PostfixExpr T_Inc {}
+            | PostfixExpr T_Dec {}
+            ;
+// Simplifying: VarIdentifier -> T_Identifier
+PrimExpr : T_Identifier {}
+         | T_IntConstant {}
+         | T_FloatConstant {}
+         | T_BoolConstant {}
+         | T_LeftParen Expr T_RightParen {}
+         ;
+/********* END UnaryExpr *************/
+/********* END ConditionalExpr ***********/
+/*********** END ExprStmt ****************/
+
+/******* 3 ************/
+/**********************/
+/**********************/
+/*********************/
+/************** BEGIN SelectionStmt *********************/
+SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt {}
+              ;
+
+SelectionRestStmt : StmtWithScope T_Else StmtWithScope {}
+                  | StmtWithScope {}
                   ;
+
+StmtWithScope : CompoundStmtNoNewScope {}
+              | SimpleStmt {}
+              ;
+
+/************** End SelectionStmt *********************/
+
+/******* 4 ************/
+/**********************/
+/**********************/
+/*********************/
+/************** BEGIN SwitchStmt *********************/
+// Expr defined earlier
+SwitchStmt : T_Switch T_LeftParen Expr T_RightParen T_LeftBrace 
+                      SwitchStmtList T_RightBrace {}
+            ;
+
+// StmtList defined earlier
+SwitchStmtList : StmtList {}
+               /* ";" means empty */
+               | ";" {printf("EMPTY");}
+               ;
+
+/************** End SwitchStmt *********************/
+
+/******* 5 ************/
+/**********************/
+/**********************/
+/*********************/
+/************** BEGIN CaseLabel *********************/
+// Expr defined earlier
+CaseLabel : T_Case Expr T_Colon {}
+          | T_Default T_Colon {}
+          ;
+
+/************** END CaseLabel *********************/
+
+/******* 6 ************/
+/**********************/
+/**********************/
+/*********************/
+/************** BEGIN IterStmt *********************/
+IterStmt : T_While T_LeftParen Condition T_RightParen
+                   StmtNoNewScope {}
+         | T_For T_LeftParen ForInitStmt ForRestStmt
+                   T_RightParen StmtNoNewScope {}
+         ;
+
+StmtNoNewScope : CompoundStmtNoNewScope {}
+               | SimpleStmt {}
+               ;
+
+Condition : Expr {}
+          | TypeSpecifier T_Identifier T_Equal Initializer
+          ;
+
+// AssignExpr defined earlier
+Initializer : AssignExpr {}
+            ;
+
+// Simplifying DeclarationStmt -> "declaration"
+// VarDecl = "declaration"
+ForInitStmt : ExprStmt {}
+            | VarDecl {}
+            ;
+
+ForRestStmt : Conditionopt T_Semicolon {}
+            | Conditionopt T_Semicolon Expr {}
+            ;
+
+Conditionopt : Condition {}
+             /* ";" means empty */
+             | ";" {}
+             ;
+
+/************** END IterStmt *********************/
+
+/**** CHOSEN TO OMIT THESE RULES ***************
+ * function_identifier b/c only called by function_call_header
+ * integer_expression b/c don't have to implement any caller
+ * constant_expr b/c don't have to implement any caller
+ *
+ * We can simplify compoundstmt to one thing and stmt's with scope
+ *     can be simplified to one thing too, but i didn't know if
+ *     actions would be different
+
+
+/**** Stuff I Took Out - Lea ***** /
+// VarDecl = "declaration"
+/* taking out old VarDecl becuause TypeQualifier because he got rid of those tokens *
+VarDecl   :     TypeQualifier T_Identifier T_Semicolon  { $$ = new VarDecl(new Identifier(yylloc, $2), $1);}
+                // SingleDecl simplifies from init_declarator_list -> single_declaration
+          |     SingleDecl T_Semicolon          {  }
+          ;*/
+          
+/* Spec update: don't have to do left or right brackets
+don't have to do array specifier *
+TypeSpecifier     : TypeSpecifierNonarray                       { }
+                  | TypeSpecifierNonarray ArraySpecifier    {}
+                  ;
+
+TypeSpecifierNonarray : T_Void {printf("T_Void");}
+                      | T_Float {printf("T_Float");}
+                      | T_Int {printf("T_Int");}
+                      | T_Vec2 {printf("T_Vec2");}
+                      | T_Vec3 {printf("T_Vec3");}
+                      | T_Vec4 {printf("T_Vec4");}
+                      | T_Mat2 {printf("T_Mat2");
+                      | T_Mat3 {printf("T_Mat3");}
+                      | T_Mat4 {printf("T_Mat4");}
+                      ; */
+                      
+
+/* He took type qualifiers out of the specs 
 
 TypeQualifier   :  SingleTypeQualifier                { }
                 |  TypeQualifier SingleTypeQualifier  { }
@@ -169,26 +449,8 @@ LayoutQualifierId : T_Identifier T_Equal T_IntConstant {
                            // new IdentifierConstant(yylloc, new Identifier(yylloc, $1)), 
                             //op, new IntConstant(yylloc, $3));
                                                    }
-                  ;
-
-FnDecl    :     FnPrototype CompoundStatementNoNewScope                            {}
-          ;
-          
-          
-FnPrototype :   FnDeclarator T_RightParen {}
-            ;
-            
-FnDeclarator :  FnHeader                        {}
-             |  FnHeaderWithParameters          {}
-             ;
-             
-FnHeaderWithParameters : FnHeader ParameterDecl {}
-                       | FnHeaderWithParameters T_Comma ParameterDecl {}
-                       ;
-                      
-FnHeader    : FullySpecifiedType T_Identifier T_LeftParen {}
-            ;
-
+                  ;*/
+                    
             
 %%
 
