@@ -247,11 +247,13 @@ typedef union YYSTYPE
     AssignExpr *assignExpr;
     FnDecl *fndecl;
     StmtBlock *stmtblock;
+    Operator *op;
+    Expr *expr;
 
 
 
 /* Line 214 of yacc.c  */
-#line 255 "y.tab.c"
+#line 257 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -276,7 +278,7 @@ typedef struct YYLTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 280 "y.tab.c"
+#line 282 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -604,17 +606,17 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   119,   119,   133,   134,   138,   140,   144,   147,   148,
-     151,   152,   155,   156,   159,   160,   165,   166,   167,   168,
-     169,   170,   179,   181,   187,   188,   189,   190,   191,   192,
-     193,   194,   195,   198,   201,   202,   207,   208,   211,   216,
-     218,   229,   230,   233,   237,   238,   241,   242,   243,   244,
-     245,   249,   253,   254,   258,   259,   262,   263,   264,   268,
-     269,   270,   271,   272,   274,   275,   276,   279,   280,   281,
-     285,   286,   287,   288,   291,   292,   295,   296,   297,   298,
-     301,   302,   303,   304,   305,   316,   319,   320,   323,   324,
-     335,   340,   342,   353,   354,   364,   366,   370,   371,   374,
-     375,   379,   384,   385,   388,   389,   392,   394
+       0,   123,   123,   137,   138,   142,   144,   148,   151,   152,
+     155,   156,   159,   160,   163,   164,   169,   170,   171,   172,
+     173,   174,   183,   185,   191,   192,   193,   194,   195,   196,
+     197,   198,   199,   202,   205,   206,   211,   212,   215,   220,
+     222,   233,   234,   237,   241,   242,   245,   246,   247,   248,
+     249,   253,   257,   258,   262,   263,   266,   267,   268,   272,
+     273,   274,   275,   276,   278,   279,   280,   283,   284,   285,
+     289,   290,   291,   292,   295,   296,   299,   300,   301,   302,
+     305,   306,   307,   308,   309,   320,   323,   324,   327,   328,
+     339,   344,   346,   357,   358,   368,   370,   374,   375,   378,
+     379,   383,   388,   389,   392,   393,   396,   398
 };
 #endif
 
@@ -1757,7 +1759,7 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 119 "parser.y"
+#line 123 "parser.y"
     { 
                                                     (yylsp[(1) - (1)]); 
                                                     /* pp2: The @1 is needed to convince 
@@ -1773,728 +1775,728 @@ yyreduce:
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 133 "parser.y"
+#line 137 "parser.y"
     { ((yyval.declList)=(yyvsp[(1) - (2)].declList))->Append((yyvsp[(2) - (2)].decl)); }
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 134 "parser.y"
+#line 138 "parser.y"
     { ((yyval.declList) = new List<Decl*>)->Append((yyvsp[(1) - (1)].decl)); }
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 138 "parser.y"
+#line 142 "parser.y"
     { }
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 140 "parser.y"
+#line 144 "parser.y"
     { }
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 144 "parser.y"
+#line 148 "parser.y"
     { }
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 147 "parser.y"
+#line 151 "parser.y"
     { (yyval.stmtblock) = new StmtBlock(new List<VarDecl*>, new List<Stmt*>);}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 148 "parser.y"
+#line 152 "parser.y"
     { (yyval.stmtblock) = new StmtBlock(new List<VarDecl*>, (yyvsp[(2) - (3)].stmtList)); }
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 151 "parser.y"
+#line 155 "parser.y"
     { (yyval.stmtblock) = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 152 "parser.y"
+#line 156 "parser.y"
     { (yyval.stmtblock) = new StmtBlock(new List<VarDecl*>, (yyvsp[(2) - (3)].stmtList)); }
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 155 "parser.y"
+#line 159 "parser.y"
     { ((yyval.stmtList) = new List<Stmt*>)->Append((yyvsp[(1) - (1)].stmt)); }
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 156 "parser.y"
+#line 160 "parser.y"
     { ((yyval.stmtList)=(yyvsp[(1) - (2)].stmtList))->Append((yyvsp[(2) - (2)].stmt));}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 159 "parser.y"
+#line 163 "parser.y"
     {}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 160 "parser.y"
+#line 164 "parser.y"
     {}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 165 "parser.y"
+#line 169 "parser.y"
     {}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 166 "parser.y"
+#line 170 "parser.y"
     {}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 167 "parser.y"
+#line 171 "parser.y"
     {}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 168 "parser.y"
+#line 172 "parser.y"
     {}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 169 "parser.y"
+#line 173 "parser.y"
     {}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 170 "parser.y"
+#line 174 "parser.y"
     {}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 179 "parser.y"
+#line 183 "parser.y"
     { }
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 181 "parser.y"
+#line 185 "parser.y"
     {(yyval.decl) = new VarDecl(new Identifier(yylloc, (yyvsp[(2) - (3)].identifier)), (yyvsp[(1) - (3)].type)); }
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 187 "parser.y"
+#line 191 "parser.y"
     { (yyval.type) = Type::voidType;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 188 "parser.y"
+#line 192 "parser.y"
     { (yyval.type) = Type::floatType;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 189 "parser.y"
+#line 193 "parser.y"
     { (yyval.type) = Type::intType; }
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 190 "parser.y"
+#line 194 "parser.y"
     { (yyval.type) = Type::vec2Type;}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 191 "parser.y"
+#line 195 "parser.y"
     { (yyval.type) = Type::vec3Type;}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 192 "parser.y"
+#line 196 "parser.y"
     { (yyval.type) = Type::vec4Type;}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 193 "parser.y"
+#line 197 "parser.y"
     { (yyval.type) = Type::mat2Type;}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 194 "parser.y"
+#line 198 "parser.y"
     { (yyval.type) = Type::mat3Type;}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 195 "parser.y"
+#line 199 "parser.y"
     { (yyval.type) = Type::mat4Type;}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 198 "parser.y"
+#line 202 "parser.y"
     {}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 201 "parser.y"
+#line 205 "parser.y"
     {}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 202 "parser.y"
+#line 206 "parser.y"
     {}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 207 "parser.y"
+#line 211 "parser.y"
     {}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 208 "parser.y"
+#line 212 "parser.y"
     {}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 211 "parser.y"
+#line 215 "parser.y"
     {(yyval.fndecl) = new FnDecl(new Identifier(yylloc, (yyvsp[(2) - (3)].identifier)), (yyvsp[(1) - (3)].type), new List<VarDecl*>);}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 216 "parser.y"
+#line 220 "parser.y"
     {}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 218 "parser.y"
+#line 222 "parser.y"
     {}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 229 "parser.y"
+#line 233 "parser.y"
     {}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 230 "parser.y"
+#line 234 "parser.y"
     {}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 233 "parser.y"
+#line 237 "parser.y"
     {}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 237 "parser.y"
+#line 241 "parser.y"
     {}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 238 "parser.y"
-    {}
+#line 242 "parser.y"
+    {  }
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 241 "parser.y"
-    {}
+#line 245 "parser.y"
+    {const char *tok = "="; (yyval.op) = new Operator(yylloc, tok); }
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 242 "parser.y"
+#line 246 "parser.y"
     {}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 243 "parser.y"
+#line 247 "parser.y"
     {}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 244 "parser.y"
+#line 248 "parser.y"
     {}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 245 "parser.y"
+#line 249 "parser.y"
     {}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 249 "parser.y"
+#line 253 "parser.y"
     {}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 253 "parser.y"
+#line 257 "parser.y"
     {}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 258 "parser.y"
+#line 262 "parser.y"
     {}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 259 "parser.y"
+#line 263 "parser.y"
     {}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 262 "parser.y"
+#line 266 "parser.y"
     {}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 263 "parser.y"
+#line 267 "parser.y"
     {}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 264 "parser.y"
+#line 268 "parser.y"
     {}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 268 "parser.y"
+#line 272 "parser.y"
     {}
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 269 "parser.y"
+#line 273 "parser.y"
     {}
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 270 "parser.y"
+#line 274 "parser.y"
     {}
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 271 "parser.y"
+#line 275 "parser.y"
     {}
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 272 "parser.y"
+#line 276 "parser.y"
     {}
     break;
 
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 274 "parser.y"
+#line 278 "parser.y"
     {}
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 275 "parser.y"
+#line 279 "parser.y"
     {}
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 276 "parser.y"
+#line 280 "parser.y"
     {}
     break;
 
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 279 "parser.y"
+#line 283 "parser.y"
     {}
     break;
 
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 280 "parser.y"
+#line 284 "parser.y"
     {}
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 281 "parser.y"
+#line 285 "parser.y"
     {}
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 285 "parser.y"
+#line 289 "parser.y"
     {}
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 286 "parser.y"
+#line 290 "parser.y"
     {}
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 287 "parser.y"
+#line 291 "parser.y"
     {}
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 288 "parser.y"
+#line 292 "parser.y"
     {}
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 291 "parser.y"
+#line 295 "parser.y"
     {printf("T_Plus");}
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 292 "parser.y"
+#line 296 "parser.y"
     {printf("T_Dash");}
     break;
 
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 295 "parser.y"
+#line 299 "parser.y"
     {}
     break;
 
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 296 "parser.y"
+#line 300 "parser.y"
     {}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 297 "parser.y"
+#line 301 "parser.y"
     {}
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 298 "parser.y"
+#line 302 "parser.y"
     {}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 301 "parser.y"
-    {}
+#line 305 "parser.y"
+    { (yyval.expr) = new IdentifierConstant(yylloc, (yyvsp[(1) - (1)].identifier)); }
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 302 "parser.y"
-    {}
+#line 306 "parser.y"
+    { (yyval.expr) = new IntConstant(yylloc, (yyvsp[(1) - (1)].integerConstant));}
     break;
 
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 303 "parser.y"
-    {}
+#line 307 "parser.y"
+    { (yyval.expr) = new FloatConstant(yylloc, (yyvsp[(1) - (1)].floatConstant)); }
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 304 "parser.y"
-    {}
+#line 308 "parser.y"
+    { (yyval.expr) = new BoolConstant(yylloc, (yyvsp[(1) - (1)].boolConstant)); }
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 305 "parser.y"
-    {}
+#line 309 "parser.y"
+    {  }
     break;
 
   case 85:
-
-/* Line 1455 of yacc.c  */
-#line 316 "parser.y"
-    {}
-    break;
-
-  case 86:
-
-/* Line 1455 of yacc.c  */
-#line 319 "parser.y"
-    {}
-    break;
-
-  case 87:
 
 /* Line 1455 of yacc.c  */
 #line 320 "parser.y"
     {}
     break;
 
-  case 88:
+  case 86:
 
 /* Line 1455 of yacc.c  */
 #line 323 "parser.y"
     {}
     break;
 
-  case 89:
+  case 87:
 
 /* Line 1455 of yacc.c  */
 #line 324 "parser.y"
     {}
     break;
 
-  case 90:
+  case 88:
 
 /* Line 1455 of yacc.c  */
-#line 336 "parser.y"
+#line 327 "parser.y"
     {}
     break;
 
-  case 91:
+  case 89:
+
+/* Line 1455 of yacc.c  */
+#line 328 "parser.y"
+    {}
+    break;
+
+  case 90:
 
 /* Line 1455 of yacc.c  */
 #line 340 "parser.y"
     {}
     break;
 
+  case 91:
+
+/* Line 1455 of yacc.c  */
+#line 344 "parser.y"
+    {}
+    break;
+
   case 92:
 
 /* Line 1455 of yacc.c  */
-#line 342 "parser.y"
+#line 346 "parser.y"
     {printf("EMPTY");}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 353 "parser.y"
+#line 357 "parser.y"
     {}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 354 "parser.y"
+#line 358 "parser.y"
     {}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 365 "parser.y"
+#line 369 "parser.y"
     {}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 367 "parser.y"
+#line 371 "parser.y"
     {}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 370 "parser.y"
+#line 374 "parser.y"
     {}
     break;
 
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 371 "parser.y"
+#line 375 "parser.y"
     {}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 374 "parser.y"
+#line 378 "parser.y"
     {}
     break;
 
   case 101:
 
 /* Line 1455 of yacc.c  */
-#line 379 "parser.y"
+#line 383 "parser.y"
     {}
     break;
 
   case 102:
 
 /* Line 1455 of yacc.c  */
-#line 384 "parser.y"
+#line 388 "parser.y"
     {}
     break;
 
   case 103:
 
 /* Line 1455 of yacc.c  */
-#line 385 "parser.y"
+#line 389 "parser.y"
     {}
     break;
 
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 388 "parser.y"
+#line 392 "parser.y"
     {}
     break;
 
   case 105:
 
 /* Line 1455 of yacc.c  */
-#line 389 "parser.y"
+#line 393 "parser.y"
     {}
     break;
 
   case 106:
 
 /* Line 1455 of yacc.c  */
-#line 392 "parser.y"
+#line 396 "parser.y"
     {}
     break;
 
   case 107:
 
 /* Line 1455 of yacc.c  */
-#line 394 "parser.y"
+#line 398 "parser.y"
     {}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2498 "y.tab.c"
+#line 2500 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2713,7 +2715,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 462 "parser.y"
+#line 466 "parser.y"
 
 
 

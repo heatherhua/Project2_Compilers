@@ -51,6 +51,8 @@ void yyerror(const char *msg); // standard error-handling routine
     AssignExpr *assignExpr;
     FnDecl *fndecl;
     StmtBlock *stmtblock;
+    Operator *op;
+    Expr *expr;
 }
 
 
@@ -105,6 +107,8 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
 %type <stmtList>  StmtList
 %type <stmt>      Stmt
+%type <op>        AssignOp
+%type <expr>      PrimExpr
 
 %nonassoc NO_ELSE
 %nonassoc T_Else                 
@@ -235,10 +239,10 @@ Expr : AssignExpr {}
 
 // Simplifying: ConditionalExpr
 AssignExpr : ConditionalExpr {}
-           | UnaryExpr AssignOp AssignExpr {}
+           | UnaryExpr AssignOp AssignExpr {  }
            ;
 
-AssignOp : T_Equal {}
+AssignOp : T_Equal {const char *tok = "="; $$ = new Operator(yylloc, tok); }
          | T_MulAssign {}
          | T_DivAssign {}
          | T_AddAssign {}
@@ -298,11 +302,11 @@ PostfixExpr : PrimExpr {}
             | PostfixExpr T_Dec {}
             ;
 // Simplifying: VarIdentifier -> T_Identifier
-PrimExpr : T_Identifier {}
-         | T_IntConstant {}
-         | T_FloatConstant {}
-         | T_BoolConstant {}
-         | T_LeftParen Expr T_RightParen {}
+PrimExpr : T_Identifier  { $$ = new IdentifierConstant(yylloc, $1); }
+         | T_IntConstant { $$ = new IntConstant(yylloc, $1);}
+         | T_FloatConstant { $$ = new FloatConstant(yylloc, $1); }
+         | T_BoolConstant { $$ = new BoolConstant(yylloc, $1); }
+         | T_LeftParen Expr T_RightParen {  }
          ;
 /********* END UnaryExpr *************/
 /********* END ConditionalExpr ***********/
