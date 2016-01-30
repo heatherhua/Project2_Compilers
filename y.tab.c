@@ -2308,7 +2308,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 305 "parser.y"
-    { (yyval.expr) = new IdentifierConstant(yylloc, (yyvsp[(1) - (1)].identifier)); }
+    { (yyval.expr) = new FieldAccess(new EmptyExpr(), new Identifier(yylloc,(yyvsp[(1) - (1)].identifier)));}
     break;
 
   case 81:

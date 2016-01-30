@@ -239,7 +239,9 @@ Expr : AssignExpr {}
 
 // Simplifying: ConditionalExpr
 AssignExpr : ConditionalExpr {}
-           | UnaryExpr AssignOp AssignExpr {  }
+           | UnaryExpr AssignOp AssignExpr { }
+               //Operator op = new Operator(yylloc, $2);
+               //$$ = new AssignExpr() }
            ;
 
 AssignOp : T_Equal {const char *tok = "="; $$ = new Operator(yylloc, tok); }
@@ -302,7 +304,7 @@ PostfixExpr : PrimExpr {}
             | PostfixExpr T_Dec {}
             ;
 // Simplifying: VarIdentifier -> T_Identifier
-PrimExpr : T_Identifier  { $$ = new IdentifierConstant(yylloc, $1); }
+PrimExpr : T_Identifier  { $$ = new FieldAccess(new EmptyExpr(), new Identifier(yylloc,$1));}//$$ = new IdentifierConstant(yylloc, $1); }
          | T_IntConstant { $$ = new IntConstant(yylloc, $1);}
          | T_FloatConstant { $$ = new FloatConstant(yylloc, $1); }
          | T_BoolConstant { $$ = new BoolConstant(yylloc, $1); }
