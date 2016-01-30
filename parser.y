@@ -50,6 +50,7 @@ void yyerror(const char *msg); // standard error-handling routine
     Type *type;
     AssignExpr *assignExpr;
     FnDecl *fndecl;
+    StmtBlock *stmtblock;
 }
 
 
@@ -101,6 +102,7 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <decl>      Decl VarDecl
 %type <type>      TypeSpecifier
 %type <fndecl>    FnHeader
+%type <stmtblock> CompoundStmtNoNewScope
 
 %nonassoc NO_ELSE
 %nonassoc T_Else                 
@@ -137,10 +139,10 @@ Decl      :     FnDef                            { }
           ;
 
 /************* BEGIN FOLLOWING FNDEF **********************/
-FnDef    : FnPrototype CompoundStmtNoNewScope {}
+FnDef    : FnPrototype CompoundStmtNoNewScope { }
          ;
 
-CompoundStmtNoNewScope : T_LeftBrace T_RightBrace { }
+CompoundStmtNoNewScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>);}
                        | T_LeftBrace StmtList T_RightBrace {}
                        ;
 

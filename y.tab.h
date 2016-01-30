@@ -172,11 +172,12 @@ typedef union YYSTYPE
     Type *type;
     AssignExpr *assignExpr;
     FnDecl *fndecl;
+    StmtBlock *stmtblock;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 180 "y.tab.h"
+#line 181 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
