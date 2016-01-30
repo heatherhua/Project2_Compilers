@@ -107,9 +107,9 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
 %type <stmtList>  StmtList
 %type <stmt>      Stmt
-%type <op>        AssignOp
-%type <expr>      PrimExpr
-
+%type <op>        AssignOp UnaryOp
+%type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr
+                    PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr
 %nonassoc NO_ELSE
 %nonassoc T_Else                 
 %%
@@ -239,16 +239,15 @@ Expr : AssignExpr {}
 
 // Simplifying: ConditionalExpr
 AssignExpr : ConditionalExpr {}
-           | UnaryExpr AssignOp AssignExpr { }
-               //Operator op = new Operator(yylloc, $2);
-               //$$ = new AssignExpr() }
+           | UnaryExpr AssignOp AssignExpr {
+                $$ = new AssignExpr($1, $2, $3); }
            ;
 
-AssignOp : T_Equal {const char *tok = "="; $$ = new Operator(yylloc, tok); }
-         | T_MulAssign {}
-         | T_DivAssign {}
-         | T_AddAssign {}
-         | T_SubAssign {}
+AssignOp : T_Equal     { const char *tok = "="; $$ = new Operator(yylloc, tok); }
+         | T_MulAssign { const char *tok = "*"; $$ = new Operator(yylloc, tok);}
+         | T_DivAssign { const char *tok = "/"; $$ = new Operator(yylloc, tok);}
+         | T_AddAssign { const char *tok = "+"; $$ = new Operator(yylloc, tok);}
+         | T_SubAssign { const char *tok = "-"; $$ = new Operator(yylloc, tok);}
          ;
 
 /******* BEGIN ConditionalExpr ********/
@@ -257,58 +256,105 @@ ConditionalExpr : LogicalOrExpr {}
 
 // Simplifying LogicalXorExpr -> LogicalAndExpr
 LogicalOrExpr : LogicalAndExpr {}
-              | LogicalOrExpr T_OrOp LogicalAndExpr
+              | LogicalOrExpr T_OrOp LogicalAndExpr {
+                                const char *tok = "||";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new LogicalExpr($1, op, $3);}
               ;
 
 // Simplify: InclusiveOrExpr -> ExclusiveOrExpr -> AndExpr -> EqualExpr
 LogicalAndExpr : EqualExpr {}
-               | LogicalAndExpr T_AndOp EqualExpr {}
+               | LogicalAndExpr T_AndOp EqualExpr {
+                                const char *tok = "&&";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new LogicalExpr($1, op, $3); }
                ;
 
 EqualExpr : RelationalExpr {}
-          | EqualExpr T_EqualOp RelationalExpr {}
-          | EqualExpr T_NotEqual RelationalExpr {}
+          | EqualExpr T_EqualOp RelationalExpr { 
+                                const char *tok = "==";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new LogicalExpr($1, op, $3);}
+          | EqualExpr T_NotEqual RelationalExpr {
+                                const char *tok = "!=";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new LogicalExpr($1, op, $3);}
           ;
 
 // Simplifying ShiftExpr -> AddExpr
 RelationalExpr : AddExpr {}
-               | RelationalExpr T_LeftAngle AddExpr {}
-               | RelationalExpr T_RightAngle AddExpr {}
-               | RelationalExpr T_LessEqual AddExpr {}
-               | RelationalExpr T_GreaterEqual AddExpr {}
+               | RelationalExpr T_LeftAngle AddExpr { 
+                                const char *tok = "<";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new RelationalExpr($1, op, $3);
+                            }
+               | RelationalExpr T_RightAngle AddExpr {
+                                const char *tok = ">";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new RelationalExpr($1, op, $3);}
+               
+               | RelationalExpr T_LessEqual AddExpr {
+                                const char *tok = "<=";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new RelationalExpr($1, op, $3);}
+               
+               | RelationalExpr T_GreaterEqual AddExpr {
+                                const char *tok = ">=";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new RelationalExpr($1, op, $3);}
 
 AddExpr : MultExpr {}
-        | AddExpr T_Plus MultExpr {}
-        | AddExpr T_Dash MultExpr {}
+        | AddExpr T_Plus MultExpr {  const char *tok = "+";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new ArithmeticExpr($1, op, $3);}
+        | AddExpr T_Dash MultExpr { const char *tok = "-";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new ArithmeticExpr($1, op, $3);}
         ;
 
 MultExpr : UnaryExpr {}
-        | MultExpr T_Star UnaryExpr {}
-        | MultExpr T_Slash UnaryExpr {}
+        | MultExpr T_Star UnaryExpr { const char *tok = "*";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new ArithmeticExpr($1, op, $3);}
+        | MultExpr T_Slash UnaryExpr { const char *tok = "/";
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new ArithmeticExpr($1, op, $3);}
         ;
 
 /********* BEGIN UnaryExpr *********/
 UnaryExpr : PostfixExpr {}
-          | T_Inc UnaryExpr {}
-          | T_Dec UnaryExpr {}
-          | UnaryOp UnaryExpr {}
+          | T_Inc UnaryExpr {   const char *tok = "++"; 
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new LogicalExpr(op, $2);
+                            }
+          | T_Dec UnaryExpr {   const char *tok = "--"; 
+                                Operator *op = new Operator(yylloc, tok);
+                                $$ = new LogicalExpr(op, $2);
+                            }
+          | UnaryOp UnaryExpr { $$ = new LogicalExpr($1, $2);}
           ;
 
-UnaryOp : T_Plus {printf("T_Plus");}
-        | T_Dash {printf("T_Dash");}
+UnaryOp : T_Plus { const char *tok = "+"; $$ = new Operator(yylloc, tok);}
+        | T_Dash { const char *tok = "-"; $$ = new Operator(yylloc, tok);}
         ;
 
 PostfixExpr : PrimExpr {}
-            | PostfixExpr T_Dot T_FieldSelection {}
-            | PostfixExpr T_Inc {}
-            | PostfixExpr T_Dec {}
+            | PostfixExpr T_Dot T_FieldSelection { 
+                                    const char *text = &yytext[2];
+                                    $$ = new FieldAccess($1, new Identifier(yylloc, text));}
+            | PostfixExpr T_Inc {   const char *tok = "++";
+                                    Operator *op = new Operator(yylloc, tok);
+                                    $$ = new PostfixExpr($1, op);}
+            | PostfixExpr T_Dec {   const char *tok = "--";
+                                    Operator *op = new Operator(yylloc, tok);
+                                    $$ = new PostfixExpr($1, op);}
             ;
 // Simplifying: VarIdentifier -> T_Identifier
 PrimExpr : T_Identifier  { $$ = new FieldAccess(new EmptyExpr(), new Identifier(yylloc,$1));}//$$ = new IdentifierConstant(yylloc, $1); }
          | T_IntConstant { $$ = new IntConstant(yylloc, $1);}
          | T_FloatConstant { $$ = new FloatConstant(yylloc, $1); }
          | T_BoolConstant { $$ = new BoolConstant(yylloc, $1); }
-         | T_LeftParen Expr T_RightParen {  }
+         | T_LeftParen Expr T_RightParen { $$ = $2; }
          ;
 /********* END UnaryExpr *************/
 /********* END ConditionalExpr ***********/
@@ -319,7 +365,7 @@ PrimExpr : T_Identifier  { $$ = new FieldAccess(new EmptyExpr(), new Identifier(
 /**********************/
 /*********************/
 /************** BEGIN SelectionStmt *********************/
-SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt {}
+SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt {  }
               ;
 
 SelectionRestStmt : StmtWithScope T_Else StmtWithScope {}
