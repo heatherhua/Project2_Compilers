@@ -59,6 +59,7 @@ class FnDecl : public Decl
     FnDecl() : Decl(), formals(NULL), returnType(NULL), body(NULL) {}
     FnDecl(Identifier *name, Type *returnType, List<VarDecl*> *formals);
     void SetFunctionBody(Stmt *b);
+    void AddFormal(VarDecl* formal);
     const char *GetPrintNameForNode() { return "FnDecl"; }
     void PrintChildren(int indentLevel);
 };

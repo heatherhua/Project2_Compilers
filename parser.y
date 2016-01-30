@@ -45,6 +45,7 @@ void yyerror(const char *msg); // standard error-handling routine
     char identifier[MaxIdentLen+1]; // +1 for terminating null
     Decl *decl;
     List<Decl*> *declList;
+    VarDecl *vardecl;
     Stmt *stmt;
     List<Stmt*> *stmtList;
     Type *type;
@@ -100,16 +101,17 @@ void yyerror(const char *msg); // standard error-handling routine
  * of the union named "declList" which is of type List<Decl*>.
  * pp2: You'll need to add many of these of your own.
  */
-%type <declList>  DeclList
-%type <decl>      Decl VarDecl
+%type <declList>  DeclList 
+%type <decl>      Decl 
+%type <vardecl>   VarDecl ParameterDecl
 %type <type>      TypeSpecifier
-%type <fndecl>    FnHeader
+%type <fndecl>    FnHeader FnHeaderWithParameters
 %type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
 %type <stmtList>  StmtList
 %type <stmt>      Stmt
 %type <op>        AssignOp UnaryOp
 %type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr
-                    PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr
+                  PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr
 %nonassoc NO_ELSE
 %nonassoc T_Else                 
 %%
@@ -208,16 +210,17 @@ FnDeclarator :  FnHeader                        {}
 
 
 // TODO: Comma isn't highlighted, do we still need to deal with second path           
-FnHeaderWithParameters : FnHeader ParameterDecl {}
-                       | FnHeaderWithParameters T_Comma ParameterDecl {}
+FnHeaderWithParameters : FnHeader ParameterDecl { $1->AddFormal($2);}
+                       | FnHeaderWithParameters T_Comma ParameterDecl { $1->AddFormal($3); }
                        ;
                       
 FnHeader    : TypeSpecifier T_Identifier T_LeftParen {$$ = new FnDecl(new Identifier(yylloc, $2), $1, new List<VarDecl*>);}
             ;
 
+            
 // ParameterDecl = "paramater_declaration"
 // Simplifying parameterdeclarator -> typespecifier t_identifier
-ParameterDecl : TypeSpecifier T_Identifier {}
+ParameterDecl : TypeSpecifier T_Identifier { $$ = new VarDecl( new Identifier(yylloc, $2), $1); }
                // Simplifying: ParameterTypeSpecifier -> TypeSpecifier
                | TypeSpecifier {}
                ;

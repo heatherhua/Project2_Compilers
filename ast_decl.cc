@@ -35,6 +35,12 @@ void FnDecl::SetFunctionBody(Stmt *b) {
     (body=b)->SetParent(this);
 }
 
+/* Added this one */
+void FnDecl::AddFormal(VarDecl *f) { 
+    formals->Append(f);
+    formals->SetParentAll(this);
+}
+
 void FnDecl::PrintChildren(int indentLevel) {
     if (returnType) returnType->Print(indentLevel+1, "(return type) ");
     if (id) id->Print(indentLevel+1);
