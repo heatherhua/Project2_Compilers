@@ -106,7 +106,7 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <vardecl>   VarDecl ParameterDecl
 %type <type>      TypeSpecifier
 %type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype 
-%type <stmtblock> CompoundStmtNoNewScope
+%type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
 %type <stmtList>  StmtList SelectionRestStmt
 %type <stmt>      Stmt SelectionStmt StmtWithScope
 %type <op>        AssignOp UnaryOp
@@ -154,27 +154,26 @@ CompoundStmtNoNewScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<
                        | T_LeftBrace StmtList T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, $2); }
                        ;
 
-//CompoundStmtWithScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
-//                      | T_LeftBrace StmtList T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, $2); }
-//                      ;
+CompoundStmtWithScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
+                      | T_LeftBrace StmtList T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, $2); }
+                      ;
 
 StmtList : Stmt { ($$ = new List<Stmt*>)->Append($1); }
-//         | StmtList Stmt { ($$=$1)->Append($2);}
+         | StmtList Stmt { ($$=$1)->Append($2);}
          ;
 
-Stmt : SimpleStmt {}
-//CompoundStmtWithScope {}
-     //| SimpleStmt {}
+Stmt : CompoundStmtWithScope {}
+     | SimpleStmt {}
      ;
 
 // Simplifying: DeclarationStmt -> declaration
 // VarDecl = declaration
 SimpleStmt  : VarDecl {}
-//            | ExprStmt {}
-//            | SelectionStmt {}
-//            | SwitchStmt {}
-//            | CaseLabel {}
-//            | IterStmt {}
+            | ExprStmt {}
+            | SelectionStmt {}
+            | SwitchStmt {}
+            | CaseLabel {}
+            | IterStmt {}
             ;
             
             /******* 1 ************/
@@ -370,17 +369,16 @@ PrimExpr : T_Identifier  { $$ = new FieldAccess(new EmptyExpr(), new Identifier(
 /**********************/
 /*********************/
 /************** BEGIN SelectionStmt *********************/              
-SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt { }
-                                         //$$ = new IfStmt();}
-                //$$ = new IfStmt($3, $5->Nth(0), NULL);}// $5->Nth(1)); }
+SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt { 
+                $$ = new IfStmt($3, $5->Nth(0), $5->Nth(1)); }
               ;
 
-SelectionRestStmt : StmtWithScope T_Else StmtWithScope { }
-                                //($$ = new List<Stmt*>)->Append($1); }
-//                                $$->Append($3);}
-//                  | StmtWithScope %prec NO_ELSE { 
-//                                ($$ = new List<Stmt*>)->Append($1); 
-//                                $$->Append(NULL); }
+SelectionRestStmt : StmtWithScope T_Else StmtWithScope { 
+                                ($$ = new List<Stmt*>)->Append($1);
+                                $$->Append($3);}
+                  | StmtWithScope %prec NO_ELSE { 
+                                ($$ = new List<Stmt*>)->Append($1); 
+                                $$->Append(NULL); }
                   ;
 
 StmtWithScope : CompoundStmtNoNewScope {}

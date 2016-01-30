@@ -1,4 +1,8 @@
-int i;
 void main(int x, bool y){
  int j;
+ float x = 2;
+
+ if(true){
+  int i;
+ }
 }
