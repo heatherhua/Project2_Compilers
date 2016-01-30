@@ -88,10 +88,11 @@
      T_EqualOp = 304,
      T_LeftAngle = 305,
      T_RightAngle = 306,
-     T_Identifier = 307,
-     T_IntConstant = 308,
-     T_FloatConstant = 309,
-     T_BoolConstant = 310
+     NO_ELSE = 307,
+     T_Identifier = 308,
+     T_IntConstant = 309,
+     T_FloatConstant = 310,
+     T_BoolConstant = 311
    };
 #endif
 /* Tokens.  */
@@ -144,10 +145,11 @@
 #define T_EqualOp 304
 #define T_LeftAngle 305
 #define T_RightAngle 306
-#define T_Identifier 307
-#define T_IntConstant 308
-#define T_FloatConstant 309
-#define T_BoolConstant 310
+#define NO_ELSE 307
+#define T_Identifier 308
+#define T_IntConstant 309
+#define T_FloatConstant 310
+#define T_BoolConstant 311
 
 
 
@@ -174,7 +176,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 178 "y.tab.h"
+#line 180 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -7,9 +7,6 @@ Terminals unused in grammar
    T_Continue
 
 
-State 155 conflicts: 1 shift/reduce
-
-
 Grammar
 
     0 $accept: Program $end
@@ -218,104 +215,105 @@ T_Slash (303) 68
 T_EqualOp (304) 56
 T_LeftAngle (305) 59
 T_RightAngle (306) 60
-T_Identifier (307) 22 37 38 79 99
-T_IntConstant (308) 80
-T_FloatConstant (309) 81
-T_BoolConstant (310) 82
-";" (311) 91 106
+NO_ELSE (307)
+T_Identifier (308) 22 37 38 79 99
+T_IntConstant (309) 80
+T_FloatConstant (310) 81
+T_BoolConstant (311) 82
+";" (312) 91 106
 
 
 Nonterminals, with rules where they appear
 
-$accept (57)
+$accept (58)
     on left: 0
-Program (58)
+Program (59)
     on left: 1, on right: 0
-DeclList (59)
+DeclList (60)
     on left: 2 3, on right: 1 2
-Decl (60)
+Decl (61)
     on left: 4 5, on right: 2 3
-FnDef (61)
+FnDef (62)
     on left: 6, on right: 4
-CompoundStmtNoNewScope (62)
+CompoundStmtNoNewScope (63)
     on left: 7 8, on right: 6 87 96
-CompoundStmtWithScope (63)
+CompoundStmtWithScope (64)
     on left: 9 10, on right: 13
-StmtList (64)
+StmtList (65)
     on left: 11 12, on right: 8 10 12 90
-Stmt (65)
+Stmt (66)
     on left: 13 14, on right: 11 12
-SimpleStmt (66)
+SimpleStmt (67)
     on left: 15 16 17 18 19 20, on right: 14 88 97
-VarDecl (67)
+VarDecl (68)
     on left: 21 22, on right: 5 15 102
-TypeSpecifier (68)
+TypeSpecifier (69)
     on left: 23 24 25 26 27 28 29 30 31, on right: 22 37 38 39 99
-FnPrototype (69)
+FnPrototype (70)
     on left: 32, on right: 6 21
-FnDeclarator (70)
+FnDeclarator (71)
     on left: 33 34, on right: 32
-FnHeaderWithParameters (71)
+FnHeaderWithParameters (72)
     on left: 35 36, on right: 34 36
-FnHeader (72)
+FnHeader (73)
     on left: 37, on right: 33 35
-ParameterDecl (73)
+ParameterDecl (74)
     on left: 38 39, on right: 35 36
-ExprStmt (74)
+ExprStmt (75)
     on left: 40 41, on right: 16 101
-Expr (75)
+Expr (76)
     on left: 42, on right: 41 83 84 89 92 98 104
-AssignExpr (76)
+AssignExpr (77)
     on left: 43 44, on right: 42 44 100
-AssignOp (77)
+AssignOp (78)
     on left: 45 46 47 48 49, on right: 44
-ConditionalExpr (78)
+ConditionalExpr (79)
     on left: 50, on right: 43
-LogicalOrExpr (79)
+LogicalOrExpr (80)
     on left: 51 52, on right: 50 52
-LogicalAndExpr (80)
+LogicalAndExpr (81)
     on left: 53 54, on right: 51 52 54
-EqualExpr (81)
+EqualExpr (82)
     on left: 55 56 57, on right: 53 54 56 57
-RelationalExpr (82)
+RelationalExpr (83)
     on left: 58 59 60 61 62, on right: 55 56 57 59 60 61 62
-AddExpr (83)
+AddExpr (84)
     on left: 63 64 65, on right: 58 59 60 61 62 64 65
-MultExpr (84)
+MultExpr (85)
     on left: 66 67 68, on right: 63 64 65 67 68
-UnaryExpr (85)
+UnaryExpr (86)
     on left: 69 70 71 72, on right: 44 66 67 68 70 71 72
-UnaryOp (86)
+UnaryOp (87)
     on left: 73 74, on right: 72
-PostfixExpr (87)
+PostfixExpr (88)
     on left: 75 76 77 78, on right: 69 76 77 78
-PrimExpr (88)
+PrimExpr (89)
     on left: 79 80 81 82 83, on right: 75
-SelectionStmt (89)
+SelectionStmt (90)
     on left: 84, on right: 17
-SelectionRestStmt (90)
+SelectionRestStmt (91)
     on left: 85 86, on right: 84
-StmtWithScope (91)
+StmtWithScope (92)
     on left: 87 88, on right: 85 86
-SwitchStmt (92)
+SwitchStmt (93)
     on left: 89, on right: 18
-SwitchStmtList (93)
+SwitchStmtList (94)
     on left: 90 91, on right: 89
-CaseLabel (94)
+CaseLabel (95)
     on left: 92 93, on right: 19
-IterStmt (95)
+IterStmt (96)
     on left: 94 95, on right: 20
-StmtNoNewScope (96)
+StmtNoNewScope (97)
     on left: 96 97, on right: 94 95
-Condition (97)
+Condition (98)
     on left: 98 99, on right: 94 105
-Initializer (98)
+Initializer (99)
     on left: 100, on right: 99
-ForInitStmt (99)
+ForInitStmt (100)
     on left: 101 102, on right: 95
-ForRestStmt (100)
+ForRestStmt (101)
     on left: 103 104, on right: 95
-Conditionopt (101)
+Conditionopt (102)
     on left: 105 106, on right: 103 104
 
 
@@ -2458,7 +2456,6 @@ state 155
 
     T_Else  shift, and go to state 161
 
-    T_Else    [reduce using rule 86 (SelectionRestStmt)]
     $default  reduce using rule 86 (SelectionRestStmt)
 
 

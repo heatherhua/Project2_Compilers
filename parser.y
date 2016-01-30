@@ -77,7 +77,7 @@ void yyerror(const char *msg); // standard error-handling routine
 %token   T_LeftBrace T_RightBrace
 %token   T_Plus T_Dash T_Star T_Slash
 %token   T_EqualOp T_LeftAngle T_RightAngle
-
+%token   NO_ELSE
 
 /* These were already here */
 %token   <identifier> T_Identifier
@@ -102,13 +102,15 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <type>      TypeSpecifier
 %type <fndecl>    FnHeader
 
-                  
+%nonassoc NO_ELSE
+%nonassoc T_Else                 
 %%
 /* Rules
  * -----
  * All productions and actions should be placed between the start and stop
  * %% markers which delimit the Rules section.
 	 
+ * 
  */
 Program   :    DeclList                           { 
                                                     @1; 
@@ -163,7 +165,8 @@ SimpleStmt  : VarDecl {}
             | CaseLabel {}
             | IterStmt {}
             ;
-/******* 1 ************/
+            
+            /******* 1 ************/
 /**********************/
 /**********************/
 /*********************/
@@ -174,17 +177,18 @@ VarDecl   : FnPrototype T_Semicolon { }
           | TypeSpecifier T_Identifier T_Semicolon {$$ = new VarDecl(new Identifier(yylloc, $2), $1); }
           ;
 
+                     
 // Simplifying TypeSpecifier -> TypeSpecifierNonarray -> Terminals
 // TypeSpecifier = "type_specifier_nonarray"
 TypeSpecifier : T_Void  { $$ = Type::voidType;}
-              | T_Float {$$ = Type::floatType;}
+              | T_Float { $$ = Type::floatType;}
               | T_Int   { $$ = Type::intType; }
-              | T_Vec2  {$$ = Type::vec2Type;}
-              | T_Vec3  {$$ = Type::vec3Type;}
-              | T_Vec4  {$$ = Type::vec4Type;}
-              | T_Mat2  {$$ = Type::mat2Type;}
-              | T_Mat3  {$$ = Type::mat3Type;}
-              | T_Mat4  {$$ = Type::mat4Type;}
+              | T_Vec2  { $$ = Type::vec2Type;}
+              | T_Vec3  { $$ = Type::vec3Type;}
+              | T_Vec4  { $$ = Type::vec4Type;}
+              | T_Mat2  { $$ = Type::mat2Type;}
+              | T_Mat3  { $$ = Type::mat3Type;}
+              | T_Mat4  { $$ = Type::mat4Type;}
               ;
 
 FnPrototype : FnDeclarator T_RightParen {}
@@ -309,7 +313,7 @@ SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt {}
               ;
 
 SelectionRestStmt : StmtWithScope T_Else StmtWithScope {}
-                  | StmtWithScope {}
+                  | StmtWithScope %prec NO_ELSE {}
                   ;
 
 StmtWithScope : CompoundStmtNoNewScope {}
