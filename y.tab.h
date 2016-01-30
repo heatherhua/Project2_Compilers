@@ -169,11 +169,12 @@ typedef union YYSTYPE
     List<Stmt*> *stmtList;
     Type *type;
     AssignExpr *assignExpr;
+    FnDecl *fndecl;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 177 "y.tab.h"
+#line 178 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -49,6 +49,7 @@ void yyerror(const char *msg); // standard error-handling routine
     List<Stmt*> *stmtList;
     Type *type;
     AssignExpr *assignExpr;
+    FnDecl *fndecl;
 }
 
 
@@ -99,6 +100,8 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <declList>  DeclList
 %type <decl>      Decl VarDecl
 %type <type>      TypeSpecifier
+%type <fndecl>    FnHeader
+
                   
 %%
 /* Rules
@@ -166,7 +169,7 @@ SimpleStmt  : VarDecl {}
 /*********************/
 /************** BEGIN VARDECL *********************/
 // VarDecl = "declaration"
-VarDecl   : FnPrototype T_Semicolon {}
+VarDecl   : FnPrototype T_Semicolon { }
            // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
           | TypeSpecifier T_Identifier T_Semicolon {$$ = new VarDecl(new Identifier(yylloc, $2), $1); }
           ;
@@ -197,7 +200,7 @@ FnHeaderWithParameters : FnHeader ParameterDecl {}
                        | FnHeaderWithParameters T_Comma ParameterDecl {}
                        ;
                       
-FnHeader    : TypeSpecifier T_Identifier T_LeftParen {}
+FnHeader    : TypeSpecifier T_Identifier T_LeftParen {$$ = new FnDecl(new Identifier(yylloc, $2), $1, new List<VarDecl*>);}
             ;
 
 // ParameterDecl = "paramater_declaration"
