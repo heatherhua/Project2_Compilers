@@ -97,13 +97,9 @@ void yyerror(const char *msg); // standard error-handling routine
  * pp2: You'll need to add many of these of your own.
  */
 %type <declList>  DeclList
-%type <decl>      Decl FnDecl VarDecl SingleDecl
+%type <decl>      Decl VarDecl
+%type <type>      TypeSpecifier
                   
-// %type <stmtList>  StmtList
-%type <stmt>   LayoutQualifier SingleTypeQualifier StorageQualifier
-%type <type>   TypeSpecifier FullySpecifiedType TypeQualifier 
-%type <assignExpr> LayoutQualifierId
-
 %%
 /* Rules
  * -----
@@ -172,20 +168,20 @@ SimpleStmt  : VarDecl {}
 // VarDecl = "declaration"
 VarDecl   : FnPrototype T_Semicolon {}
            // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
-          | TypeSpecifier T_Identifier T_Semicolon {}
+          | TypeSpecifier T_Identifier T_Semicolon {$$ = new VarDecl(new Identifier(yylloc, $2), $1); }
           ;
 
 // Simplifying TypeSpecifier -> TypeSpecifierNonarray -> Terminals
 // TypeSpecifier = "type_specifier_nonarray"
-TypeSpecifier : T_Void {printf("T_Void");}
-              | T_Float {printf("T_Float");}
-              | T_Int {printf("T_Int");}
-              | T_Vec2 {printf("T_Vec2");}
-              | T_Vec3 {printf("T_Vec3");}
-              | T_Vec4 {printf("T_Vec4");}
-              | T_Mat2 {printf("T_Mat2");
-              | T_Mat3 {printf("T_Mat3");}
-              | T_Mat4 {printf("T_Mat4");}
+TypeSpecifier : T_Void  { $$ = Type::voidType;}
+              | T_Float {$$ = Type::floatType;}
+              | T_Int   { $$ = Type::intType; }
+              | T_Vec2  {$$ = Type::vec2Type;}
+              | T_Vec3  {$$ = Type::vec3Type;}
+              | T_Vec4  {$$ = Type::vec4Type;}
+              | T_Mat2  {$$ = Type::mat2Type;}
+              | T_Mat3  {$$ = Type::mat3Type;}
+              | T_Mat4  {$$ = Type::mat4Type;}
               ;
 
 FnPrototype : FnDeclarator T_RightParen {}

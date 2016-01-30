@@ -36,7 +36,7 @@ static void DoBeforeEachAction();
  * line later to provide context on errors.
  */
 %s N
-%x COPY COMM
+%x COPY COMM FIELDS
 %option stack
 
 /* Definitions
@@ -99,7 +99,6 @@ SINGLE_COMMENT    ("//"[^\n]*)
 "mat3"              { return T_Mat3;        }
 "mat4"              { return T_Mat4;        }
 "continue"          { return T_Continue;    }
-/* covered by . in Operators {IDENTIFIER}\.{IDENTIFIER}       { return T_FieldSelection; } */
 
  /* -------------------- Operators ----------------------------- */
 "(" { return T_LeftParen; }
@@ -109,8 +108,7 @@ SINGLE_COMMENT    ("//"[^\n]*)
 "{" { return T_LeftBrace; }
 "}" { return T_RightBrace; }
 "." { BEGIN(FIELDS); return T_Dot; } /* this was given, how do we prevent floats? when do we return field selection? */
-"[" { return T_LeftBracket; }
-"]" { return T_RightBracket; }
+<FIELDS>{IDENTIFIER}    { BEGIN(N); return T_FieldSelection; }
 "," { return T_Comma; } 
 
 
@@ -136,7 +134,7 @@ SINGLE_COMMENT    ("//"[^\n]*)
 ">" { return T_LeftAngle; }
 "<" { return T_RightAngle; }
 
-/*{OPERATOR}          { return yytext[0];     } */
+ /* {OPERATOR}          { return yytext[0];     } */
 
  /* -------------------- Constants ------------------------------ */
 "true"|"false"      { yylval.boolConstant = (yytext[0] == 't');
