@@ -105,11 +105,11 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <decl>      Decl FnDef
 %type <vardecl>   VarDecl ParameterDecl
 %type <type>      TypeSpecifier
-%type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype 
+%type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype FnDeclarator
 %type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
 %type <stmtList>  StmtList SelectionRestStmt
-%type <stmt>      Stmt SelectionStmt StmtWithScope
-%type <op>        AssignOp UnaryOp
+%type <stmt>      Stmt SelectionStmt StmtWithScope ExprStmt SimpleStmt
+%type <op>        UnaryOp AssignOp
 %type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr
                   PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr
 %nonassoc NO_ELSE
@@ -147,18 +147,22 @@ Decl      :     FnDef                            { }
           ;
 
 /************* BEGIN FOLLOWING FNDEF **********************/
-FnDef    : FnPrototype CompoundStmtNoNewScope { $1->SetFunctionBody($2); $$ = $1; }
+FnDef    : FnPrototype CompoundStmtNoNewScope { printf("FnDef\n"); $1->SetFunctionBody(new StmtBlock(new List<VarDecl*>, new List<Stmt*>)); }//$$ = $1; }
          ;
 
 CompoundStmtNoNewScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>);}
-                       | T_LeftBrace StmtList T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, $2); }
+                       // Seg fault ahead
+                        | T_LeftBrace StmtList T_RightBrace { printf("Compound Num Elements: %d\n", $2->NumElements()); 
+                                                             $$ = new StmtBlock(new List<VarDecl*>, $2); 
+                                                             printf("Num Elements: %d\n", $2->NumElements());}
                        ;
 
 CompoundStmtWithScope : T_LeftBrace T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
-                      | T_LeftBrace StmtList T_RightBrace { $$ = new StmtBlock(new List<VarDecl*>, $2); }
+                      | T_LeftBrace StmtList T_RightBrace { printf("compound scope \n"); $$ = new StmtBlock(new List<VarDecl*>, $2); }
                       ;
 
-StmtList : Stmt { ($$ = new List<Stmt*>)->Append($1); }
+StmtList : Stmt { ($$ = new List<Stmt*>)->Append($1); 
+                  printf("Num Elements: %d\n", $$->NumElements());}
          | StmtList Stmt { ($$=$1)->Append($2);}
          ;
 
@@ -169,7 +173,7 @@ Stmt : CompoundStmtWithScope {}
 // Simplifying: DeclarationStmt -> declaration
 // VarDecl = declaration
 SimpleStmt  : VarDecl {}
-            | ExprStmt {}
+            | ExprStmt { printf("I am expr\n");}
             | SelectionStmt {}
             | SwitchStmt {}
             | CaseLabel {}
@@ -182,7 +186,7 @@ SimpleStmt  : VarDecl {}
 /*********************/
 /************** BEGIN VARDECL *********************/
 // VarDecl = "declaration"
-VarDecl   : FnPrototype T_Semicolon { }
+VarDecl   : FnPrototype T_Semicolon {}
            // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
           | TypeSpecifier T_Identifier T_Semicolon {$$ = new VarDecl(new Identifier(yylloc, $2), $1); }
           ;
@@ -215,7 +219,7 @@ FnHeaderWithParameters : FnHeader ParameterDecl { $1->AddFormal($2);}
                        | FnHeaderWithParameters T_Comma ParameterDecl { $1->AddFormal($3); }
                        ;
                       
-FnHeader    : TypeSpecifier T_Identifier T_LeftParen {$$ = new FnDecl(new Identifier(yylloc, $2), $1, new List<VarDecl*>);}
+FnHeader    : TypeSpecifier T_Identifier T_LeftParen { $$ = new FnDecl(new Identifier(yylloc, $2), $1, new List<VarDecl*>);}
             ;
 
             
@@ -235,19 +239,22 @@ ParameterDecl : TypeSpecifier T_Identifier { $$ = new VarDecl( new Identifier(yy
 /********** BEGIN EXPRSTMT *******************/
 
 ExprStmt : T_Semicolon {}
-         | Expr T_Semicolon {}
+         | Expr T_Semicolon { printf("Reaches Expr statement\n");}
          ;
 
-Expr : AssignExpr {}
+Expr : AssignExpr { printf( "Reaches Assign Expr \n"); }
      ;
 
 // Simplifying: ConditionalExpr
 AssignExpr : ConditionalExpr {}
-           | UnaryExpr AssignOp AssignExpr {
-                $$ = new AssignExpr($1, $2, $3); }
+//           | UnaryExpr AssignOp AssignExpr {
+//                $$ = new AssignExpr($1, $2, $3); }
+           | T_Identifier T_Equal T_IntConstant { 
+                         Operator *op = new Operator(yylloc, "=");       
+                         printf("got here\n"); }//$$ = new AssignExpr($1, op, $3);}
            ;
 
-AssignOp : T_Equal     { const char *tok = "="; $$ = new Operator(yylloc, tok); }
+AssignOp : T_Equal     { const char *tok = "="; $$ = new Operator(yylloc, "="); }
          | T_MulAssign { const char *tok = "*"; $$ = new Operator(yylloc, tok);}
          | T_DivAssign { const char *tok = "/"; $$ = new Operator(yylloc, tok);}
          | T_AddAssign { const char *tok = "+"; $$ = new Operator(yylloc, tok);}
@@ -354,7 +361,8 @@ PostfixExpr : PrimExpr {}
                                     $$ = new PostfixExpr($1, op);}
             ;
 // Simplifying: VarIdentifier -> T_Identifier
-PrimExpr : T_Identifier  { $$ = new FieldAccess(new EmptyExpr(), new Identifier(yylloc,$1));}//$$ = new IdentifierConstant(yylloc, $1); }
+PrimExpr : T_Identifier  { printf("got to primexpr"); 
+                            $$ = new FieldAccess(new EmptyExpr(), new Identifier(yylloc,$1));}//$$ = new IdentifierConstant(yylloc, $1); }
          | T_IntConstant { $$ = new IntConstant(yylloc, $1);}
          | T_FloatConstant { $$ = new FloatConstant(yylloc, $1); }
          | T_BoolConstant { $$ = new BoolConstant(yylloc, $1); }
