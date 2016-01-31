@@ -213,4 +213,14 @@ class ActualsError : public Call
     const char *GetPrintNameForNode() { return "ActualsError"; }
 };
 
+class VarExpr : public Expr
+{
+    protected:  
+        Identifier *id;
+    public:
+        VarExpr(yyltype loc, Identifier *ident);
+        const char *GetPrintNameForNode() { return "VarExpr"; }
+        void PrintChildren(int identLevel);
+}; 
+
 #endif

@@ -159,7 +159,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 41 "parser.y"
+#line 46 "parser.y"
 
     int integerConstant;
     bool boolConstant;
@@ -176,11 +176,12 @@ typedef union YYSTYPE
     StmtBlock *stmtblock;
     Operator *op;
     Expr *expr;
+    MyBlock *myBlock;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 184 "y.tab.h"
+#line 185 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
