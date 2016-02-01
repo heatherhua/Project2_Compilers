@@ -2,29 +2,19 @@ Fn Header
 FnDeclarator-> FnHeader
 FnPrototype
 Simple -> VarDecl
-List of varDeclsReaches Assign Expr 
-Reaches Expr statement
-FnDef
+Reaches Assign Expr 
 Reaches Assign Expr 
 Reaches Expr statement
 FnDef
+Stmt
 Reaches Assign Expr 
 Reaches Expr statement
 FnDef
+Stmt
 Reaches Assign Expr 
 Reaches Expr statement
 FnDef
-Reaches Assign Expr 
-Reaches Expr statement
-FnDef
-Reaches Assign Expr 
-Reaches Expr statement
-FnDef
-Reaches Assign Expr 
-Reaches Expr statement
-FnDef
-Reaches Assign Expr 
-Reaches Expr statement
+Stmt
 FnDef
 Decl
 
@@ -36,50 +26,26 @@ Decl
   6         VarDecl: 
                Type: int
   6            Identifier: i
-  7         VarDecl: 
-               Type: int
-  7            Identifier: i2
-  9         RelationalExpr: 
-  9            VarExpr: 
-  9               Identifier: i
-  9            Operator: <
-  9            IntConstant: 2
- 10         RelationalExpr: 
- 10            VarExpr: 
- 10               Identifier: i
- 10            Operator: <
- 10            VarExpr: 
- 10               Identifier: i2
- 12         RelationalExpr: 
- 12            VarExpr: 
- 12               Identifier: i
- 12            Operator: >
- 12            IntConstant: 3
- 13         RelationalExpr: 
- 13            VarExpr: 
- 13               Identifier: i
- 13            Operator: >
- 13            VarExpr: 
- 13               Identifier: i2
- 15         RelationalExpr: 
- 15            VarExpr: 
- 15               Identifier: i
- 15            Operator: <=
- 15            IntConstant: 1
- 16         RelationalExpr: 
- 16            VarExpr: 
- 16               Identifier: i
- 16            Operator: <=
- 16            VarExpr: 
- 16               Identifier: i2
- 18         RelationalExpr: 
- 18            VarExpr: 
- 18               Identifier: i
- 18            Operator: >=
- 18            IntConstant: 1
- 19         RelationalExpr: 
- 19            VarExpr: 
- 19               Identifier: i
- 19            Operator: >=
- 19            VarExpr: 
- 19               Identifier: i2
+            SwitchStmt: 
+  8            VarExpr: 
+  8               Identifier: i
+               Case: 
+  9               IntConstant: 1
+ 10               AssignExpr: 
+ 10                  VarExpr: 
+ 10                     Identifier: i
+ 10                  Operator: =
+ 10                  IntConstant: 2
+               Case: 
+ 11               IntConstant: 2
+ 12               AssignExpr: 
+ 12                  VarExpr: 
+ 12                     Identifier: i
+ 12                  Operator: =
+ 12                  IntConstant: 1
+               Default: 
+ 14               AssignExpr: 
+ 14                  VarExpr: 
+ 14                     Identifier: i
+ 14                  Operator: =
+ 14                  IntConstant: 1

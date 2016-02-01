@@ -184,11 +184,12 @@ typedef union YYSTYPE
     List<Case *> *mycaseList;
     SwitchLabel *switchLabel;
     List<SwitchLabel *> *switchLabelList;
+    IntConstant *intConstant;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 192 "y.tab.h"
+#line 193 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

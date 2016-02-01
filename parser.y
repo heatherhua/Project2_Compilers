@@ -67,6 +67,7 @@ void yyerror(const char *msg); // standard error-handling routine
     List<Case *> *mycaseList;
     SwitchLabel *switchLabel;
     List<SwitchLabel *> *switchLabelList;
+    IntConstant *intConstant;
 }
 
 
@@ -133,6 +134,7 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr Condition
                   PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr ConditionalExpr
                   Conditionopt ForInitStmt //SwitchStmt
+%type <intConstant> Expr2
 %nonassoc NO_ELSE
 %nonassoc T_Else                 
 %%
@@ -486,12 +488,12 @@ SwitchStmtList : StmtList { }
 // Case(IntConstant *label, List<Stmt*> *stmts)}
                
                //case (expr): & default:
-CaseLabel : T_Case T_IntConstant T_Colon  { $$ = new Case(new IntConstant(yylloc, $2), new List<Stmt *>);}// $$ = new Case(new IntConstant(yylloc,$2), new List<Stmt*>);}
-//            OG: T_Case Expr T_Colon  { $$ = new Case($2, new List<Stmt*>);}
-            | T_Case T_IntConstant T_Colon StmtList { $$ = new Case(new IntConstant(yylloc, $2), $4->stmts);}//$$ = new Case(new IntConstant(yylloc,$2), $4->stmts); }
-//            | T_Case Expr T_Colon StmtList { $$ = new Case($2, $4->stmts); }
-//          | T_Default T_Colon { }
+CaseLabel : T_Case Expr2 T_Colon  { $$ = new Case($2, new List<Stmt *>);}
+            | T_Case Expr2 T_Colon StmtList { $$ = new Case($2, $4->stmts);}
           ;
+
+Expr2 : T_IntConstant { $$ = new IntConstant(yylloc, $1);}
+      ;
           
 DefaultLabel : T_Default T_Colon { $$ = new Default( new List<Stmt *>);}
              | T_Default T_Colon StmtList { $$ = new Default($3->stmts); }
