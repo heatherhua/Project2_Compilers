@@ -160,20 +160,13 @@ Decl      :     FnDef                            { printf("Decl\n");}
           // it to eventually be our original line. 
           
 FnDef    : FnPrototype CompoundStmtNoNewScope {
-//                            myblock->vars = new List<VarDecl*>;
-//                            myblock->stmts = new List<Stmt*>;
-//                            StmtBlock *sb = new StmtBlock(myblock->vars, myblock->stmts);
-//                            myblock->vars = new List<VarDecl*>;
-//                            myblock->stmts = new List<Stmt*>;
                             $1->SetFunctionBody($2);
-                            $$=$1;
-                            printf("hello"); }
+                            $$=$1;}
 ;
 
 CompoundStmtNoNewScope : T_LeftBrace T_RightBrace { 
                             printf("{}\n");
                             $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>);}
-                       // Seg fault ahead
                         | T_LeftBrace StmtList T_RightBrace { printf("compound");
                                             $$ = new StmtBlock(myblock->vars, myblock->stmts);
                                             myblock->vars = new List<VarDecl*>;
@@ -225,6 +218,7 @@ VarDecl   : FnPrototype T_Semicolon { printf("FnPrototype ;\n"); }
            // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
           | TypeSpecifier T_Identifier T_Semicolon {
                             printf("Type ID ;\n");
+                            myblock->vars->Append(new VarDecl(new Identifier(yylloc, $2), $1));
                             $$ = new VarDecl(new Identifier(yylloc, $2), $1); }
           ;
 
