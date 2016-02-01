@@ -60,6 +60,7 @@ void yyerror(const char *msg); // standard error-handling routine
     Operator *op;
     Expr *expr;
     MyBlock *myBlock;
+    List<Expr*> *exprList;
 }
 
 
@@ -115,11 +116,14 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype FnDeclarator
 %type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
 %type <stmtList>  SelectionRestStmt
-%type <stmt>      SelectionStmt Stmt StmtWithScope ExprStmt IterStmt StmtNoNewScope
+%type <exprList>  ForRestStmt
+%type <stmt>      SelectionStmt Stmt StmtWithScope ExprStmt IterStmt
+                  StmtNoNewScope
 %type <op>        UnaryOp AssignOp
 %type <myBlock>   StmtList SimpleStmt 
 %type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr Condition
                   PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr ConditionalExpr
+                  Conditionopt ForInitStmt
 %nonassoc NO_ELSE
 %nonassoc T_Else                 
 %%
@@ -313,11 +317,11 @@ EqualExpr : RelationalExpr {}
           | EqualExpr T_EqualOp RelationalExpr { 
                                 const char *tok = "==";
                                 Operator *op = new Operator(yylloc, tok);
-                                $$ = new LogicalExpr($1, op, $3);}
+                                $$ = new EqualityExpr($1, op, $3);}
           | EqualExpr T_NotEqual RelationalExpr {
                                 const char *tok = "!=";
                                 Operator *op = new Operator(yylloc, tok);
-                                $$ = new LogicalExpr($1, op, $3);}
+                                $$ = new EqualityExpr($1, op, $3);}
           ;
 
 // Simplifying ShiftExpr -> AddExpr
@@ -468,7 +472,8 @@ CaseLabel : T_Case Expr T_Colon {}
 IterStmt : T_While T_LeftParen Condition T_RightParen
                    StmtNoNewScope { $$ = new WhileStmt($3, $5);}
          | T_For T_LeftParen ForInitStmt ForRestStmt
-                   T_RightParen StmtNoNewScope { }
+                   T_RightParen StmtNoNewScope { 
+                    $$ = new ForStmt($3, $4->Nth(0), $4->Nth(1), $6); }
          ;
 
 StmtNoNewScope : CompoundStmtNoNewScope {}
@@ -489,8 +494,12 @@ ForInitStmt : ExprStmt {}
             | VarDecl {}
             ;
 
-ForRestStmt : Conditionopt T_Semicolon {}
-            | Conditionopt T_Semicolon Expr {}
+ForRestStmt : Conditionopt T_Semicolon {
+                  ($$ = new List<Expr*>)->Append($1);
+                   $$->Append(NULL); }
+            | Conditionopt T_Semicolon Expr {
+                  ($$ = new List<Expr*>)->Append($1);
+                   $$->Append($3); }
             ;
 
 Conditionopt : Condition {}
