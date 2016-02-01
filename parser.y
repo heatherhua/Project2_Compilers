@@ -25,7 +25,7 @@
 
 void yyerror(const char *msg); // standard error-handling routine
 
-MyBlock *myblock = new MyBlock();
+//MyBlock *myblock = new MyBlock();
 
 %}
 
@@ -115,9 +115,9 @@ MyBlock *myblock = new MyBlock();
 %type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype FnDeclarator
 %type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
 %type <stmtList>  SelectionRestStmt
-%type <stmt>      SelectionStmt StmtWithScope //ExprStmt
+%type <stmt>      SelectionStmt Stmt StmtWithScope ExprStmt//ExprStmt SimpleStmt
 %type <op>        UnaryOp AssignOp
-%type <myBlock>   StmtList Stmt SimpleStmt ExprStmt
+%type <myBlock>   StmtList SimpleStmt 
 %type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr
                   PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr ConditionalExpr
 %nonassoc NO_ELSE
@@ -168,11 +168,9 @@ FnDef    : FnPrototype CompoundStmtNoNewScope {
 CompoundStmtNoNewScope : T_LeftBrace T_RightBrace { 
                             printf("{}\n");
                             $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>);}
-                        | T_LeftBrace StmtList T_RightBrace { printf("compound");
-                                            $$ = new StmtBlock(myblock->vars, myblock->stmts);
-                                            myblock->vars = new List<VarDecl*>;
-                                            myblock->stmts = new List<Stmt*>;
-                                            printf("compound");  }
+                        | T_LeftBrace StmtList T_RightBrace { 
+                                            $$ = new StmtBlock($2->vars, $2->stmts);
+                             }
                        ;
 
 CompoundStmtWithScope : T_LeftBrace T_RightBrace { 
@@ -180,30 +178,27 @@ CompoundStmtWithScope : T_LeftBrace T_RightBrace {
                             $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
                       | T_LeftBrace StmtList T_RightBrace { 
                            printf("compound");
-                            $$ = new StmtBlock(myblock->vars, myblock->stmts); 
-                            myblock->vars = new List<VarDecl*>;
-                            myblock->stmts = new List<Stmt*>;}
+                            $$ = new StmtBlock($2->vars, $2->stmts); }
                       ;
 
+                     
 // Type MyBlock is stmtlist
-StmtList :  Stmt {  printf("Stmt\n");}
-         |  StmtList Stmt { printf("Stmt List\n"); }
+StmtList :  Stmt { $$ = new MyBlock(); ($$->stmts)->Append($1);printf("Stmt\n");}
+         |  VarDecl { $$ = new MyBlock(); ($$->vars)->Append($1); printf("Simple -> VarDecl\n"); }
+         |  StmtList Stmt { $1->stmts->Append($2); $$ = $1; }
+         |  StmtList VarDecl { $1->vars->Append($2); $$ = $1; printf("List of varDecls"); }
          ;
+                        
 
-Stmt : CompoundStmtWithScope {printf("FnDef\n");}//{ myblock->stmts -> Append ($1)} //stmtblock
-     | SimpleStmt {printf("FnDef\n");} // 
+Stmt : CompoundStmtWithScope { printf("FnDef\n");}
+     | SimpleStmt { printf("FnDef\n");} // 
      ;
-
-     
-//     In your example, bvec3 b = (0,1,2) can be broken into:
-//  bvec3 b;            <<< this goes to vars;
-//  b = (0,1,2);        <<< this goes to stmts;
      
 // Simplifying: DeclarationStmt -> declaration
 // VarDecl = declaration
-SimpleStmt  : VarDecl {printf("FnDef\n"); }//myblock->vars->Append$1 }
-            | ExprStmt { printf("I am expr\n");}
-            | SelectionStmt { myblock->stmts->Append($1);}
+SimpleStmt  : //VarDecl { }
+             ExprStmt { }
+            | SelectionStmt {}
             | SwitchStmt {}
             | CaseLabel {}
             | IterStmt {}
@@ -225,7 +220,7 @@ VarDecl   : FnPrototype T_Semicolon { printf("FnPrototype ;\n"); }
            // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
           | TypeSpecifier T_Identifier T_Semicolon {
                             printf("Type ID ;\n");
-                            myblock->vars->Append(new VarDecl(new Identifier(yylloc, $2), $1));
+//                            myblock->vars->Append(new VarDecl(new Identifier(yylloc, $2), $1));
                             $$ = new VarDecl(new Identifier(yylloc, $2), $1); }
           ;
 
@@ -286,14 +281,17 @@ Expr : AssignExpr { printf( "Reaches Assign Expr \n"); }
 // Simplifying: ConditionalExpr
 AssignExpr : ConditionalExpr {}
            | TypeSpecifier T_Identifier AssignOp AssignExpr { 
-                                            myblock->vars->Append(new VarDecl(new Identifier(yylloc, $2), $1));
+//                                            myblock->vars->Append(new VarDecl(new Identifier(yylloc, $2), $1));
+//                                            VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
+//                                            myblock->stmts->Append(new AssignExpr(var, $3, $4)); 
                                             VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
-                                            myblock->stmts->Append(new AssignExpr(var, $3, $4)); 
+                                            $$ = new AssignExpr(var, $3, $4);
                                                 }
              
            | UnaryExpr AssignOp AssignExpr { 
                                 printf("Assigning"); 
-                                myblock->stmts->Append(new AssignExpr($1, $2, $3)); 
+//                                myblock->stmts->Append(new AssignExpr($1, $2, $3));
+                                $$ = new AssignExpr($1, $2, $3);
                                 }
            ;
 

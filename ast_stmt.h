@@ -185,4 +185,9 @@ class SwitchStmtError : public SwitchStmt
     public:
         MyBlock() : vars(new List<VarDecl *>), stmts(new List<Stmt *>) {}
  };
+ 
+// struct MyBlock {
+//        List<VarDecl *> *vars;
+//        List<Stmt *> *stmts;  
+// };
 #endif

@@ -1,4 +1,7 @@
 void main(){
- y = 2;
  int j;
+ if(true){
+  int x;
+  x = 2;
+ }
 }
