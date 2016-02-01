@@ -2528,14 +2528,14 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 461 "parser.y"
-    {}
+    { (yyval.stmt) = new WhileStmt((yyvsp[(3) - (5)].expr), (yyvsp[(5) - (5)].stmt));}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
 #line 463 "parser.y"
-    {}
+    { }
     break;
 
   case 100:
@@ -2556,6 +2556,13 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 470 "parser.y"
+    {}
+    break;
+
+  case 103:
+
+/* Line 1455 of yacc.c  */
+#line 471 "parser.y"
     {}
     break;
 
@@ -2611,7 +2618,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2615 "y.tab.c"
+#line 2622 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

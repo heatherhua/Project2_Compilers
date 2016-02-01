@@ -1,7 +1,6 @@
 void main(){
  int j;
- if(true){
-  int x;
-  x = 2;
+ while (true) {
+  int k = 3;
  }
 }

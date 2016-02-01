@@ -115,10 +115,10 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype FnDeclarator
 %type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
 %type <stmtList>  SelectionRestStmt
-%type <stmt>      SelectionStmt Stmt StmtWithScope ExprStmt//ExprStmt SimpleStmt
+%type <stmt>      SelectionStmt Stmt StmtWithScope ExprStmt IterStmt StmtNoNewScope
 %type <op>        UnaryOp AssignOp
 %type <myBlock>   StmtList SimpleStmt 
-%type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr
+%type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr Condition
                   PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr ConditionalExpr
 %nonassoc NO_ELSE
 %nonassoc T_Else                 
@@ -458,9 +458,9 @@ CaseLabel : T_Case Expr T_Colon {}
 /*********************/
 /************** BEGIN IterStmt *********************/
 IterStmt : T_While T_LeftParen Condition T_RightParen
-                   StmtNoNewScope {}
+                   StmtNoNewScope { $$ = new WhileStmt($3, $5);}
          | T_For T_LeftParen ForInitStmt ForRestStmt
-                   T_RightParen StmtNoNewScope {}
+                   T_RightParen StmtNoNewScope { }
          ;
 
 StmtNoNewScope : CompoundStmtNoNewScope {}
@@ -468,7 +468,7 @@ StmtNoNewScope : CompoundStmtNoNewScope {}
                ;
 
 Condition : Expr {}
-          | TypeSpecifier T_Identifier T_Equal Initializer
+          | TypeSpecifier T_Identifier T_Equal Initializer {}
           ;
 
 // AssignExpr defined earlier
