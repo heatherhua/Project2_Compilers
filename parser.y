@@ -320,17 +320,17 @@ Expr : AssignExpr {  }
 
 // Simplifying: ConditionalExpr
 AssignExpr : ConditionalExpr {}
-           | TypeSpecifier T_Identifier AssignOp AssignExpr { 
-                                            VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
-                                            $$ = new AssignExpr(var, $3, $4);
-                                                }
+        //   | TypeSpecifier T_Identifier AssignOp AssignExpr { 
+         //                                   VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
+          //                                  $$ = new AssignExpr(var, $3, $4);
+          //                                      }
            | UnaryExpr AssignOp AssignExpr { 
                                 $$ = new AssignExpr($1, $2, $3);
                                 }
-           | TypeSpecifier T_Identifier AssignOp VecConstructor { 
-                                            VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
-                                            $$ = new AssignExpr(var, $3, $4);
-                                          }
+         //  | TypeSpecifier T_Identifier AssignOp VecConstructor { 
+          //                                  VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
+          //                                  $$ = new AssignExpr(var, $3, $4);
+           //                               }
            | UnaryExpr AssignOp VecConstructor {
                                             $$ = new AssignExpr($1, $2, $3);
                                           }
