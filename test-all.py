@@ -22,12 +22,12 @@ TEST_DIRECTORY = 'vs'
 
 for _, _, files in os.walk(TEST_DIRECTORY):
   for file in files:
-    if not (file.endswith('.decaf') or file.endswith('.frag')):
+    if not (file.endswith('.glsl') or file.endswith('.frag')):
       continue
     refName = os.path.join(TEST_DIRECTORY, '%s.out' % file.split('.')[0])
     testName = os.path.join(TEST_DIRECTORY, file)
 
-    result = Popen('./dcc < ' + testName, shell = True, stderr = STDOUT, stdout = PIPE)
+    result = Popen('./glc < ' + testName, shell = True, stderr = STDOUT, stdout = PIPE)
     result = Popen('diff -w - ' + refName, shell = True, stdin = result.stdout, stdout = PIPE)
     print 'Executing test "%s"' % testName
     print ''.join(result.stdout.readlines())

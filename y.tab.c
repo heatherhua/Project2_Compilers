@@ -1844,7 +1844,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 171 "parser.y"
-    { printf("Decl\n");}
+    { }
     break;
 
   case 6:
@@ -1868,7 +1868,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 186 "parser.y"
     { 
-                            printf("{}\n");
+                            
                             (yyval.stmtblock) = new StmtBlock(new List<VarDecl*>, new List<Stmt*>);}
     break;
 
@@ -1886,7 +1886,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 194 "parser.y"
     { 
-                            printf("{}\n");
+                           
                             (yyval.stmtblock) = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
     break;
 
@@ -1895,7 +1895,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 197 "parser.y"
     { 
-                           printf("compound");
+                        
                             (yyval.stmtblock) = new StmtBlock((yyvsp[(2) - (3)].myBlock)->vars, (yyvsp[(2) - (3)].myBlock)->stmts); }
     break;
 
@@ -1903,14 +1903,14 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 204 "parser.y"
-    { (yyval.myBlock) = new MyBlock(); ((yyval.myBlock)->stmts)->Append((yyvsp[(1) - (1)].stmt));printf("Stmt\n");}
+    { (yyval.myBlock) = new MyBlock(); ((yyval.myBlock)->stmts)->Append((yyvsp[(1) - (1)].stmt));}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
 #line 208 "parser.y"
-    { (yyval.myBlock) = new MyBlock(); ((yyval.myBlock)->vars)->Append((yyvsp[(1) - (1)].vardecl)); printf("Simple -> VarDecl\n"); }
+    { (yyval.myBlock) = new MyBlock(); ((yyval.myBlock)->vars)->Append((yyvsp[(1) - (1)].vardecl)); }
     break;
 
   case 14:
@@ -1924,7 +1924,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 211 "parser.y"
-    { (yyvsp[(1) - (2)].myBlock)->vars->Append((yyvsp[(2) - (2)].vardecl)); (yyval.myBlock) = (yyvsp[(1) - (2)].myBlock); printf("List of varDecls"); }
+    { (yyvsp[(1) - (2)].myBlock)->vars->Append((yyvsp[(2) - (2)].vardecl)); (yyval.myBlock) = (yyvsp[(1) - (2)].myBlock); }
     break;
 
   case 16:
@@ -1956,14 +1956,14 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 224 "parser.y"
-    { printf("FnDef\n");}
+    { }
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
 #line 225 "parser.y"
-    { printf("FnDef\n");}
+    { }
     break;
 
   case 21:
@@ -1998,7 +1998,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 246 "parser.y"
-    { printf("FnPrototype ;\n"); }
+    { }
     break;
 
   case 26:
@@ -2083,42 +2083,42 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 267 "parser.y"
-    {printf("FnPrototype\n");}
+    { }
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
 #line 270 "parser.y"
-    {printf("FnDeclarator-> FnHeader\n");}
+    { }
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
 #line 271 "parser.y"
-    {printf("FnDeclarator-> FnHeaderWithParameters\n");}
+    { }
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
 #line 276 "parser.y"
-    { printf("FnHeaderWParam\n");(yyvsp[(1) - (2)].fndecl)->AddFormal((yyvsp[(2) - (2)].vardecl));}
+    { (yyvsp[(1) - (2)].fndecl)->AddFormal((yyvsp[(2) - (2)].vardecl));}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
 #line 277 "parser.y"
-    { printf("FnHeaderWParams\n");(yyvsp[(1) - (3)].fndecl)->AddFormal((yyvsp[(3) - (3)].vardecl)); }
+    { (yyvsp[(1) - (3)].fndecl)->AddFormal((yyvsp[(3) - (3)].vardecl)); }
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
 #line 280 "parser.y"
-    { printf("Fn Header\n"); (yyval.fndecl) = new FnDecl(new Identifier(yylloc, (yyvsp[(2) - (3)].identifier)), (yyvsp[(1) - (3)].type), new List<VarDecl*>);}
+    { (yyval.fndecl) = new FnDecl(new Identifier(yylloc, (yyvsp[(2) - (3)].identifier)), (yyvsp[(1) - (3)].type), new List<VarDecl*>);}
     break;
 
   case 43:
@@ -2146,14 +2146,14 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 300 "parser.y"
-    { printf("Reaches Expr statement\n");}
+    { }
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
 #line 303 "parser.y"
-    { printf( "Reaches Assign Expr \n"); }
+    {  }
     break;
 
   case 48:
@@ -2531,7 +2531,7 @@ yyreduce:
 #line 454 "parser.y"
     { 
                                     //const char *text = &yytext[2];
-                                    //printf(yytext);
+                                    
                                     (yyval.expr) = new FieldAccess((yyvsp[(1) - (3)].expr), new Identifier(yylloc, yytext));}
     break;
 
@@ -2655,7 +2655,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 520 "parser.y"
-    {printf("EMPTY");}
+    { }
     break;
 
   case 109:
@@ -3011,7 +3011,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 655 "parser.y"
+#line 602 "parser.y"
 
 
 

@@ -168,7 +168,7 @@ DeclList  :    DeclList Decl                      { ($$=$1)->Append($2); }
           ;
 
 // Decl = "external_declaration"
-Decl      :     FnDef                            { printf("Decl\n");}  
+Decl      :     FnDef                            { } 
                 // Remember VarDecl = "declaration"
           |     VarDecl                           { } 
           ;
@@ -184,7 +184,7 @@ FnDef    : FnPrototype CompoundStmtNoNewScope {
 ;
 
 CompoundStmtNoNewScope : T_LeftBrace T_RightBrace { 
-                            printf("{}\n");
+                            
                             $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>);}
                         | T_LeftBrace StmtList T_RightBrace { 
                                             $$ = new StmtBlock($2->vars, $2->stmts);
@@ -192,23 +192,23 @@ CompoundStmtNoNewScope : T_LeftBrace T_RightBrace {
                        ;
 
 CompoundStmtWithScope : T_LeftBrace T_RightBrace { 
-                            printf("{}\n");
+                           
                             $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
                       | T_LeftBrace StmtList T_RightBrace { 
-                           printf("compound");
+                        
                             $$ = new StmtBlock($2->vars, $2->stmts); }
                       ;
 
                      
 // Type MyBlock is stmtlist
-StmtList :  Stmt { $$ = new MyBlock(); ($$->stmts)->Append($1);printf("Stmt\n");}
+StmtList :  Stmt { $$ = new MyBlock(); ($$->stmts)->Append($1);}
 //         |  CaseLabel {     $$ = new MyBlock(); 
 //                            ($$->switchblock->cases)->Append($1); } 
 //         |  DefaultLabel { $$->def = $1; }
-         |  VarDecl { $$ = new MyBlock(); ($$->vars)->Append($1); printf("Simple -> VarDecl\n"); }
+         |  VarDecl { $$ = new MyBlock(); ($$->vars)->Append($1); }
          |  StmtList Stmt { $1->stmts->Append($2); $$ = $1; }
 //         |  StmtList CaseLabel { $1->switchblock->cases->Append($2); $$ = $1; }
-         |  StmtList VarDecl { $1->vars->Append($2); $$ = $1; printf("List of varDecls"); }
+         |  StmtList VarDecl { $1->vars->Append($2); $$ = $1; }
 //         |  StmtList DefaultLabel { $1->switchblock->def = $2; } 
 //         | StmtList SwitchBlock { $1->stmts->Append($2); $$ = $1;}
          ;
@@ -221,8 +221,8 @@ SwitchBlock : CaseLabel {           $$ = new SwitchBlock();
                                 ($1->cases)->Append(new Case($2->label, $2->stmts)); }
             | SwitchBlock DefaultLabel { $1->def = $2; }
 
-Stmt : CompoundStmtWithScope { printf("FnDef\n");}
-     | SimpleStmt { printf("FnDef\n");} // 
+Stmt : CompoundStmtWithScope { }
+     | SimpleStmt { } // 
      ;
      
 // Simplifying: DeclarationStmt -> declaration
@@ -243,7 +243,7 @@ SimpleStmt  : //VarDecl { }
 /************** BEGIN VARDECL *********************/
 
 // VarDecl = "declaration"
-VarDecl   : FnPrototype T_Semicolon { printf("FnPrototype ;\n"); }
+VarDecl   : FnPrototype T_Semicolon { }
            // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
           | TypeSpecifier T_Identifier T_Semicolon {
                             $$ = new VarDecl(new Identifier(yylloc, $2), $1); }
@@ -264,20 +264,20 @@ TypeSpecifier : T_Void  { $$ = Type::voidType;}
               | T_Mat4  { $$ = Type::mat4Type;}
               ;
 
-FnPrototype : FnDeclarator T_RightParen {printf("FnPrototype\n");}
+FnPrototype : FnDeclarator T_RightParen { }
             ;
 
-FnDeclarator :  FnHeader                        {printf("FnDeclarator-> FnHeader\n");}
-             |  FnHeaderWithParameters          {printf("FnDeclarator-> FnHeaderWithParameters\n");}
+FnDeclarator :  FnHeader                        { }
+             |  FnHeaderWithParameters          { }
              ;
 
 
 // TODO: Comma isn't highlighted, do we still need to deal with second path           
-FnHeaderWithParameters : FnHeader ParameterDecl { printf("FnHeaderWParam\n");$1->AddFormal($2);}
-                       | FnHeaderWithParameters T_Comma ParameterDecl { printf("FnHeaderWParams\n");$1->AddFormal($3); }
+FnHeaderWithParameters : FnHeader ParameterDecl { $1->AddFormal($2);}
+                       | FnHeaderWithParameters T_Comma ParameterDecl { $1->AddFormal($3); }
                        ;
                       
-FnHeader    : TypeSpecifier T_Identifier T_LeftParen { printf("Fn Header\n"); $$ = new FnDecl(new Identifier(yylloc, $2), $1, new List<VarDecl*>);}
+FnHeader    : TypeSpecifier T_Identifier T_LeftParen { $$ = new FnDecl(new Identifier(yylloc, $2), $1, new List<VarDecl*>);}
             ;
 
             
@@ -297,10 +297,10 @@ ParameterDecl : TypeSpecifier T_Identifier { $$ = new VarDecl( new Identifier(yy
 /********** BEGIN EXPRSTMT *******************/
 
 ExprStmt : T_Semicolon {}
-         | Expr T_Semicolon { printf("Reaches Expr statement\n");}
+         | Expr T_Semicolon { }
          ;
 
-Expr : AssignExpr { printf( "Reaches Assign Expr \n"); }
+Expr : AssignExpr {  }
      ;
 
 // Simplifying: ConditionalExpr
@@ -453,7 +453,7 @@ UnaryOp : T_Plus { const char *tok = "+"; $$ = new Operator(yylloc, tok);}
 PostfixExpr : PrimExpr {}
             | PostfixExpr T_Dot T_FieldSelection { 
                                     //const char *text = &yytext[2];
-                                    //printf(yytext);
+                                    
                                     $$ = new FieldAccess($1, new Identifier(yylloc, yytext));}
             | PostfixExpr T_Inc {   const char *tok = "++";
                                     Operator *op = new Operator(yylloc, tok);
@@ -517,7 +517,7 @@ SwitchStmt : T_Switch T_LeftParen Expr T_RightParen T_LeftBrace
 SwitchStmtList : StmtList { }
                | SwitchBlock { }
                /* ";" means empty */
-               | ";" {printf("EMPTY");}
+               | ";" { }
                ;
 
 /************** End SwitchStmt *********************/
@@ -597,60 +597,7 @@ Conditionopt : Condition {}
  * We can simplify compoundstmt to one thing and stmt's with scope
  *     can be simplified to one thing too, but i didn't know if
  *     actions would be different
-
-
-/**** Stuff I Took Out - Lea ***** /
-// VarDecl = "declaration"
-/* taking out old VarDecl becuause TypeQualifier because he got rid of those tokens *
-VarDecl   :     TypeQualifier T_Identifier T_Semicolon  { $$ = new VarDecl(new Identifier(yylloc, $2), $1);}
-                // SingleDecl simplifies from init_declarator_list -> single_declaration
-          |     SingleDecl T_Semicolon          {  }
-          ;*/
-          
-/* Spec update: don't have to do left or right brackets
-don't have to do array specifier *
-TypeSpecifier     : TypeSpecifierNonarray                       { }
-                  | TypeSpecifierNonarray ArraySpecifier    {}
-                  ;
-
-TypeSpecifierNonarray : T_Void {printf("T_Void");}
-                      | T_Float {printf("T_Float");}
-                      | T_Int {printf("T_Int");}
-                      | T_Vec2 {printf("T_Vec2");}
-                      | T_Vec3 {printf("T_Vec3");}
-                      | T_Vec4 {printf("T_Vec4");}
-                      | T_Mat2 {printf("T_Mat2");
-                      | T_Mat3 {printf("T_Mat3");}
-                      | T_Mat4 {printf("T_Mat4");}
-                      ; */
-                      
-
-/* He took type qualifiers out of the specs 
-
-TypeQualifier   :  SingleTypeQualifier                { }
-                |  TypeQualifier SingleTypeQualifier  { }
-                ;
-
-SingleTypeQualifier : StorageQualifier                { }
-                    | LayoutQualifier                 { }
-                    ;
-
-StorageQualifier : T_In                        { }
-                 | T_Out                       { }
-                 ;
-
-LayoutQualifier : T_Layout '(' LayoutQualifierId ')'  { }
-                ;
-
-LayoutQualifierId : T_Identifier T_Equal T_IntConstant { 
-
-                    Operator *op = new Operator(yylloc, (const char*)T_Equal);
-                    //$$ = new AssignExpr(
-                           // new IdentifierConstant(yylloc, new Identifier(yylloc, $1)), 
-                            //op, new IntConstant(yylloc, $3));
-                                                   }
-                  ;*/
-                    
+*/
             
 %%
 
