@@ -109,7 +109,7 @@ void yyerror(const char *msg); // standard error-handling routine
  * pp2: You'll need to add many of these of your own.
  */
 %type <declList>  DeclList 
-%type <decl>      Decl FnDef VarDeclGlobal
+%type <decl>      Decl FnDef 
 %type <vardecl>   VarDecl ParameterDecl
 %type <type>      TypeSpecifier
 %type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype FnDeclarator
@@ -151,8 +151,7 @@ DeclList  :    DeclList Decl                      { ($$=$1)->Append($2); }
 // Decl = "external_declaration"
 Decl      :     FnDef                            { printf("Decl\n");}  
                 // Remember VarDecl = "declaration"
-//          |     VarDecl                           { } 
-            |     VarDeclGlobal {}
+          |     VarDecl                           { } 
           ;
 
 /************* BEGIN FOLLOWING FNDEF **********************/
@@ -209,18 +208,11 @@ SimpleStmt  : //VarDecl { }
 /**********************/
 /*********************/
 /************** BEGIN VARDECL *********************/
-            
-VarDeclGlobal :  //FnPrototype T_Semicolon { printf("FnPrototype ;\n"); }
-                    // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
-                 TypeSpecifier T_Identifier T_Semicolon {
-                            printf("Type ID ;\n");
-                            $$ = new VarDecl(new Identifier(yylloc, $2), $1); }
+
 // VarDecl = "declaration"
 VarDecl   : FnPrototype T_Semicolon { printf("FnPrototype ;\n"); }
            // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
           | TypeSpecifier T_Identifier T_Semicolon {
-                            printf("Type ID ;\n");
-//                            myblock->vars->Append(new VarDecl(new Identifier(yylloc, $2), $1));
                             $$ = new VarDecl(new Identifier(yylloc, $2), $1); }
           ;
 
@@ -281,16 +273,11 @@ Expr : AssignExpr { printf( "Reaches Assign Expr \n"); }
 // Simplifying: ConditionalExpr
 AssignExpr : ConditionalExpr {}
            | TypeSpecifier T_Identifier AssignOp AssignExpr { 
-//                                            myblock->vars->Append(new VarDecl(new Identifier(yylloc, $2), $1));
-//                                            VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
-//                                            myblock->stmts->Append(new AssignExpr(var, $3, $4)); 
                                             VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
                                             $$ = new AssignExpr(var, $3, $4);
                                                 }
              
            | UnaryExpr AssignOp AssignExpr { 
-                                printf("Assigning"); 
-//                                myblock->stmts->Append(new AssignExpr($1, $2, $3));
                                 $$ = new AssignExpr($1, $2, $3);
                                 }
            ;
@@ -402,8 +389,7 @@ PostfixExpr : PrimExpr {}
                                     $$ = new PostfixExpr($1, op);}
             ;
 // Simplifying: VarIdentifier -> T_Identifier
-PrimExpr : T_Identifier  { printf("got to primExpr"); 
-                            $$ = new VarExpr(yylloc, new Identifier(yylloc,$1));}
+PrimExpr : T_Identifier  { $$ = new VarExpr(yylloc, new Identifier(yylloc,$1));}
          | T_IntConstant { $$ = new IntConstant(yylloc, $1);}
          | T_FloatConstant { $$ = new FloatConstant(yylloc, $1); }
          | T_BoolConstant { $$ = new BoolConstant(yylloc, $1); }
@@ -418,8 +404,7 @@ PrimExpr : T_Identifier  { printf("got to primExpr");
 /**********************/
 /*********************/
 /************** BEGIN SelectionStmt *********************/              
-SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt { 
-//                myblock->stmts->Append(new IfStmt($3, $5->Nth(0), $5->Nth(1)));
+SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt {
                 $$ = new IfStmt($3, $5->Nth(0), $5->Nth(1)); }
               ;
 
