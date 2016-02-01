@@ -428,12 +428,19 @@ StmtWithScope : CompoundStmtNoNewScope {}
 /*********************/
 /************** BEGIN SwitchStmt *********************/
 // Expr defined earlier
+//    SwitchStmt(Expr *expr, List<Case*> *cases, Default *def);
+
+              
+//Case(IntConstant *label, List<Stmt*> *stmts) : SwitchLabel
+              
 SwitchStmt : T_Switch T_LeftParen Expr T_RightParen T_LeftBrace 
-                      SwitchStmtList T_RightBrace {}
+                      SwitchStmtList T_RightBrace {
+//                        $$ = new SwitchStmt($3,)
+                            }
             ;
 
 // StmtList defined earlier
-SwitchStmtList : StmtList {}
+SwitchStmtList : StmtList { }
                /* ";" means empty */
                | ";" {printf("EMPTY");}
                ;
@@ -446,6 +453,7 @@ SwitchStmtList : StmtList {}
 /*********************/
 /************** BEGIN CaseLabel *********************/
 // Expr defined earlier
+ //CaseLabel is SimpleStmt
 CaseLabel : T_Case Expr T_Colon {}
           | T_Default T_Colon {}
           ;
