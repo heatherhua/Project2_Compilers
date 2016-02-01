@@ -277,25 +277,22 @@ ExprStmt : T_Semicolon {}
          | Expr T_Semicolon { printf("Reaches Expr statement\n");}
          ;
 
-Expr : AssignExpr {(myblock->stmts = new List<Stmt*>)->Append($1); 
-                    printf( "Reaches Assign Expr \n"); }
+Expr : AssignExpr { printf( "Reaches Assign Expr \n"); }
      ;
 
 // Simplifying: ConditionalExpr
-AssignExpr : ConditionalExpr { printf("PrimExprShortcut");}
-//           | TypeSpecifier T_Identifier AssignOp AssignExpr { 
-//                                            myblock->vars->Append(new VarDecl(new Identifier(yylloc, $2), $1));
-//                                            VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
-//                                            myblock->stmts->Append(new AssignExpr(var, $3, $4)); 
-//                                                        }
+AssignExpr : ConditionalExpr {}
+           | TypeSpecifier T_Identifier AssignOp AssignExpr { 
+                                            (myblock->vars = new List<VarDecl*>)->Append(new VarDecl(new Identifier(yylloc, $2), $1));
+                                            VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
+                                            (myblock->stmts = new List<Stmt*>)->Append(new AssignExpr(var, $3, $4)); 
+                                                }
+             
            | UnaryExpr AssignOp AssignExpr { 
-                                printf("step 1"); 
-//                                myblock->stmts->Append($1); 
-                                $$ = new AssignExpr($1, $2, $3);
+                                printf("Assigning"); 
+                                myblock->vars = new List<VarDecl*>; 
+                                (myblock->stmts = new List<Stmt*>)->Append(new AssignExpr($1, $2, $3)); 
                                 }
-//           | T_Identifier T_Equal T_IntConstant { 
-//                         Operator *op = new Operator(yylloc, "=");       
-//                         printf("got here\n"); }//$$ = new AssignExpr($1, op, $3);}
            ;
 
 AssignOp : T_Equal     { printf("Equals"); const char *tok = "="; $$ = new Operator(yylloc, tok); }
