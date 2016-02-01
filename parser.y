@@ -68,6 +68,8 @@ void yyerror(const char *msg); // standard error-handling routine
     SwitchLabel *switchLabel;
     List<SwitchLabel *> *switchLabelList;
     IntConstant *intConstant;
+    VarExpr *varExpr;
+    const char * id;
 }
 
 
@@ -123,7 +125,7 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype FnDeclarator
 %type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope 
 %type <stmtList>  SelectionRestStmt
-%type <exprList>  ForRestStmt 
+%type <exprList>  ForRestStmt VecArgList
 %type <stmt>      SelectionStmt Stmt StmtWithScope ExprStmt IterStmt
                   StmtNoNewScope SwitchStmt
 %type <mycase>    CaseLabel
@@ -133,8 +135,10 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <switchBlock> SwitchStmtList SwitchBlock
 %type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr Condition
                   PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr ConditionalExpr
-                  Conditionopt ForInitStmt //SwitchStmt
+                  Conditionopt ForInitStmt VecArg VecConstructor //SwitchStmt
 %type <intConstant> Expr2
+%type <id> VecQualifier
+ // %type <identifier> VecQualifier
 %nonassoc NO_ELSE
 %nonassoc T_Else                 
 %%
@@ -305,11 +309,51 @@ AssignExpr : ConditionalExpr {}
                                             VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
                                             $$ = new AssignExpr(var, $3, $4);
                                                 }
-             
            | UnaryExpr AssignOp AssignExpr { 
                                 $$ = new AssignExpr($1, $2, $3);
                                 }
+           | TypeSpecifier T_Identifier AssignOp VecConstructor { 
+                                            VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
+                                            $$ = new AssignExpr(var, $3, $4);
+                                          }
+           | UnaryExpr AssignOp VecConstructor {
+                                            $$ = new AssignExpr($1, $2, $3);
+                                          }
            ;
+ // Call(yyltype loc, Expr *base, Identifier *field, List<Expr*> *args);
+ // Call -> Expr *base; // will be NULL if no explicit base
+  //  Identifier *field;
+  //  List<Expr*> *actuals;
+// type expr
+VecConstructor : VecQualifier T_LeftParen VecArgList T_RightParen {
+                          Identifier *c = new Identifier(yylloc,$1);
+                        $$ = new Call(yylloc, NULL, c , $3); 
+                    }
+                | T_Identifier T_LeftParen VecArgList T_RightParen {
+                          Identifier *c = new Identifier(yylloc,$1);
+                        $$ = new Call(yylloc, NULL, c, $3);
+                }
+               ;
+
+// type list<expr*>
+VecArgList : VecArgList T_Comma VecArg {($$ = $1)->Append($3);}
+           | VecArg {($$ = new List<Expr*>)->Append($1);}
+           ;
+
+// type expr
+VecArg : T_FloatConstant { $$ = new FloatConstant(yylloc, $1); }
+       ;
+
+ VecQualifier : T_Vec2 { const char *v = "vec2";
+                            $$=v;
+                  }
+              | T_Vec3 { const char *v = "vec3";
+                            $$=v;
+                  }
+              | T_Vec4 { const char *v = "vec4";
+                            $$=v;
+                  }
+            ;
 
 AssignOp : T_Equal     { const char *tok = "="; $$ = new Operator(yylloc, tok); }
          | T_MulAssign { const char *tok = "*="; $$ = new Operator(yylloc, tok);}
