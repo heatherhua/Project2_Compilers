@@ -1,6 +1,4 @@
-int u;
-
-void main(int x, bool y){
+void main(){
  y = 2;
  int j;
 }

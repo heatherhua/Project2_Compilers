@@ -203,7 +203,7 @@ Stmt : CompoundStmtWithScope {printf("FnDef\n");}//{ myblock->stmts -> Append ($
 // VarDecl = declaration
 SimpleStmt  : VarDecl {printf("FnDef\n"); }//myblock->vars->Append$1 }
             | ExprStmt { printf("I am expr\n");}
-            | SelectionStmt {}
+            | SelectionStmt { myblock->stmts->Append($1);}
             | SwitchStmt {}
             | CaseLabel {}
             | IterStmt {}
@@ -421,6 +421,7 @@ PrimExpr : T_Identifier  { printf("got to primExpr");
 /*********************/
 /************** BEGIN SelectionStmt *********************/              
 SelectionStmt : T_If T_LeftParen Expr T_RightParen SelectionRestStmt { 
+//                myblock->stmts->Append(new IfStmt($3, $5->Nth(0), $5->Nth(1)));
                 $$ = new IfStmt($3, $5->Nth(0), $5->Nth(1)); }
               ;
 

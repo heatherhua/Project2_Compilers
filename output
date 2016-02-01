@@ -25,32 +25,32 @@ Type ID ;
 FnDef
 FnDef
 Stmt List
-got to primExprEqualsAssigningReaches Assign Expr 
+got to primExprAssigningReaches Assign Expr 
 Reaches Expr statement
 I am expr
 FnDef
 Stmt List
-got to primExprEqualsgot to primExprAssigningReaches Assign Expr 
+got to primExprgot to primExprAssigningReaches Assign Expr 
 Reaches Expr statement
 I am expr
 FnDef
 Stmt List
-got to primExprEqualsAssigningReaches Assign Expr 
+got to primExprAssigningReaches Assign Expr 
 Reaches Expr statement
 I am expr
 FnDef
 Stmt List
-got to primExprEqualsgot to primExprAssigningReaches Assign Expr 
+got to primExprgot to primExprAssigningReaches Assign Expr 
 Reaches Expr statement
 I am expr
 FnDef
 Stmt List
-got to primExprEqualsAssigningReaches Assign Expr 
+got to primExprAssigningReaches Assign Expr 
 Reaches Expr statement
 I am expr
 FnDef
 Stmt List
-got to primExprEqualsgot to primExprAssigningReaches Assign Expr 
+got to primExprgot to primExprAssigningReaches Assign Expr 
 Reaches Expr statement
 I am expr
 FnDef
