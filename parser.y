@@ -383,8 +383,9 @@ UnaryOp : T_Plus { const char *tok = "+"; $$ = new Operator(yylloc, tok);}
 
 PostfixExpr : PrimExpr {}
             | PostfixExpr T_Dot T_FieldSelection { 
-                                    const char *text = &yytext[2];
-                                    $$ = new FieldAccess($1, new Identifier(yylloc, text));}
+                                    //const char *text = &yytext[2];
+                                    //printf(yytext);
+                                    $$ = new FieldAccess($1, new Identifier(yylloc, yytext));}
             | PostfixExpr T_Inc {   const char *tok = "++";
                                     Operator *op = new Operator(yylloc, tok);
                                     $$ = new PostfixExpr($1, op);}

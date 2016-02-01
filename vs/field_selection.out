@@ -1,14 +1,3 @@
-Fn Header
-FnDeclarator-> FnHeader
-FnPrototype
-Simple -> VarDecl
-List of varDeclsList of varDeclsReaches Assign Expr 
-Reaches Expr statement
-FnDef
-Reaches Assign Expr 
-Reaches Expr statement
-FnDef
-Decl
 
    Program: 
   5   FnDecl: 
