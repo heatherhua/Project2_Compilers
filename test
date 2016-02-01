@@ -1,3 +1,6 @@
+int u;
+
 void main(int x, bool y){
+ y = 2;
  int j;
 }

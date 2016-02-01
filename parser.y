@@ -109,7 +109,7 @@ MyBlock *myblock = new MyBlock();
  * pp2: You'll need to add many of these of your own.
  */
 %type <declList>  DeclList 
-%type <decl>      Decl FnDef
+%type <decl>      Decl FnDef VarDeclGlobal
 %type <vardecl>   VarDecl ParameterDecl
 %type <type>      TypeSpecifier
 %type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype FnDeclarator
@@ -151,7 +151,8 @@ DeclList  :    DeclList Decl                      { ($$=$1)->Append($2); }
 // Decl = "external_declaration"
 Decl      :     FnDef                            { printf("Decl\n");}  
                 // Remember VarDecl = "declaration"
-          |     VarDecl                           { } 
+//          |     VarDecl                           { } 
+            |     VarDeclGlobal {}
           ;
 
 /************* BEGIN FOLLOWING FNDEF **********************/
@@ -213,6 +214,12 @@ SimpleStmt  : VarDecl {printf("FnDef\n"); }//myblock->vars->Append$1 }
 /**********************/
 /*********************/
 /************** BEGIN VARDECL *********************/
+            
+VarDeclGlobal :  //FnPrototype T_Semicolon { printf("FnPrototype ;\n"); }
+                    // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
+                 TypeSpecifier T_Identifier T_Semicolon {
+                            printf("Type ID ;\n");
+                            $$ = new VarDecl(new Identifier(yylloc, $2), $1); }
 // VarDecl = "declaration"
 VarDecl   : FnPrototype T_Semicolon { printf("FnPrototype ;\n"); }
            // Simplifying: initi_decl_list -> singledecl -> fullyspecifiedtype-> TypeSpecifier
@@ -290,11 +297,11 @@ AssignExpr : ConditionalExpr {}
                                 }
            ;
 
-AssignOp : T_Equal     { printf("Equals"); const char *tok = "="; $$ = new Operator(yylloc, tok); }
-//         | T_MulAssign { const char *tok = "*"; $$ = new Operator(yylloc, tok);}
-//         | T_DivAssign { const char *tok = "/"; $$ = new Operator(yylloc, tok);}
-//         | T_AddAssign { const char *tok = "+"; $$ = new Operator(yylloc, tok);}
-//         | T_SubAssign { const char *tok = "-"; $$ = new Operator(yylloc, tok);}
+AssignOp : T_Equal     { const char *tok = "="; $$ = new Operator(yylloc, tok); }
+         | T_MulAssign { const char *tok = "*"; $$ = new Operator(yylloc, tok);}
+         | T_DivAssign { const char *tok = "/"; $$ = new Operator(yylloc, tok);}
+         | T_AddAssign { const char *tok = "+"; $$ = new Operator(yylloc, tok);}
+         | T_SubAssign { const char *tok = "-"; $$ = new Operator(yylloc, tok);}
          ;
 
 /******* BEGIN ConditionalExpr ********/

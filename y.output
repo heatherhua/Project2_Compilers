@@ -10,7 +10,7 @@ Terminals unused in grammar
    T_SubAssign
 
 
-State 149 conflicts: 19 shift/reduce
+State 150 conflicts: 19 shift/reduce
 
 
 Grammar
@@ -23,7 +23,7 @@ Grammar
     3         | Decl
 
     4 Decl: FnDef
-    5     | VarDecl
+    5     | VarDeclGlobal
 
     6 FnDef: FnPrototype CompoundStmtNoNewScope
 
@@ -46,185 +46,187 @@ Grammar
    19           | CaseLabel
    20           | IterStmt
 
-   21 VarDecl: FnPrototype T_Semicolon
-   22        | TypeSpecifier T_Identifier T_Semicolon
+   21 VarDeclGlobal: TypeSpecifier T_Identifier T_Semicolon
 
-   23 TypeSpecifier: T_Void
-   24              | T_Bool
-   25              | T_Float
-   26              | T_Int
-   27              | T_Vec2
-   28              | T_Vec3
-   29              | T_Vec4
-   30              | T_Mat2
-   31              | T_Mat3
-   32              | T_Mat4
+   22 VarDecl: FnPrototype T_Semicolon
+   23        | TypeSpecifier T_Identifier T_Semicolon
 
-   33 FnPrototype: FnDeclarator T_RightParen
+   24 TypeSpecifier: T_Void
+   25              | T_Bool
+   26              | T_Float
+   27              | T_Int
+   28              | T_Vec2
+   29              | T_Vec3
+   30              | T_Vec4
+   31              | T_Mat2
+   32              | T_Mat3
+   33              | T_Mat4
 
-   34 FnDeclarator: FnHeader
-   35             | FnHeaderWithParameters
+   34 FnPrototype: FnDeclarator T_RightParen
 
-   36 FnHeaderWithParameters: FnHeader ParameterDecl
-   37                       | FnHeaderWithParameters T_Comma ParameterDecl
+   35 FnDeclarator: FnHeader
+   36             | FnHeaderWithParameters
 
-   38 FnHeader: TypeSpecifier T_Identifier T_LeftParen
+   37 FnHeaderWithParameters: FnHeader ParameterDecl
+   38                       | FnHeaderWithParameters T_Comma ParameterDecl
 
-   39 ParameterDecl: TypeSpecifier T_Identifier
-   40              | TypeSpecifier
+   39 FnHeader: TypeSpecifier T_Identifier T_LeftParen
 
-   41 ExprStmt: T_Semicolon
-   42         | Expr T_Semicolon
+   40 ParameterDecl: TypeSpecifier T_Identifier
+   41              | TypeSpecifier
 
-   43 Expr: AssignExpr
+   42 ExprStmt: T_Semicolon
+   43         | Expr T_Semicolon
 
-   44 AssignExpr: ConditionalExpr
-   45           | TypeSpecifier T_Identifier AssignOp AssignExpr
-   46           | UnaryExpr AssignOp AssignExpr
+   44 Expr: AssignExpr
 
-   47 AssignOp: T_Equal
+   45 AssignExpr: ConditionalExpr
+   46           | TypeSpecifier T_Identifier AssignOp AssignExpr
+   47           | UnaryExpr AssignOp AssignExpr
 
-   48 ConditionalExpr: LogicalOrExpr
+   48 AssignOp: T_Equal
 
-   49 LogicalOrExpr: LogicalAndExpr
-   50              | LogicalOrExpr T_OrOp LogicalAndExpr
+   49 ConditionalExpr: LogicalOrExpr
 
-   51 LogicalAndExpr: EqualExpr
-   52               | LogicalAndExpr T_AndOp EqualExpr
+   50 LogicalOrExpr: LogicalAndExpr
+   51              | LogicalOrExpr T_OrOp LogicalAndExpr
 
-   53 EqualExpr: RelationalExpr
-   54          | EqualExpr T_EqualOp RelationalExpr
-   55          | EqualExpr T_NotEqual RelationalExpr
+   52 LogicalAndExpr: EqualExpr
+   53               | LogicalAndExpr T_AndOp EqualExpr
 
-   56 RelationalExpr: AddExpr
-   57               | RelationalExpr T_LeftAngle AddExpr
-   58               | RelationalExpr T_RightAngle AddExpr
-   59               | RelationalExpr T_LessEqual AddExpr
-   60               | RelationalExpr T_GreaterEqual AddExpr
+   54 EqualExpr: RelationalExpr
+   55          | EqualExpr T_EqualOp RelationalExpr
+   56          | EqualExpr T_NotEqual RelationalExpr
 
-   61 AddExpr: MultExpr
-   62        | AddExpr T_Plus MultExpr
-   63        | AddExpr T_Dash MultExpr
+   57 RelationalExpr: AddExpr
+   58               | RelationalExpr T_LeftAngle AddExpr
+   59               | RelationalExpr T_RightAngle AddExpr
+   60               | RelationalExpr T_LessEqual AddExpr
+   61               | RelationalExpr T_GreaterEqual AddExpr
 
-   64 MultExpr: UnaryExpr
-   65         | MultExpr T_Star UnaryExpr
-   66         | MultExpr T_Slash UnaryExpr
+   62 AddExpr: MultExpr
+   63        | AddExpr T_Plus MultExpr
+   64        | AddExpr T_Dash MultExpr
 
-   67 UnaryExpr: PostfixExpr
-   68          | T_Inc UnaryExpr
-   69          | T_Dec UnaryExpr
-   70          | UnaryOp UnaryExpr
+   65 MultExpr: UnaryExpr
+   66         | MultExpr T_Star UnaryExpr
+   67         | MultExpr T_Slash UnaryExpr
 
-   71 UnaryOp: T_Plus
-   72        | T_Dash
+   68 UnaryExpr: PostfixExpr
+   69          | T_Inc UnaryExpr
+   70          | T_Dec UnaryExpr
+   71          | UnaryOp UnaryExpr
 
-   73 PostfixExpr: PrimExpr
-   74            | PostfixExpr T_Dot T_FieldSelection
-   75            | PostfixExpr T_Inc
-   76            | PostfixExpr T_Dec
+   72 UnaryOp: T_Plus
+   73        | T_Dash
 
-   77 PrimExpr: T_Identifier
-   78         | T_IntConstant
-   79         | T_FloatConstant
-   80         | T_BoolConstant
-   81         | T_LeftParen Expr T_RightParen
+   74 PostfixExpr: PrimExpr
+   75            | PostfixExpr T_Dot T_FieldSelection
+   76            | PostfixExpr T_Inc
+   77            | PostfixExpr T_Dec
 
-   82 SelectionStmt: T_If T_LeftParen Expr T_RightParen SelectionRestStmt
+   78 PrimExpr: T_Identifier
+   79         | T_IntConstant
+   80         | T_FloatConstant
+   81         | T_BoolConstant
+   82         | T_LeftParen Expr T_RightParen
 
-   83 SelectionRestStmt: StmtWithScope T_Else StmtWithScope
-   84                  | StmtWithScope
+   83 SelectionStmt: T_If T_LeftParen Expr T_RightParen SelectionRestStmt
 
-   85 StmtWithScope: CompoundStmtNoNewScope
-   86              | SimpleStmt
+   84 SelectionRestStmt: StmtWithScope T_Else StmtWithScope
+   85                  | StmtWithScope
 
-   87 SwitchStmt: T_Switch T_LeftParen Expr T_RightParen T_LeftBrace SwitchStmtList T_RightBrace
+   86 StmtWithScope: CompoundStmtNoNewScope
+   87              | SimpleStmt
 
-   88 SwitchStmtList: StmtList
-   89               | ";"
+   88 SwitchStmt: T_Switch T_LeftParen Expr T_RightParen T_LeftBrace SwitchStmtList T_RightBrace
 
-   90 CaseLabel: T_Case Expr T_Colon
-   91          | T_Default T_Colon
+   89 SwitchStmtList: StmtList
+   90               | ";"
 
-   92 IterStmt: T_While T_LeftParen Condition T_RightParen StmtNoNewScope
-   93         | T_For T_LeftParen ForInitStmt ForRestStmt T_RightParen StmtNoNewScope
+   91 CaseLabel: T_Case Expr T_Colon
+   92          | T_Default T_Colon
 
-   94 StmtNoNewScope: CompoundStmtNoNewScope
-   95               | SimpleStmt
+   93 IterStmt: T_While T_LeftParen Condition T_RightParen StmtNoNewScope
+   94         | T_For T_LeftParen ForInitStmt ForRestStmt T_RightParen StmtNoNewScope
 
-   96 Condition: Expr
-   97          | TypeSpecifier T_Identifier T_Equal Initializer
+   95 StmtNoNewScope: CompoundStmtNoNewScope
+   96               | SimpleStmt
 
-   98 Initializer: AssignExpr
+   97 Condition: Expr
+   98          | TypeSpecifier T_Identifier T_Equal Initializer
 
-   99 ForInitStmt: ExprStmt
-  100            | VarDecl
+   99 Initializer: AssignExpr
 
-  101 ForRestStmt: Conditionopt T_Semicolon
-  102            | Conditionopt T_Semicolon Expr
+  100 ForInitStmt: ExprStmt
+  101            | VarDecl
 
-  103 Conditionopt: Condition
-  104             | ";"
+  102 ForRestStmt: Conditionopt T_Semicolon
+  103            | Conditionopt T_Semicolon Expr
+
+  104 Conditionopt: Condition
+  105             | ";"
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-T_Void (258) 23
-T_Bool (259) 24
-T_Int (260) 26
-T_Float (261) 25
-T_LessEqual (262) 59
-T_GreaterEqual (263) 60
-T_Equal (264) 47 97
-T_NotEqual (265) 55
+T_Void (258) 24
+T_Bool (259) 25
+T_Int (260) 27
+T_Float (261) 26
+T_LessEqual (262) 60
+T_GreaterEqual (263) 61
+T_Equal (264) 48 98
+T_NotEqual (265) 56
 T_Dims (266)
-T_AndOp (267) 52
-T_OrOp (268) 50
-T_While (269) 92
-T_For (270) 93
-T_If (271) 82
-T_Else (272) 83
+T_AndOp (267) 53
+T_OrOp (268) 51
+T_While (269) 93
+T_For (270) 94
+T_If (271) 83
+T_Else (272) 84
 T_Return (273)
 T_Break (274)
-T_Inc (275) 68 75
-T_Dec (276) 69 76
-T_Switch (277) 87
-T_Case (278) 90
-T_Default (279) 91
-T_LeftParen (280) 38 81 82 87 92 93
-T_RightParen (281) 33 81 82 87 92 93
-T_Dot (282) 74
-T_FieldSelection (283) 74
-T_Vec2 (284) 27
-T_Vec3 (285) 28
-T_Vec4 (286) 29
-T_Mat2 (287) 30
-T_Mat3 (288) 31
-T_Mat4 (289) 32
+T_Inc (275) 69 76
+T_Dec (276) 70 77
+T_Switch (277) 88
+T_Case (278) 91
+T_Default (279) 92
+T_LeftParen (280) 39 82 83 88 93 94
+T_RightParen (281) 34 82 83 88 93 94
+T_Dot (282) 75
+T_FieldSelection (283) 75
+T_Vec2 (284) 28
+T_Vec3 (285) 29
+T_Vec4 (286) 30
+T_Mat2 (287) 31
+T_Mat3 (288) 32
+T_Mat4 (289) 33
 T_Continue (290)
-T_Semicolon (291) 21 22 41 42 101 102
-T_Colon (292) 90 91
-T_Comma (293) 37
+T_Semicolon (291) 21 22 23 42 43 102 103
+T_Colon (292) 91 92
+T_Comma (293) 38
 T_AddAssign (294)
 T_MulAssign (295)
 T_DivAssign (296)
 T_SubAssign (297)
-T_LeftBrace (298) 7 8 9 10 87
-T_RightBrace (299) 7 8 9 10 87
-T_Plus (300) 62 71
-T_Dash (301) 63 72
-T_Star (302) 65
-T_Slash (303) 66
-T_EqualOp (304) 54
-T_LeftAngle (305) 57
-T_RightAngle (306) 58
+T_LeftBrace (298) 7 8 9 10 88
+T_RightBrace (299) 7 8 9 10 88
+T_Plus (300) 63 72
+T_Dash (301) 64 73
+T_Star (302) 66
+T_Slash (303) 67
+T_EqualOp (304) 55
+T_LeftAngle (305) 58
+T_RightAngle (306) 59
 NO_ELSE (307)
-T_Identifier (308) 22 38 39 45 77 97
-T_IntConstant (309) 78
-T_FloatConstant (310) 79
-T_BoolConstant (311) 80
-";" (312) 89 104
+T_Identifier (308) 21 23 39 40 46 78 98
+T_IntConstant (309) 79
+T_FloatConstant (310) 80
+T_BoolConstant (311) 81
+";" (312) 90 105
 
 
 Nonterminals, with rules where they appear
@@ -240,86 +242,88 @@ Decl (61)
 FnDef (62)
     on left: 6, on right: 4
 CompoundStmtNoNewScope (63)
-    on left: 7 8, on right: 6 85 94
+    on left: 7 8, on right: 6 86 95
 CompoundStmtWithScope (64)
     on left: 9 10, on right: 13
 StmtList (65)
-    on left: 11 12, on right: 8 10 12 88
+    on left: 11 12, on right: 8 10 12 89
 Stmt (66)
     on left: 13 14, on right: 11 12
 SimpleStmt (67)
-    on left: 15 16 17 18 19 20, on right: 14 86 95
-VarDecl (68)
-    on left: 21 22, on right: 5 15 100
-TypeSpecifier (69)
-    on left: 23 24 25 26 27 28 29 30 31 32, on right: 22 38 39 40 45
-    97
-FnPrototype (70)
-    on left: 33, on right: 6 21
-FnDeclarator (71)
-    on left: 34 35, on right: 33
-FnHeaderWithParameters (72)
-    on left: 36 37, on right: 35 37
-FnHeader (73)
-    on left: 38, on right: 34 36
-ParameterDecl (74)
-    on left: 39 40, on right: 36 37
-ExprStmt (75)
-    on left: 41 42, on right: 16 99
-Expr (76)
-    on left: 43, on right: 42 81 82 87 90 96 102
-AssignExpr (77)
-    on left: 44 45 46, on right: 43 45 46 98
-AssignOp (78)
-    on left: 47, on right: 45 46
-ConditionalExpr (79)
-    on left: 48, on right: 44
-LogicalOrExpr (80)
-    on left: 49 50, on right: 48 50
-LogicalAndExpr (81)
-    on left: 51 52, on right: 49 50 52
-EqualExpr (82)
-    on left: 53 54 55, on right: 51 52 54 55
-RelationalExpr (83)
-    on left: 56 57 58 59 60, on right: 53 54 55 57 58 59 60
-AddExpr (84)
-    on left: 61 62 63, on right: 56 57 58 59 60 62 63
-MultExpr (85)
-    on left: 64 65 66, on right: 61 62 63 65 66
-UnaryExpr (86)
-    on left: 67 68 69 70, on right: 46 64 65 66 68 69 70
-UnaryOp (87)
-    on left: 71 72, on right: 70
-PostfixExpr (88)
-    on left: 73 74 75 76, on right: 67 74 75 76
-PrimExpr (89)
-    on left: 77 78 79 80 81, on right: 73
-SelectionStmt (90)
-    on left: 82, on right: 17
-SelectionRestStmt (91)
-    on left: 83 84, on right: 82
-StmtWithScope (92)
-    on left: 85 86, on right: 83 84
-SwitchStmt (93)
-    on left: 87, on right: 18
-SwitchStmtList (94)
-    on left: 88 89, on right: 87
-CaseLabel (95)
-    on left: 90 91, on right: 19
-IterStmt (96)
-    on left: 92 93, on right: 20
-StmtNoNewScope (97)
-    on left: 94 95, on right: 92 93
-Condition (98)
-    on left: 96 97, on right: 92 103
-Initializer (99)
-    on left: 98, on right: 97
-ForInitStmt (100)
-    on left: 99 100, on right: 93
-ForRestStmt (101)
-    on left: 101 102, on right: 93
-Conditionopt (102)
-    on left: 103 104, on right: 101 102
+    on left: 15 16 17 18 19 20, on right: 14 87 96
+VarDeclGlobal (68)
+    on left: 21, on right: 5
+VarDecl (69)
+    on left: 22 23, on right: 15 101
+TypeSpecifier (70)
+    on left: 24 25 26 27 28 29 30 31 32 33, on right: 21 23 39 40 41
+    46 98
+FnPrototype (71)
+    on left: 34, on right: 6 22
+FnDeclarator (72)
+    on left: 35 36, on right: 34
+FnHeaderWithParameters (73)
+    on left: 37 38, on right: 36 38
+FnHeader (74)
+    on left: 39, on right: 35 37
+ParameterDecl (75)
+    on left: 40 41, on right: 37 38
+ExprStmt (76)
+    on left: 42 43, on right: 16 100
+Expr (77)
+    on left: 44, on right: 43 82 83 88 91 97 103
+AssignExpr (78)
+    on left: 45 46 47, on right: 44 46 47 99
+AssignOp (79)
+    on left: 48, on right: 46 47
+ConditionalExpr (80)
+    on left: 49, on right: 45
+LogicalOrExpr (81)
+    on left: 50 51, on right: 49 51
+LogicalAndExpr (82)
+    on left: 52 53, on right: 50 51 53
+EqualExpr (83)
+    on left: 54 55 56, on right: 52 53 55 56
+RelationalExpr (84)
+    on left: 57 58 59 60 61, on right: 54 55 56 58 59 60 61
+AddExpr (85)
+    on left: 62 63 64, on right: 57 58 59 60 61 63 64
+MultExpr (86)
+    on left: 65 66 67, on right: 62 63 64 66 67
+UnaryExpr (87)
+    on left: 68 69 70 71, on right: 47 65 66 67 69 70 71
+UnaryOp (88)
+    on left: 72 73, on right: 71
+PostfixExpr (89)
+    on left: 74 75 76 77, on right: 68 75 76 77
+PrimExpr (90)
+    on left: 78 79 80 81 82, on right: 74
+SelectionStmt (91)
+    on left: 83, on right: 17
+SelectionRestStmt (92)
+    on left: 84 85, on right: 83
+StmtWithScope (93)
+    on left: 86 87, on right: 84 85
+SwitchStmt (94)
+    on left: 88, on right: 18
+SwitchStmtList (95)
+    on left: 89 90, on right: 88
+CaseLabel (96)
+    on left: 91 92, on right: 19
+IterStmt (97)
+    on left: 93 94, on right: 20
+StmtNoNewScope (98)
+    on left: 95 96, on right: 93 94
+Condition (99)
+    on left: 97 98, on right: 93 104
+Initializer (100)
+    on left: 99, on right: 98
+ForInitStmt (101)
+    on left: 100 101, on right: 94
+ForRestStmt (102)
+    on left: 102 103, on right: 94
+Conditionopt (103)
+    on left: 104 105, on right: 102 103
 
 
 state 0
@@ -341,7 +345,7 @@ state 0
     DeclList                go to state 12
     Decl                    go to state 13
     FnDef                   go to state 14
-    VarDecl                 go to state 15
+    VarDeclGlobal           go to state 15
     TypeSpecifier           go to state 16
     FnPrototype             go to state 17
     FnDeclarator            go to state 18
@@ -351,72 +355,72 @@ state 0
 
 state 1
 
-   23 TypeSpecifier: T_Void .
-
-    $default  reduce using rule 23 (TypeSpecifier)
-
-
-state 2
-
-   24 TypeSpecifier: T_Bool .
+   24 TypeSpecifier: T_Void .
 
     $default  reduce using rule 24 (TypeSpecifier)
 
 
-state 3
+state 2
 
-   26 TypeSpecifier: T_Int .
-
-    $default  reduce using rule 26 (TypeSpecifier)
-
-
-state 4
-
-   25 TypeSpecifier: T_Float .
+   25 TypeSpecifier: T_Bool .
 
     $default  reduce using rule 25 (TypeSpecifier)
 
 
-state 5
+state 3
 
-   27 TypeSpecifier: T_Vec2 .
+   27 TypeSpecifier: T_Int .
 
     $default  reduce using rule 27 (TypeSpecifier)
 
 
-state 6
+state 4
 
-   28 TypeSpecifier: T_Vec3 .
+   26 TypeSpecifier: T_Float .
+
+    $default  reduce using rule 26 (TypeSpecifier)
+
+
+state 5
+
+   28 TypeSpecifier: T_Vec2 .
 
     $default  reduce using rule 28 (TypeSpecifier)
 
 
-state 7
+state 6
 
-   29 TypeSpecifier: T_Vec4 .
+   29 TypeSpecifier: T_Vec3 .
 
     $default  reduce using rule 29 (TypeSpecifier)
 
 
-state 8
+state 7
 
-   30 TypeSpecifier: T_Mat2 .
+   30 TypeSpecifier: T_Vec4 .
 
     $default  reduce using rule 30 (TypeSpecifier)
 
 
-state 9
+state 8
 
-   31 TypeSpecifier: T_Mat3 .
+   31 TypeSpecifier: T_Mat2 .
 
     $default  reduce using rule 31 (TypeSpecifier)
 
 
-state 10
+state 9
 
-   32 TypeSpecifier: T_Mat4 .
+   32 TypeSpecifier: T_Mat3 .
 
     $default  reduce using rule 32 (TypeSpecifier)
+
+
+state 10
+
+   33 TypeSpecifier: T_Mat4 .
+
+    $default  reduce using rule 33 (TypeSpecifier)
 
 
 state 11
@@ -446,7 +450,7 @@ state 12
 
     Decl                    go to state 22
     FnDef                   go to state 14
-    VarDecl                 go to state 15
+    VarDeclGlobal           go to state 15
     TypeSpecifier           go to state 16
     FnPrototype             go to state 17
     FnDeclarator            go to state 18
@@ -470,15 +474,15 @@ state 14
 
 state 15
 
-    5 Decl: VarDecl .
+    5 Decl: VarDeclGlobal .
 
     $default  reduce using rule 5 (Decl)
 
 
 state 16
 
-   22 VarDecl: TypeSpecifier . T_Identifier T_Semicolon
-   38 FnHeader: TypeSpecifier . T_Identifier T_LeftParen
+   21 VarDeclGlobal: TypeSpecifier . T_Identifier T_Semicolon
+   39 FnHeader: TypeSpecifier . T_Identifier T_LeftParen
 
     T_Identifier  shift, and go to state 23
 
@@ -486,35 +490,33 @@ state 16
 state 17
 
     6 FnDef: FnPrototype . CompoundStmtNoNewScope
-   21 VarDecl: FnPrototype . T_Semicolon
 
-    T_Semicolon  shift, and go to state 24
-    T_LeftBrace  shift, and go to state 25
+    T_LeftBrace  shift, and go to state 24
 
-    CompoundStmtNoNewScope  go to state 26
+    CompoundStmtNoNewScope  go to state 25
 
 
 state 18
 
-   33 FnPrototype: FnDeclarator . T_RightParen
+   34 FnPrototype: FnDeclarator . T_RightParen
 
-    T_RightParen  shift, and go to state 27
+    T_RightParen  shift, and go to state 26
 
 
 state 19
 
-   35 FnDeclarator: FnHeaderWithParameters .
-   37 FnHeaderWithParameters: FnHeaderWithParameters . T_Comma ParameterDecl
+   36 FnDeclarator: FnHeaderWithParameters .
+   38 FnHeaderWithParameters: FnHeaderWithParameters . T_Comma ParameterDecl
 
-    T_Comma  shift, and go to state 28
+    T_Comma  shift, and go to state 27
 
-    $default  reduce using rule 35 (FnDeclarator)
+    $default  reduce using rule 36 (FnDeclarator)
 
 
 state 20
 
-   34 FnDeclarator: FnHeader .
-   36 FnHeaderWithParameters: FnHeader . ParameterDecl
+   35 FnDeclarator: FnHeader .
+   37 FnHeaderWithParameters: FnHeader . ParameterDecl
 
     T_Void   shift, and go to state 1
     T_Bool   shift, and go to state 2
@@ -527,10 +529,10 @@ state 20
     T_Mat3   shift, and go to state 9
     T_Mat4   shift, and go to state 10
 
-    $default  reduce using rule 34 (FnDeclarator)
+    $default  reduce using rule 35 (FnDeclarator)
 
-    TypeSpecifier  go to state 29
-    ParameterDecl  go to state 30
+    TypeSpecifier  go to state 28
+    ParameterDecl  go to state 29
 
 
 state 21
@@ -549,21 +551,14 @@ state 22
 
 state 23
 
-   22 VarDecl: TypeSpecifier T_Identifier . T_Semicolon
-   38 FnHeader: TypeSpecifier T_Identifier . T_LeftParen
+   21 VarDeclGlobal: TypeSpecifier T_Identifier . T_Semicolon
+   39 FnHeader: TypeSpecifier T_Identifier . T_LeftParen
 
-    T_LeftParen  shift, and go to state 31
-    T_Semicolon  shift, and go to state 32
+    T_LeftParen  shift, and go to state 30
+    T_Semicolon  shift, and go to state 31
 
 
 state 24
-
-   21 VarDecl: FnPrototype T_Semicolon .
-
-    $default  reduce using rule 21 (VarDecl)
-
-
-state 25
 
     7 CompoundStmtNoNewScope: T_LeftBrace . T_RightBrace
     8                       | T_LeftBrace . StmtList T_RightBrace
@@ -572,78 +567,78 @@ state 25
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_While          shift, and go to state 33
-    T_For            shift, and go to state 34
-    T_If             shift, and go to state 35
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_Switch         shift, and go to state 38
-    T_Case           shift, and go to state 39
-    T_Default        shift, and go to state 40
-    T_LeftParen      shift, and go to state 41
+    T_While          shift, and go to state 32
+    T_For            shift, and go to state 33
+    T_If             shift, and go to state 34
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_Switch         shift, and go to state 37
+    T_Case           shift, and go to state 38
+    T_Default        shift, and go to state 39
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_LeftBrace      shift, and go to state 43
-    T_RightBrace     shift, and go to state 44
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Semicolon      shift, and go to state 41
+    T_LeftBrace      shift, and go to state 42
+    T_RightBrace     shift, and go to state 43
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    CompoundStmtWithScope   go to state 51
-    StmtList                go to state 52
-    Stmt                    go to state 53
-    SimpleStmt              go to state 54
-    VarDecl                 go to state 55
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
+    CompoundStmtWithScope   go to state 50
+    StmtList                go to state 51
+    Stmt                    go to state 52
+    SimpleStmt              go to state 53
+    VarDecl                 go to state 54
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
     FnDeclarator            go to state 18
     FnHeaderWithParameters  go to state 19
     FnHeader                go to state 20
-    ExprStmt                go to state 58
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
-    SelectionStmt           go to state 72
-    SwitchStmt              go to state 73
-    CaseLabel               go to state 74
-    IterStmt                go to state 75
+    ExprStmt                go to state 57
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
+    SelectionStmt           go to state 71
+    SwitchStmt              go to state 72
+    CaseLabel               go to state 73
+    IterStmt                go to state 74
 
 
-state 26
+state 25
 
     6 FnDef: FnPrototype CompoundStmtNoNewScope .
 
     $default  reduce using rule 6 (FnDef)
 
 
+state 26
+
+   34 FnPrototype: FnDeclarator T_RightParen .
+
+    $default  reduce using rule 34 (FnPrototype)
+
+
 state 27
 
-   33 FnPrototype: FnDeclarator T_RightParen .
-
-    $default  reduce using rule 33 (FnPrototype)
-
-
-state 28
-
-   37 FnHeaderWithParameters: FnHeaderWithParameters T_Comma . ParameterDecl
+   38 FnHeaderWithParameters: FnHeaderWithParameters T_Comma . ParameterDecl
 
     T_Void   shift, and go to state 1
     T_Bool   shift, and go to state 2
@@ -656,204 +651,204 @@ state 28
     T_Mat3   shift, and go to state 9
     T_Mat4   shift, and go to state 10
 
-    TypeSpecifier  go to state 29
-    ParameterDecl  go to state 76
+    TypeSpecifier  go to state 28
+    ParameterDecl  go to state 75
+
+
+state 28
+
+   40 ParameterDecl: TypeSpecifier . T_Identifier
+   41              | TypeSpecifier .
+
+    T_Identifier  shift, and go to state 76
+
+    $default  reduce using rule 41 (ParameterDecl)
 
 
 state 29
 
-   39 ParameterDecl: TypeSpecifier . T_Identifier
-   40              | TypeSpecifier .
+   37 FnHeaderWithParameters: FnHeader ParameterDecl .
 
-    T_Identifier  shift, and go to state 77
-
-    $default  reduce using rule 40 (ParameterDecl)
+    $default  reduce using rule 37 (FnHeaderWithParameters)
 
 
 state 30
 
-   36 FnHeaderWithParameters: FnHeader ParameterDecl .
+   39 FnHeader: TypeSpecifier T_Identifier T_LeftParen .
 
-    $default  reduce using rule 36 (FnHeaderWithParameters)
+    $default  reduce using rule 39 (FnHeader)
 
 
 state 31
 
-   38 FnHeader: TypeSpecifier T_Identifier T_LeftParen .
+   21 VarDeclGlobal: TypeSpecifier T_Identifier T_Semicolon .
 
-    $default  reduce using rule 38 (FnHeader)
+    $default  reduce using rule 21 (VarDeclGlobal)
 
 
 state 32
 
-   22 VarDecl: TypeSpecifier T_Identifier T_Semicolon .
+   93 IterStmt: T_While . T_LeftParen Condition T_RightParen StmtNoNewScope
 
-    $default  reduce using rule 22 (VarDecl)
+    T_LeftParen  shift, and go to state 77
 
 
 state 33
 
-   92 IterStmt: T_While . T_LeftParen Condition T_RightParen StmtNoNewScope
+   94 IterStmt: T_For . T_LeftParen ForInitStmt ForRestStmt T_RightParen StmtNoNewScope
 
     T_LeftParen  shift, and go to state 78
 
 
 state 34
 
-   93 IterStmt: T_For . T_LeftParen ForInitStmt ForRestStmt T_RightParen StmtNoNewScope
+   83 SelectionStmt: T_If . T_LeftParen Expr T_RightParen SelectionRestStmt
 
     T_LeftParen  shift, and go to state 79
 
 
 state 35
 
-   82 SelectionStmt: T_If . T_LeftParen Expr T_RightParen SelectionRestStmt
+   69 UnaryExpr: T_Inc . UnaryExpr
 
-    T_LeftParen  shift, and go to state 80
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
+
+    UnaryExpr    go to state 80
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
 state 36
 
-   68 UnaryExpr: T_Inc . UnaryExpr
+   70 UnaryExpr: T_Dec . UnaryExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
     UnaryExpr    go to state 81
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
 state 37
 
-   69 UnaryExpr: T_Dec . UnaryExpr
+   88 SwitchStmt: T_Switch . T_LeftParen Expr T_RightParen T_LeftBrace SwitchStmtList T_RightBrace
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
-
-    UnaryExpr    go to state 82
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    T_LeftParen  shift, and go to state 82
 
 
 state 38
 
-   87 SwitchStmt: T_Switch . T_LeftParen Expr T_RightParen T_LeftBrace SwitchStmtList T_RightBrace
+   91 CaseLabel: T_Case . Expr T_Colon
 
-    T_LeftParen  shift, and go to state 83
+    T_Void           shift, and go to state 1
+    T_Bool           shift, and go to state 2
+    T_Int            shift, and go to state 3
+    T_Float          shift, and go to state 4
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Vec2           shift, and go to state 5
+    T_Vec3           shift, and go to state 6
+    T_Vec4           shift, and go to state 7
+    T_Mat2           shift, and go to state 8
+    T_Mat3           shift, and go to state 9
+    T_Mat4           shift, and go to state 10
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
+
+    TypeSpecifier    go to state 83
+    Expr             go to state 84
+    AssignExpr       go to state 59
+    ConditionalExpr  go to state 60
+    LogicalOrExpr    go to state 61
+    LogicalAndExpr   go to state 62
+    EqualExpr        go to state 63
+    RelationalExpr   go to state 64
+    AddExpr          go to state 65
+    MultExpr         go to state 66
+    UnaryExpr        go to state 67
+    UnaryOp          go to state 68
+    PostfixExpr      go to state 69
+    PrimExpr         go to state 70
 
 
 state 39
 
-   90 CaseLabel: T_Case . Expr T_Colon
+   92 CaseLabel: T_Default . T_Colon
 
-    T_Void           shift, and go to state 1
-    T_Bool           shift, and go to state 2
-    T_Int            shift, and go to state 3
-    T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Vec2           shift, and go to state 5
-    T_Vec3           shift, and go to state 6
-    T_Vec4           shift, and go to state 7
-    T_Mat2           shift, and go to state 8
-    T_Mat3           shift, and go to state 9
-    T_Mat4           shift, and go to state 10
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
-
-    TypeSpecifier    go to state 84
-    Expr             go to state 85
-    AssignExpr       go to state 60
-    ConditionalExpr  go to state 61
-    LogicalOrExpr    go to state 62
-    LogicalAndExpr   go to state 63
-    EqualExpr        go to state 64
-    RelationalExpr   go to state 65
-    AddExpr          go to state 66
-    MultExpr         go to state 67
-    UnaryExpr        go to state 68
-    UnaryOp          go to state 69
-    PostfixExpr      go to state 70
-    PrimExpr         go to state 71
+    T_Colon  shift, and go to state 85
 
 
 state 40
 
-   91 CaseLabel: T_Default . T_Colon
-
-    T_Colon  shift, and go to state 86
-
-
-state 41
-
-   81 PrimExpr: T_LeftParen . Expr T_RightParen
+   82 PrimExpr: T_LeftParen . Expr T_RightParen
 
     T_Void           shift, and go to state 1
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    TypeSpecifier    go to state 84
-    Expr             go to state 87
-    AssignExpr       go to state 60
-    ConditionalExpr  go to state 61
-    LogicalOrExpr    go to state 62
-    LogicalAndExpr   go to state 63
-    EqualExpr        go to state 64
-    RelationalExpr   go to state 65
-    AddExpr          go to state 66
-    MultExpr         go to state 67
-    UnaryExpr        go to state 68
-    UnaryOp          go to state 69
-    PostfixExpr      go to state 70
-    PrimExpr         go to state 71
+    TypeSpecifier    go to state 83
+    Expr             go to state 86
+    AssignExpr       go to state 59
+    ConditionalExpr  go to state 60
+    LogicalOrExpr    go to state 61
+    LogicalAndExpr   go to state 62
+    EqualExpr        go to state 63
+    RelationalExpr   go to state 64
+    AddExpr          go to state 65
+    MultExpr         go to state 66
+    UnaryExpr        go to state 67
+    UnaryOp          go to state 68
+    PostfixExpr      go to state 69
+    PrimExpr         go to state 70
+
+
+state 41
+
+   42 ExprStmt: T_Semicolon .
+
+    $default  reduce using rule 42 (ExprStmt)
 
 
 state 42
-
-   41 ExprStmt: T_Semicolon .
-
-    $default  reduce using rule 41 (ExprStmt)
-
-
-state 43
 
     9 CompoundStmtWithScope: T_LeftBrace . T_RightBrace
    10                      | T_LeftBrace . StmtList T_RightBrace
@@ -862,118 +857,118 @@ state 43
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_While          shift, and go to state 33
-    T_For            shift, and go to state 34
-    T_If             shift, and go to state 35
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_Switch         shift, and go to state 38
-    T_Case           shift, and go to state 39
-    T_Default        shift, and go to state 40
-    T_LeftParen      shift, and go to state 41
+    T_While          shift, and go to state 32
+    T_For            shift, and go to state 33
+    T_If             shift, and go to state 34
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_Switch         shift, and go to state 37
+    T_Case           shift, and go to state 38
+    T_Default        shift, and go to state 39
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_LeftBrace      shift, and go to state 43
-    T_RightBrace     shift, and go to state 88
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Semicolon      shift, and go to state 41
+    T_LeftBrace      shift, and go to state 42
+    T_RightBrace     shift, and go to state 87
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    CompoundStmtWithScope   go to state 51
-    StmtList                go to state 89
-    Stmt                    go to state 53
-    SimpleStmt              go to state 54
-    VarDecl                 go to state 55
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
+    CompoundStmtWithScope   go to state 50
+    StmtList                go to state 88
+    Stmt                    go to state 52
+    SimpleStmt              go to state 53
+    VarDecl                 go to state 54
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
     FnDeclarator            go to state 18
     FnHeaderWithParameters  go to state 19
     FnHeader                go to state 20
-    ExprStmt                go to state 58
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
-    SelectionStmt           go to state 72
-    SwitchStmt              go to state 73
-    CaseLabel               go to state 74
-    IterStmt                go to state 75
+    ExprStmt                go to state 57
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
+    SelectionStmt           go to state 71
+    SwitchStmt              go to state 72
+    CaseLabel               go to state 73
+    IterStmt                go to state 74
 
 
-state 44
+state 43
 
     7 CompoundStmtNoNewScope: T_LeftBrace T_RightBrace .
 
     $default  reduce using rule 7 (CompoundStmtNoNewScope)
 
 
-state 45
+state 44
 
-   71 UnaryOp: T_Plus .
-
-    $default  reduce using rule 71 (UnaryOp)
-
-
-state 46
-
-   72 UnaryOp: T_Dash .
+   72 UnaryOp: T_Plus .
 
     $default  reduce using rule 72 (UnaryOp)
 
 
-state 47
+state 45
 
-   77 PrimExpr: T_Identifier .
+   73 UnaryOp: T_Dash .
 
-    $default  reduce using rule 77 (PrimExpr)
+    $default  reduce using rule 73 (UnaryOp)
 
 
-state 48
+state 46
 
-   78 PrimExpr: T_IntConstant .
+   78 PrimExpr: T_Identifier .
 
     $default  reduce using rule 78 (PrimExpr)
 
 
-state 49
+state 47
 
-   79 PrimExpr: T_FloatConstant .
+   79 PrimExpr: T_IntConstant .
 
     $default  reduce using rule 79 (PrimExpr)
 
 
-state 50
+state 48
 
-   80 PrimExpr: T_BoolConstant .
+   80 PrimExpr: T_FloatConstant .
 
     $default  reduce using rule 80 (PrimExpr)
 
 
-state 51
+state 49
+
+   81 PrimExpr: T_BoolConstant .
+
+    $default  reduce using rule 81 (PrimExpr)
+
+
+state 50
 
    13 Stmt: CompoundStmtWithScope .
 
     $default  reduce using rule 13 (Stmt)
 
 
-state 52
+state 51
 
     8 CompoundStmtNoNewScope: T_LeftBrace StmtList . T_RightBrace
    12 StmtList: StmtList . Stmt
@@ -982,511 +977,511 @@ state 52
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_While          shift, and go to state 33
-    T_For            shift, and go to state 34
-    T_If             shift, and go to state 35
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_Switch         shift, and go to state 38
-    T_Case           shift, and go to state 39
-    T_Default        shift, and go to state 40
-    T_LeftParen      shift, and go to state 41
+    T_While          shift, and go to state 32
+    T_For            shift, and go to state 33
+    T_If             shift, and go to state 34
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_Switch         shift, and go to state 37
+    T_Case           shift, and go to state 38
+    T_Default        shift, and go to state 39
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_LeftBrace      shift, and go to state 43
-    T_RightBrace     shift, and go to state 90
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Semicolon      shift, and go to state 41
+    T_LeftBrace      shift, and go to state 42
+    T_RightBrace     shift, and go to state 89
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    CompoundStmtWithScope   go to state 51
-    Stmt                    go to state 91
-    SimpleStmt              go to state 54
-    VarDecl                 go to state 55
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
+    CompoundStmtWithScope   go to state 50
+    Stmt                    go to state 90
+    SimpleStmt              go to state 53
+    VarDecl                 go to state 54
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
     FnDeclarator            go to state 18
     FnHeaderWithParameters  go to state 19
     FnHeader                go to state 20
-    ExprStmt                go to state 58
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
-    SelectionStmt           go to state 72
-    SwitchStmt              go to state 73
-    CaseLabel               go to state 74
-    IterStmt                go to state 75
+    ExprStmt                go to state 57
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
+    SelectionStmt           go to state 71
+    SwitchStmt              go to state 72
+    CaseLabel               go to state 73
+    IterStmt                go to state 74
 
 
-state 53
+state 52
 
    11 StmtList: Stmt .
 
     $default  reduce using rule 11 (StmtList)
 
 
-state 54
+state 53
 
    14 Stmt: SimpleStmt .
 
     $default  reduce using rule 14 (Stmt)
 
 
-state 55
+state 54
 
    15 SimpleStmt: VarDecl .
 
     $default  reduce using rule 15 (SimpleStmt)
 
 
+state 55
+
+   23 VarDecl: TypeSpecifier . T_Identifier T_Semicolon
+   39 FnHeader: TypeSpecifier . T_Identifier T_LeftParen
+   46 AssignExpr: TypeSpecifier . T_Identifier AssignOp AssignExpr
+
+    T_Identifier  shift, and go to state 91
+
+
 state 56
 
-   22 VarDecl: TypeSpecifier . T_Identifier T_Semicolon
-   38 FnHeader: TypeSpecifier . T_Identifier T_LeftParen
-   45 AssignExpr: TypeSpecifier . T_Identifier AssignOp AssignExpr
+   22 VarDecl: FnPrototype . T_Semicolon
 
-    T_Identifier  shift, and go to state 92
+    T_Semicolon  shift, and go to state 92
 
 
 state 57
-
-   21 VarDecl: FnPrototype . T_Semicolon
-
-    T_Semicolon  shift, and go to state 24
-
-
-state 58
 
    16 SimpleStmt: ExprStmt .
 
     $default  reduce using rule 16 (SimpleStmt)
 
 
-state 59
+state 58
 
-   42 ExprStmt: Expr . T_Semicolon
+   43 ExprStmt: Expr . T_Semicolon
 
     T_Semicolon  shift, and go to state 93
 
 
+state 59
+
+   44 Expr: AssignExpr .
+
+    $default  reduce using rule 44 (Expr)
+
+
 state 60
 
-   43 Expr: AssignExpr .
+   45 AssignExpr: ConditionalExpr .
 
-    $default  reduce using rule 43 (Expr)
+    $default  reduce using rule 45 (AssignExpr)
 
 
 state 61
 
-   44 AssignExpr: ConditionalExpr .
+   49 ConditionalExpr: LogicalOrExpr .
+   51 LogicalOrExpr: LogicalOrExpr . T_OrOp LogicalAndExpr
 
-    $default  reduce using rule 44 (AssignExpr)
+    T_OrOp  shift, and go to state 94
+
+    $default  reduce using rule 49 (ConditionalExpr)
 
 
 state 62
 
-   48 ConditionalExpr: LogicalOrExpr .
-   50 LogicalOrExpr: LogicalOrExpr . T_OrOp LogicalAndExpr
+   50 LogicalOrExpr: LogicalAndExpr .
+   53 LogicalAndExpr: LogicalAndExpr . T_AndOp EqualExpr
 
-    T_OrOp  shift, and go to state 94
+    T_AndOp  shift, and go to state 95
 
-    $default  reduce using rule 48 (ConditionalExpr)
+    $default  reduce using rule 50 (LogicalOrExpr)
 
 
 state 63
 
-   49 LogicalOrExpr: LogicalAndExpr .
-   52 LogicalAndExpr: LogicalAndExpr . T_AndOp EqualExpr
-
-    T_AndOp  shift, and go to state 95
-
-    $default  reduce using rule 49 (LogicalOrExpr)
-
-
-state 64
-
-   51 LogicalAndExpr: EqualExpr .
-   54 EqualExpr: EqualExpr . T_EqualOp RelationalExpr
-   55          | EqualExpr . T_NotEqual RelationalExpr
+   52 LogicalAndExpr: EqualExpr .
+   55 EqualExpr: EqualExpr . T_EqualOp RelationalExpr
+   56          | EqualExpr . T_NotEqual RelationalExpr
 
     T_NotEqual  shift, and go to state 96
     T_EqualOp   shift, and go to state 97
 
-    $default  reduce using rule 51 (LogicalAndExpr)
+    $default  reduce using rule 52 (LogicalAndExpr)
 
 
-state 65
+state 64
 
-   53 EqualExpr: RelationalExpr .
-   57 RelationalExpr: RelationalExpr . T_LeftAngle AddExpr
-   58               | RelationalExpr . T_RightAngle AddExpr
-   59               | RelationalExpr . T_LessEqual AddExpr
-   60               | RelationalExpr . T_GreaterEqual AddExpr
+   54 EqualExpr: RelationalExpr .
+   58 RelationalExpr: RelationalExpr . T_LeftAngle AddExpr
+   59               | RelationalExpr . T_RightAngle AddExpr
+   60               | RelationalExpr . T_LessEqual AddExpr
+   61               | RelationalExpr . T_GreaterEqual AddExpr
 
     T_LessEqual     shift, and go to state 98
     T_GreaterEqual  shift, and go to state 99
     T_LeftAngle     shift, and go to state 100
     T_RightAngle    shift, and go to state 101
 
-    $default  reduce using rule 53 (EqualExpr)
+    $default  reduce using rule 54 (EqualExpr)
 
 
-state 66
+state 65
 
-   56 RelationalExpr: AddExpr .
-   62 AddExpr: AddExpr . T_Plus MultExpr
-   63        | AddExpr . T_Dash MultExpr
+   57 RelationalExpr: AddExpr .
+   63 AddExpr: AddExpr . T_Plus MultExpr
+   64        | AddExpr . T_Dash MultExpr
 
     T_Plus  shift, and go to state 102
     T_Dash  shift, and go to state 103
 
-    $default  reduce using rule 56 (RelationalExpr)
+    $default  reduce using rule 57 (RelationalExpr)
 
 
-state 67
+state 66
 
-   61 AddExpr: MultExpr .
-   65 MultExpr: MultExpr . T_Star UnaryExpr
-   66         | MultExpr . T_Slash UnaryExpr
+   62 AddExpr: MultExpr .
+   66 MultExpr: MultExpr . T_Star UnaryExpr
+   67         | MultExpr . T_Slash UnaryExpr
 
     T_Star   shift, and go to state 104
     T_Slash  shift, and go to state 105
 
-    $default  reduce using rule 61 (AddExpr)
+    $default  reduce using rule 62 (AddExpr)
 
 
-state 68
+state 67
 
-   46 AssignExpr: UnaryExpr . AssignOp AssignExpr
-   64 MultExpr: UnaryExpr .
+   47 AssignExpr: UnaryExpr . AssignOp AssignExpr
+   65 MultExpr: UnaryExpr .
 
     T_Equal  shift, and go to state 106
 
-    $default  reduce using rule 64 (MultExpr)
+    $default  reduce using rule 65 (MultExpr)
 
     AssignOp  go to state 107
 
 
-state 69
+state 68
 
-   70 UnaryExpr: UnaryOp . UnaryExpr
+   71 UnaryExpr: UnaryOp . UnaryExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
     UnaryExpr    go to state 108
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
-state 70
+state 69
 
-   67 UnaryExpr: PostfixExpr .
-   74 PostfixExpr: PostfixExpr . T_Dot T_FieldSelection
-   75            | PostfixExpr . T_Inc
-   76            | PostfixExpr . T_Dec
+   68 UnaryExpr: PostfixExpr .
+   75 PostfixExpr: PostfixExpr . T_Dot T_FieldSelection
+   76            | PostfixExpr . T_Inc
+   77            | PostfixExpr . T_Dec
 
     T_Inc  shift, and go to state 109
     T_Dec  shift, and go to state 110
     T_Dot  shift, and go to state 111
 
-    $default  reduce using rule 67 (UnaryExpr)
+    $default  reduce using rule 68 (UnaryExpr)
+
+
+state 70
+
+   74 PostfixExpr: PrimExpr .
+
+    $default  reduce using rule 74 (PostfixExpr)
 
 
 state 71
-
-   73 PostfixExpr: PrimExpr .
-
-    $default  reduce using rule 73 (PostfixExpr)
-
-
-state 72
 
    17 SimpleStmt: SelectionStmt .
 
     $default  reduce using rule 17 (SimpleStmt)
 
 
-state 73
+state 72
 
    18 SimpleStmt: SwitchStmt .
 
     $default  reduce using rule 18 (SimpleStmt)
 
 
-state 74
+state 73
 
    19 SimpleStmt: CaseLabel .
 
     $default  reduce using rule 19 (SimpleStmt)
 
 
-state 75
+state 74
 
    20 SimpleStmt: IterStmt .
 
     $default  reduce using rule 20 (SimpleStmt)
 
 
+state 75
+
+   38 FnHeaderWithParameters: FnHeaderWithParameters T_Comma ParameterDecl .
+
+    $default  reduce using rule 38 (FnHeaderWithParameters)
+
+
 state 76
 
-   37 FnHeaderWithParameters: FnHeaderWithParameters T_Comma ParameterDecl .
+   40 ParameterDecl: TypeSpecifier T_Identifier .
 
-    $default  reduce using rule 37 (FnHeaderWithParameters)
+    $default  reduce using rule 40 (ParameterDecl)
 
 
 state 77
 
-   39 ParameterDecl: TypeSpecifier T_Identifier .
+   93 IterStmt: T_While T_LeftParen . Condition T_RightParen StmtNoNewScope
 
-    $default  reduce using rule 39 (ParameterDecl)
+    T_Void           shift, and go to state 1
+    T_Bool           shift, and go to state 2
+    T_Int            shift, and go to state 3
+    T_Float          shift, and go to state 4
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Vec2           shift, and go to state 5
+    T_Vec3           shift, and go to state 6
+    T_Vec4           shift, and go to state 7
+    T_Mat2           shift, and go to state 8
+    T_Mat3           shift, and go to state 9
+    T_Mat4           shift, and go to state 10
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
+
+    TypeSpecifier    go to state 112
+    Expr             go to state 113
+    AssignExpr       go to state 59
+    ConditionalExpr  go to state 60
+    LogicalOrExpr    go to state 61
+    LogicalAndExpr   go to state 62
+    EqualExpr        go to state 63
+    RelationalExpr   go to state 64
+    AddExpr          go to state 65
+    MultExpr         go to state 66
+    UnaryExpr        go to state 67
+    UnaryOp          go to state 68
+    PostfixExpr      go to state 69
+    PrimExpr         go to state 70
+    Condition        go to state 114
 
 
 state 78
 
-   92 IterStmt: T_While T_LeftParen . Condition T_RightParen StmtNoNewScope
+   94 IterStmt: T_For T_LeftParen . ForInitStmt ForRestStmt T_RightParen StmtNoNewScope
 
     T_Void           shift, and go to state 1
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
-
-    TypeSpecifier    go to state 112
-    Expr             go to state 113
-    AssignExpr       go to state 60
-    ConditionalExpr  go to state 61
-    LogicalOrExpr    go to state 62
-    LogicalAndExpr   go to state 63
-    EqualExpr        go to state 64
-    RelationalExpr   go to state 65
-    AddExpr          go to state 66
-    MultExpr         go to state 67
-    UnaryExpr        go to state 68
-    UnaryOp          go to state 69
-    PostfixExpr      go to state 70
-    PrimExpr         go to state 71
-    Condition        go to state 114
-
-
-state 79
-
-   93 IterStmt: T_For T_LeftParen . ForInitStmt ForRestStmt T_RightParen StmtNoNewScope
-
-    T_Void           shift, and go to state 1
-    T_Bool           shift, and go to state 2
-    T_Int            shift, and go to state 3
-    T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Vec2           shift, and go to state 5
-    T_Vec3           shift, and go to state 6
-    T_Vec4           shift, and go to state 7
-    T_Mat2           shift, and go to state 8
-    T_Mat3           shift, and go to state 9
-    T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Semicolon      shift, and go to state 41
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
     VarDecl                 go to state 115
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
     FnDeclarator            go to state 18
     FnHeaderWithParameters  go to state 19
     FnHeader                go to state 20
     ExprStmt                go to state 116
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
     ForInitStmt             go to state 117
+
+
+state 79
+
+   83 SelectionStmt: T_If T_LeftParen . Expr T_RightParen SelectionRestStmt
+
+    T_Void           shift, and go to state 1
+    T_Bool           shift, and go to state 2
+    T_Int            shift, and go to state 3
+    T_Float          shift, and go to state 4
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Vec2           shift, and go to state 5
+    T_Vec3           shift, and go to state 6
+    T_Vec4           shift, and go to state 7
+    T_Mat2           shift, and go to state 8
+    T_Mat3           shift, and go to state 9
+    T_Mat4           shift, and go to state 10
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
+
+    TypeSpecifier    go to state 83
+    Expr             go to state 118
+    AssignExpr       go to state 59
+    ConditionalExpr  go to state 60
+    LogicalOrExpr    go to state 61
+    LogicalAndExpr   go to state 62
+    EqualExpr        go to state 63
+    RelationalExpr   go to state 64
+    AddExpr          go to state 65
+    MultExpr         go to state 66
+    UnaryExpr        go to state 67
+    UnaryOp          go to state 68
+    PostfixExpr      go to state 69
+    PrimExpr         go to state 70
 
 
 state 80
 
-   82 SelectionStmt: T_If T_LeftParen . Expr T_RightParen SelectionRestStmt
-
-    T_Void           shift, and go to state 1
-    T_Bool           shift, and go to state 2
-    T_Int            shift, and go to state 3
-    T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Vec2           shift, and go to state 5
-    T_Vec3           shift, and go to state 6
-    T_Vec4           shift, and go to state 7
-    T_Mat2           shift, and go to state 8
-    T_Mat3           shift, and go to state 9
-    T_Mat4           shift, and go to state 10
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
-
-    TypeSpecifier    go to state 84
-    Expr             go to state 118
-    AssignExpr       go to state 60
-    ConditionalExpr  go to state 61
-    LogicalOrExpr    go to state 62
-    LogicalAndExpr   go to state 63
-    EqualExpr        go to state 64
-    RelationalExpr   go to state 65
-    AddExpr          go to state 66
-    MultExpr         go to state 67
-    UnaryExpr        go to state 68
-    UnaryOp          go to state 69
-    PostfixExpr      go to state 70
-    PrimExpr         go to state 71
-
-
-state 81
-
-   68 UnaryExpr: T_Inc UnaryExpr .
-
-    $default  reduce using rule 68 (UnaryExpr)
-
-
-state 82
-
-   69 UnaryExpr: T_Dec UnaryExpr .
+   69 UnaryExpr: T_Inc UnaryExpr .
 
     $default  reduce using rule 69 (UnaryExpr)
 
 
-state 83
+state 81
 
-   87 SwitchStmt: T_Switch T_LeftParen . Expr T_RightParen T_LeftBrace SwitchStmtList T_RightBrace
+   70 UnaryExpr: T_Dec UnaryExpr .
+
+    $default  reduce using rule 70 (UnaryExpr)
+
+
+state 82
+
+   88 SwitchStmt: T_Switch T_LeftParen . Expr T_RightParen T_LeftBrace SwitchStmtList T_RightBrace
 
     T_Void           shift, and go to state 1
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    TypeSpecifier    go to state 84
+    TypeSpecifier    go to state 83
     Expr             go to state 119
-    AssignExpr       go to state 60
-    ConditionalExpr  go to state 61
-    LogicalOrExpr    go to state 62
-    LogicalAndExpr   go to state 63
-    EqualExpr        go to state 64
-    RelationalExpr   go to state 65
-    AddExpr          go to state 66
-    MultExpr         go to state 67
-    UnaryExpr        go to state 68
-    UnaryOp          go to state 69
-    PostfixExpr      go to state 70
-    PrimExpr         go to state 71
+    AssignExpr       go to state 59
+    ConditionalExpr  go to state 60
+    LogicalOrExpr    go to state 61
+    LogicalAndExpr   go to state 62
+    EqualExpr        go to state 63
+    RelationalExpr   go to state 64
+    AddExpr          go to state 65
+    MultExpr         go to state 66
+    UnaryExpr        go to state 67
+    UnaryOp          go to state 68
+    PostfixExpr      go to state 69
+    PrimExpr         go to state 70
 
 
-state 84
+state 83
 
-   45 AssignExpr: TypeSpecifier . T_Identifier AssignOp AssignExpr
+   46 AssignExpr: TypeSpecifier . T_Identifier AssignOp AssignExpr
 
     T_Identifier  shift, and go to state 120
 
 
-state 85
+state 84
 
-   90 CaseLabel: T_Case Expr . T_Colon
+   91 CaseLabel: T_Case Expr . T_Colon
 
     T_Colon  shift, and go to state 121
 
 
+state 85
+
+   92 CaseLabel: T_Default T_Colon .
+
+    $default  reduce using rule 92 (CaseLabel)
+
+
 state 86
 
-   91 CaseLabel: T_Default T_Colon .
-
-    $default  reduce using rule 91 (CaseLabel)
-
-
-state 87
-
-   81 PrimExpr: T_LeftParen Expr . T_RightParen
+   82 PrimExpr: T_LeftParen Expr . T_RightParen
 
     T_RightParen  shift, and go to state 122
 
 
-state 88
+state 87
 
     9 CompoundStmtWithScope: T_LeftBrace T_RightBrace .
 
     $default  reduce using rule 9 (CompoundStmtWithScope)
 
 
-state 89
+state 88
 
    10 CompoundStmtWithScope: T_LeftBrace StmtList . T_RightBrace
    12 StmtList: StmtList . Stmt
@@ -1495,548 +1490,555 @@ state 89
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_While          shift, and go to state 33
-    T_For            shift, and go to state 34
-    T_If             shift, and go to state 35
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_Switch         shift, and go to state 38
-    T_Case           shift, and go to state 39
-    T_Default        shift, and go to state 40
-    T_LeftParen      shift, and go to state 41
+    T_While          shift, and go to state 32
+    T_For            shift, and go to state 33
+    T_If             shift, and go to state 34
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_Switch         shift, and go to state 37
+    T_Case           shift, and go to state 38
+    T_Default        shift, and go to state 39
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_LeftBrace      shift, and go to state 43
+    T_Semicolon      shift, and go to state 41
+    T_LeftBrace      shift, and go to state 42
     T_RightBrace     shift, and go to state 123
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    CompoundStmtWithScope   go to state 51
-    Stmt                    go to state 91
-    SimpleStmt              go to state 54
-    VarDecl                 go to state 55
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
+    CompoundStmtWithScope   go to state 50
+    Stmt                    go to state 90
+    SimpleStmt              go to state 53
+    VarDecl                 go to state 54
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
     FnDeclarator            go to state 18
     FnHeaderWithParameters  go to state 19
     FnHeader                go to state 20
-    ExprStmt                go to state 58
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
-    SelectionStmt           go to state 72
-    SwitchStmt              go to state 73
-    CaseLabel               go to state 74
-    IterStmt                go to state 75
+    ExprStmt                go to state 57
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
+    SelectionStmt           go to state 71
+    SwitchStmt              go to state 72
+    CaseLabel               go to state 73
+    IterStmt                go to state 74
 
 
-state 90
+state 89
 
     8 CompoundStmtNoNewScope: T_LeftBrace StmtList T_RightBrace .
 
     $default  reduce using rule 8 (CompoundStmtNoNewScope)
 
 
-state 91
+state 90
 
    12 StmtList: StmtList Stmt .
 
     $default  reduce using rule 12 (StmtList)
 
 
-state 92
+state 91
 
-   22 VarDecl: TypeSpecifier T_Identifier . T_Semicolon
-   38 FnHeader: TypeSpecifier T_Identifier . T_LeftParen
-   45 AssignExpr: TypeSpecifier T_Identifier . AssignOp AssignExpr
+   23 VarDecl: TypeSpecifier T_Identifier . T_Semicolon
+   39 FnHeader: TypeSpecifier T_Identifier . T_LeftParen
+   46 AssignExpr: TypeSpecifier T_Identifier . AssignOp AssignExpr
 
     T_Equal      shift, and go to state 106
-    T_LeftParen  shift, and go to state 31
-    T_Semicolon  shift, and go to state 32
+    T_LeftParen  shift, and go to state 30
+    T_Semicolon  shift, and go to state 124
 
-    AssignOp  go to state 124
+    AssignOp  go to state 125
+
+
+state 92
+
+   22 VarDecl: FnPrototype T_Semicolon .
+
+    $default  reduce using rule 22 (VarDecl)
 
 
 state 93
 
-   42 ExprStmt: Expr T_Semicolon .
+   43 ExprStmt: Expr T_Semicolon .
 
-    $default  reduce using rule 42 (ExprStmt)
+    $default  reduce using rule 43 (ExprStmt)
 
 
 state 94
 
-   50 LogicalOrExpr: LogicalOrExpr T_OrOp . LogicalAndExpr
+   51 LogicalOrExpr: LogicalOrExpr T_OrOp . LogicalAndExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    LogicalAndExpr  go to state 125
-    EqualExpr       go to state 64
-    RelationalExpr  go to state 65
-    AddExpr         go to state 66
-    MultExpr        go to state 67
-    UnaryExpr       go to state 126
-    UnaryOp         go to state 69
-    PostfixExpr     go to state 70
-    PrimExpr        go to state 71
+    LogicalAndExpr  go to state 126
+    EqualExpr       go to state 63
+    RelationalExpr  go to state 64
+    AddExpr         go to state 65
+    MultExpr        go to state 66
+    UnaryExpr       go to state 127
+    UnaryOp         go to state 68
+    PostfixExpr     go to state 69
+    PrimExpr        go to state 70
 
 
 state 95
 
-   52 LogicalAndExpr: LogicalAndExpr T_AndOp . EqualExpr
+   53 LogicalAndExpr: LogicalAndExpr T_AndOp . EqualExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    EqualExpr       go to state 127
-    RelationalExpr  go to state 65
-    AddExpr         go to state 66
-    MultExpr        go to state 67
-    UnaryExpr       go to state 126
-    UnaryOp         go to state 69
-    PostfixExpr     go to state 70
-    PrimExpr        go to state 71
+    EqualExpr       go to state 128
+    RelationalExpr  go to state 64
+    AddExpr         go to state 65
+    MultExpr        go to state 66
+    UnaryExpr       go to state 127
+    UnaryOp         go to state 68
+    PostfixExpr     go to state 69
+    PrimExpr        go to state 70
 
 
 state 96
 
-   55 EqualExpr: EqualExpr T_NotEqual . RelationalExpr
+   56 EqualExpr: EqualExpr T_NotEqual . RelationalExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    RelationalExpr  go to state 128
-    AddExpr         go to state 66
-    MultExpr        go to state 67
-    UnaryExpr       go to state 126
-    UnaryOp         go to state 69
-    PostfixExpr     go to state 70
-    PrimExpr        go to state 71
+    RelationalExpr  go to state 129
+    AddExpr         go to state 65
+    MultExpr        go to state 66
+    UnaryExpr       go to state 127
+    UnaryOp         go to state 68
+    PostfixExpr     go to state 69
+    PrimExpr        go to state 70
 
 
 state 97
 
-   54 EqualExpr: EqualExpr T_EqualOp . RelationalExpr
+   55 EqualExpr: EqualExpr T_EqualOp . RelationalExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    RelationalExpr  go to state 129
-    AddExpr         go to state 66
-    MultExpr        go to state 67
-    UnaryExpr       go to state 126
-    UnaryOp         go to state 69
-    PostfixExpr     go to state 70
-    PrimExpr        go to state 71
+    RelationalExpr  go to state 130
+    AddExpr         go to state 65
+    MultExpr        go to state 66
+    UnaryExpr       go to state 127
+    UnaryOp         go to state 68
+    PostfixExpr     go to state 69
+    PrimExpr        go to state 70
 
 
 state 98
 
-   59 RelationalExpr: RelationalExpr T_LessEqual . AddExpr
+   60 RelationalExpr: RelationalExpr T_LessEqual . AddExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    AddExpr      go to state 130
-    MultExpr     go to state 67
-    UnaryExpr    go to state 126
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    AddExpr      go to state 131
+    MultExpr     go to state 66
+    UnaryExpr    go to state 127
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
 state 99
 
-   60 RelationalExpr: RelationalExpr T_GreaterEqual . AddExpr
+   61 RelationalExpr: RelationalExpr T_GreaterEqual . AddExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    AddExpr      go to state 131
-    MultExpr     go to state 67
-    UnaryExpr    go to state 126
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    AddExpr      go to state 132
+    MultExpr     go to state 66
+    UnaryExpr    go to state 127
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
 state 100
 
-   57 RelationalExpr: RelationalExpr T_LeftAngle . AddExpr
+   58 RelationalExpr: RelationalExpr T_LeftAngle . AddExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    AddExpr      go to state 132
-    MultExpr     go to state 67
-    UnaryExpr    go to state 126
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    AddExpr      go to state 133
+    MultExpr     go to state 66
+    UnaryExpr    go to state 127
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
 state 101
 
-   58 RelationalExpr: RelationalExpr T_RightAngle . AddExpr
+   59 RelationalExpr: RelationalExpr T_RightAngle . AddExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    AddExpr      go to state 133
-    MultExpr     go to state 67
-    UnaryExpr    go to state 126
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    AddExpr      go to state 134
+    MultExpr     go to state 66
+    UnaryExpr    go to state 127
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
 state 102
 
-   62 AddExpr: AddExpr T_Plus . MultExpr
+   63 AddExpr: AddExpr T_Plus . MultExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    MultExpr     go to state 134
-    UnaryExpr    go to state 126
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    MultExpr     go to state 135
+    UnaryExpr    go to state 127
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
 state 103
 
-   63 AddExpr: AddExpr T_Dash . MultExpr
+   64 AddExpr: AddExpr T_Dash . MultExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    MultExpr     go to state 135
-    UnaryExpr    go to state 126
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    MultExpr     go to state 136
+    UnaryExpr    go to state 127
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
 state 104
 
-   65 MultExpr: MultExpr T_Star . UnaryExpr
+   66 MultExpr: MultExpr T_Star . UnaryExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    UnaryExpr    go to state 136
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    UnaryExpr    go to state 137
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
 state 105
 
-   66 MultExpr: MultExpr T_Slash . UnaryExpr
+   67 MultExpr: MultExpr T_Slash . UnaryExpr
 
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    UnaryExpr    go to state 137
-    UnaryOp      go to state 69
-    PostfixExpr  go to state 70
-    PrimExpr     go to state 71
+    UnaryExpr    go to state 138
+    UnaryOp      go to state 68
+    PostfixExpr  go to state 69
+    PrimExpr     go to state 70
 
 
 state 106
 
-   47 AssignOp: T_Equal .
+   48 AssignOp: T_Equal .
 
-    $default  reduce using rule 47 (AssignOp)
+    $default  reduce using rule 48 (AssignOp)
 
 
 state 107
 
-   46 AssignExpr: UnaryExpr AssignOp . AssignExpr
+   47 AssignExpr: UnaryExpr AssignOp . AssignExpr
 
     T_Void           shift, and go to state 1
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    TypeSpecifier    go to state 84
-    AssignExpr       go to state 138
-    ConditionalExpr  go to state 61
-    LogicalOrExpr    go to state 62
-    LogicalAndExpr   go to state 63
-    EqualExpr        go to state 64
-    RelationalExpr   go to state 65
-    AddExpr          go to state 66
-    MultExpr         go to state 67
-    UnaryExpr        go to state 68
-    UnaryOp          go to state 69
-    PostfixExpr      go to state 70
-    PrimExpr         go to state 71
+    TypeSpecifier    go to state 83
+    AssignExpr       go to state 139
+    ConditionalExpr  go to state 60
+    LogicalOrExpr    go to state 61
+    LogicalAndExpr   go to state 62
+    EqualExpr        go to state 63
+    RelationalExpr   go to state 64
+    AddExpr          go to state 65
+    MultExpr         go to state 66
+    UnaryExpr        go to state 67
+    UnaryOp          go to state 68
+    PostfixExpr      go to state 69
+    PrimExpr         go to state 70
 
 
 state 108
 
-   70 UnaryExpr: UnaryOp UnaryExpr .
+   71 UnaryExpr: UnaryOp UnaryExpr .
 
-    $default  reduce using rule 70 (UnaryExpr)
+    $default  reduce using rule 71 (UnaryExpr)
 
 
 state 109
 
-   75 PostfixExpr: PostfixExpr T_Inc .
-
-    $default  reduce using rule 75 (PostfixExpr)
-
-
-state 110
-
-   76 PostfixExpr: PostfixExpr T_Dec .
+   76 PostfixExpr: PostfixExpr T_Inc .
 
     $default  reduce using rule 76 (PostfixExpr)
 
 
+state 110
+
+   77 PostfixExpr: PostfixExpr T_Dec .
+
+    $default  reduce using rule 77 (PostfixExpr)
+
+
 state 111
 
-   74 PostfixExpr: PostfixExpr T_Dot . T_FieldSelection
+   75 PostfixExpr: PostfixExpr T_Dot . T_FieldSelection
 
-    T_FieldSelection  shift, and go to state 139
+    T_FieldSelection  shift, and go to state 140
 
 
 state 112
 
-   45 AssignExpr: TypeSpecifier . T_Identifier AssignOp AssignExpr
-   97 Condition: TypeSpecifier . T_Identifier T_Equal Initializer
+   46 AssignExpr: TypeSpecifier . T_Identifier AssignOp AssignExpr
+   98 Condition: TypeSpecifier . T_Identifier T_Equal Initializer
 
-    T_Identifier  shift, and go to state 140
+    T_Identifier  shift, and go to state 141
 
 
 state 113
 
-   96 Condition: Expr .
+   97 Condition: Expr .
 
-    $default  reduce using rule 96 (Condition)
+    $default  reduce using rule 97 (Condition)
 
 
 state 114
 
-   92 IterStmt: T_While T_LeftParen Condition . T_RightParen StmtNoNewScope
+   93 IterStmt: T_While T_LeftParen Condition . T_RightParen StmtNoNewScope
 
-    T_RightParen  shift, and go to state 141
+    T_RightParen  shift, and go to state 142
 
 
 state 115
 
-  100 ForInitStmt: VarDecl .
+  101 ForInitStmt: VarDecl .
 
-    $default  reduce using rule 100 (ForInitStmt)
+    $default  reduce using rule 101 (ForInitStmt)
 
 
 state 116
 
-   99 ForInitStmt: ExprStmt .
+  100 ForInitStmt: ExprStmt .
 
-    $default  reduce using rule 99 (ForInitStmt)
+    $default  reduce using rule 100 (ForInitStmt)
 
 
 state 117
 
-   93 IterStmt: T_For T_LeftParen ForInitStmt . ForRestStmt T_RightParen StmtNoNewScope
+   94 IterStmt: T_For T_LeftParen ForInitStmt . ForRestStmt T_RightParen StmtNoNewScope
 
     T_Void           shift, and go to state 1
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
-    ";"              shift, and go to state 142
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
+    ";"              shift, and go to state 143
 
     TypeSpecifier    go to state 112
     Expr             go to state 113
-    AssignExpr       go to state 60
-    ConditionalExpr  go to state 61
-    LogicalOrExpr    go to state 62
-    LogicalAndExpr   go to state 63
-    EqualExpr        go to state 64
-    RelationalExpr   go to state 65
-    AddExpr          go to state 66
-    MultExpr         go to state 67
-    UnaryExpr        go to state 68
-    UnaryOp          go to state 69
-    PostfixExpr      go to state 70
-    PrimExpr         go to state 71
-    Condition        go to state 143
-    ForRestStmt      go to state 144
-    Conditionopt     go to state 145
+    AssignExpr       go to state 59
+    ConditionalExpr  go to state 60
+    LogicalOrExpr    go to state 61
+    LogicalAndExpr   go to state 62
+    EqualExpr        go to state 63
+    RelationalExpr   go to state 64
+    AddExpr          go to state 65
+    MultExpr         go to state 66
+    UnaryExpr        go to state 67
+    UnaryOp          go to state 68
+    PostfixExpr      go to state 69
+    PrimExpr         go to state 70
+    Condition        go to state 144
+    ForRestStmt      go to state 145
+    Conditionopt     go to state 146
 
 
 state 118
 
-   82 SelectionStmt: T_If T_LeftParen Expr . T_RightParen SelectionRestStmt
-
-    T_RightParen  shift, and go to state 146
-
-
-state 119
-
-   87 SwitchStmt: T_Switch T_LeftParen Expr . T_RightParen T_LeftBrace SwitchStmtList T_RightBrace
+   83 SelectionStmt: T_If T_LeftParen Expr . T_RightParen SelectionRestStmt
 
     T_RightParen  shift, and go to state 147
 
 
+state 119
+
+   88 SwitchStmt: T_Switch T_LeftParen Expr . T_RightParen T_LeftBrace SwitchStmtList T_RightBrace
+
+    T_RightParen  shift, and go to state 148
+
+
 state 120
 
-   45 AssignExpr: TypeSpecifier T_Identifier . AssignOp AssignExpr
+   46 AssignExpr: TypeSpecifier T_Identifier . AssignOp AssignExpr
 
     T_Equal  shift, and go to state 106
 
-    AssignOp  go to state 124
+    AssignOp  go to state 125
 
 
 state 121
 
-   90 CaseLabel: T_Case Expr T_Colon .
+   91 CaseLabel: T_Case Expr T_Colon .
 
-    $default  reduce using rule 90 (CaseLabel)
+    $default  reduce using rule 91 (CaseLabel)
 
 
 state 122
 
-   81 PrimExpr: T_LeftParen Expr T_RightParen .
+   82 PrimExpr: T_LeftParen Expr T_RightParen .
 
-    $default  reduce using rule 81 (PrimExpr)
+    $default  reduce using rule 82 (PrimExpr)
 
 
 state 123
@@ -2048,79 +2050,102 @@ state 123
 
 state 124
 
-   45 AssignExpr: TypeSpecifier T_Identifier AssignOp . AssignExpr
+   23 VarDecl: TypeSpecifier T_Identifier T_Semicolon .
+
+    $default  reduce using rule 23 (VarDecl)
+
+
+state 125
+
+   46 AssignExpr: TypeSpecifier T_Identifier AssignOp . AssignExpr
 
     T_Void           shift, and go to state 1
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    TypeSpecifier    go to state 84
-    AssignExpr       go to state 148
-    ConditionalExpr  go to state 61
-    LogicalOrExpr    go to state 62
-    LogicalAndExpr   go to state 63
-    EqualExpr        go to state 64
-    RelationalExpr   go to state 65
-    AddExpr          go to state 66
-    MultExpr         go to state 67
-    UnaryExpr        go to state 68
-    UnaryOp          go to state 69
-    PostfixExpr      go to state 70
-    PrimExpr         go to state 71
-
-
-state 125
-
-   50 LogicalOrExpr: LogicalOrExpr T_OrOp LogicalAndExpr .
-   52 LogicalAndExpr: LogicalAndExpr . T_AndOp EqualExpr
-
-    T_AndOp  shift, and go to state 95
-
-    $default  reduce using rule 50 (LogicalOrExpr)
+    TypeSpecifier    go to state 83
+    AssignExpr       go to state 149
+    ConditionalExpr  go to state 60
+    LogicalOrExpr    go to state 61
+    LogicalAndExpr   go to state 62
+    EqualExpr        go to state 63
+    RelationalExpr   go to state 64
+    AddExpr          go to state 65
+    MultExpr         go to state 66
+    UnaryExpr        go to state 67
+    UnaryOp          go to state 68
+    PostfixExpr      go to state 69
+    PrimExpr         go to state 70
 
 
 state 126
 
-   64 MultExpr: UnaryExpr .
+   51 LogicalOrExpr: LogicalOrExpr T_OrOp LogicalAndExpr .
+   53 LogicalAndExpr: LogicalAndExpr . T_AndOp EqualExpr
 
-    $default  reduce using rule 64 (MultExpr)
+    T_AndOp  shift, and go to state 95
+
+    $default  reduce using rule 51 (LogicalOrExpr)
 
 
 state 127
 
-   52 LogicalAndExpr: LogicalAndExpr T_AndOp EqualExpr .
-   54 EqualExpr: EqualExpr . T_EqualOp RelationalExpr
-   55          | EqualExpr . T_NotEqual RelationalExpr
+   65 MultExpr: UnaryExpr .
 
-    T_NotEqual  shift, and go to state 96
-    T_EqualOp   shift, and go to state 97
-
-    $default  reduce using rule 52 (LogicalAndExpr)
+    $default  reduce using rule 65 (MultExpr)
 
 
 state 128
 
-   55 EqualExpr: EqualExpr T_NotEqual RelationalExpr .
-   57 RelationalExpr: RelationalExpr . T_LeftAngle AddExpr
-   58               | RelationalExpr . T_RightAngle AddExpr
-   59               | RelationalExpr . T_LessEqual AddExpr
-   60               | RelationalExpr . T_GreaterEqual AddExpr
+   53 LogicalAndExpr: LogicalAndExpr T_AndOp EqualExpr .
+   55 EqualExpr: EqualExpr . T_EqualOp RelationalExpr
+   56          | EqualExpr . T_NotEqual RelationalExpr
+
+    T_NotEqual  shift, and go to state 96
+    T_EqualOp   shift, and go to state 97
+
+    $default  reduce using rule 53 (LogicalAndExpr)
+
+
+state 129
+
+   56 EqualExpr: EqualExpr T_NotEqual RelationalExpr .
+   58 RelationalExpr: RelationalExpr . T_LeftAngle AddExpr
+   59               | RelationalExpr . T_RightAngle AddExpr
+   60               | RelationalExpr . T_LessEqual AddExpr
+   61               | RelationalExpr . T_GreaterEqual AddExpr
+
+    T_LessEqual     shift, and go to state 98
+    T_GreaterEqual  shift, and go to state 99
+    T_LeftAngle     shift, and go to state 100
+    T_RightAngle    shift, and go to state 101
+
+    $default  reduce using rule 56 (EqualExpr)
+
+
+state 130
+
+   55 EqualExpr: EqualExpr T_EqualOp RelationalExpr .
+   58 RelationalExpr: RelationalExpr . T_LeftAngle AddExpr
+   59               | RelationalExpr . T_RightAngle AddExpr
+   60               | RelationalExpr . T_LessEqual AddExpr
+   61               | RelationalExpr . T_GreaterEqual AddExpr
 
     T_LessEqual     shift, and go to state 98
     T_GreaterEqual  shift, and go to state 99
@@ -2130,39 +2155,11 @@ state 128
     $default  reduce using rule 55 (EqualExpr)
 
 
-state 129
-
-   54 EqualExpr: EqualExpr T_EqualOp RelationalExpr .
-   57 RelationalExpr: RelationalExpr . T_LeftAngle AddExpr
-   58               | RelationalExpr . T_RightAngle AddExpr
-   59               | RelationalExpr . T_LessEqual AddExpr
-   60               | RelationalExpr . T_GreaterEqual AddExpr
-
-    T_LessEqual     shift, and go to state 98
-    T_GreaterEqual  shift, and go to state 99
-    T_LeftAngle     shift, and go to state 100
-    T_RightAngle    shift, and go to state 101
-
-    $default  reduce using rule 54 (EqualExpr)
-
-
-state 130
-
-   59 RelationalExpr: RelationalExpr T_LessEqual AddExpr .
-   62 AddExpr: AddExpr . T_Plus MultExpr
-   63        | AddExpr . T_Dash MultExpr
-
-    T_Plus  shift, and go to state 102
-    T_Dash  shift, and go to state 103
-
-    $default  reduce using rule 59 (RelationalExpr)
-
-
 state 131
 
-   60 RelationalExpr: RelationalExpr T_GreaterEqual AddExpr .
-   62 AddExpr: AddExpr . T_Plus MultExpr
-   63        | AddExpr . T_Dash MultExpr
+   60 RelationalExpr: RelationalExpr T_LessEqual AddExpr .
+   63 AddExpr: AddExpr . T_Plus MultExpr
+   64        | AddExpr . T_Dash MultExpr
 
     T_Plus  shift, and go to state 102
     T_Dash  shift, and go to state 103
@@ -2172,21 +2169,21 @@ state 131
 
 state 132
 
-   57 RelationalExpr: RelationalExpr T_LeftAngle AddExpr .
-   62 AddExpr: AddExpr . T_Plus MultExpr
-   63        | AddExpr . T_Dash MultExpr
+   61 RelationalExpr: RelationalExpr T_GreaterEqual AddExpr .
+   63 AddExpr: AddExpr . T_Plus MultExpr
+   64        | AddExpr . T_Dash MultExpr
 
     T_Plus  shift, and go to state 102
     T_Dash  shift, and go to state 103
 
-    $default  reduce using rule 57 (RelationalExpr)
+    $default  reduce using rule 61 (RelationalExpr)
 
 
 state 133
 
-   58 RelationalExpr: RelationalExpr T_RightAngle AddExpr .
-   62 AddExpr: AddExpr . T_Plus MultExpr
-   63        | AddExpr . T_Dash MultExpr
+   58 RelationalExpr: RelationalExpr T_LeftAngle AddExpr .
+   63 AddExpr: AddExpr . T_Plus MultExpr
+   64        | AddExpr . T_Dash MultExpr
 
     T_Plus  shift, and go to state 102
     T_Dash  shift, and go to state 103
@@ -2196,21 +2193,21 @@ state 133
 
 state 134
 
-   62 AddExpr: AddExpr T_Plus MultExpr .
-   65 MultExpr: MultExpr . T_Star UnaryExpr
-   66         | MultExpr . T_Slash UnaryExpr
+   59 RelationalExpr: RelationalExpr T_RightAngle AddExpr .
+   63 AddExpr: AddExpr . T_Plus MultExpr
+   64        | AddExpr . T_Dash MultExpr
 
-    T_Star   shift, and go to state 104
-    T_Slash  shift, and go to state 105
+    T_Plus  shift, and go to state 102
+    T_Dash  shift, and go to state 103
 
-    $default  reduce using rule 62 (AddExpr)
+    $default  reduce using rule 59 (RelationalExpr)
 
 
 state 135
 
-   63 AddExpr: AddExpr T_Dash MultExpr .
-   65 MultExpr: MultExpr . T_Star UnaryExpr
-   66         | MultExpr . T_Slash UnaryExpr
+   63 AddExpr: AddExpr T_Plus MultExpr .
+   66 MultExpr: MultExpr . T_Star UnaryExpr
+   67         | MultExpr . T_Slash UnaryExpr
 
     T_Star   shift, and go to state 104
     T_Slash  shift, and go to state 105
@@ -2220,665 +2217,677 @@ state 135
 
 state 136
 
-   65 MultExpr: MultExpr T_Star UnaryExpr .
+   64 AddExpr: AddExpr T_Dash MultExpr .
+   66 MultExpr: MultExpr . T_Star UnaryExpr
+   67         | MultExpr . T_Slash UnaryExpr
 
-    $default  reduce using rule 65 (MultExpr)
+    T_Star   shift, and go to state 104
+    T_Slash  shift, and go to state 105
+
+    $default  reduce using rule 64 (AddExpr)
 
 
 state 137
 
-   66 MultExpr: MultExpr T_Slash UnaryExpr .
+   66 MultExpr: MultExpr T_Star UnaryExpr .
 
     $default  reduce using rule 66 (MultExpr)
 
 
 state 138
 
-   46 AssignExpr: UnaryExpr AssignOp AssignExpr .
+   67 MultExpr: MultExpr T_Slash UnaryExpr .
 
-    $default  reduce using rule 46 (AssignExpr)
+    $default  reduce using rule 67 (MultExpr)
 
 
 state 139
 
-   74 PostfixExpr: PostfixExpr T_Dot T_FieldSelection .
+   47 AssignExpr: UnaryExpr AssignOp AssignExpr .
 
-    $default  reduce using rule 74 (PostfixExpr)
+    $default  reduce using rule 47 (AssignExpr)
 
 
 state 140
 
-   45 AssignExpr: TypeSpecifier T_Identifier . AssignOp AssignExpr
-   97 Condition: TypeSpecifier T_Identifier . T_Equal Initializer
+   75 PostfixExpr: PostfixExpr T_Dot T_FieldSelection .
 
-    T_Equal  shift, and go to state 149
-
-    AssignOp  go to state 124
+    $default  reduce using rule 75 (PostfixExpr)
 
 
 state 141
 
-   92 IterStmt: T_While T_LeftParen Condition T_RightParen . StmtNoNewScope
+   46 AssignExpr: TypeSpecifier T_Identifier . AssignOp AssignExpr
+   98 Condition: TypeSpecifier T_Identifier . T_Equal Initializer
 
-    T_Void           shift, and go to state 1
-    T_Bool           shift, and go to state 2
-    T_Int            shift, and go to state 3
-    T_Float          shift, and go to state 4
-    T_While          shift, and go to state 33
-    T_For            shift, and go to state 34
-    T_If             shift, and go to state 35
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_Switch         shift, and go to state 38
-    T_Case           shift, and go to state 39
-    T_Default        shift, and go to state 40
-    T_LeftParen      shift, and go to state 41
-    T_Vec2           shift, and go to state 5
-    T_Vec3           shift, and go to state 6
-    T_Vec4           shift, and go to state 7
-    T_Mat2           shift, and go to state 8
-    T_Mat3           shift, and go to state 9
-    T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_LeftBrace      shift, and go to state 25
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Equal  shift, and go to state 150
 
-    CompoundStmtNoNewScope  go to state 150
-    SimpleStmt              go to state 151
-    VarDecl                 go to state 55
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
-    FnDeclarator            go to state 18
-    FnHeaderWithParameters  go to state 19
-    FnHeader                go to state 20
-    ExprStmt                go to state 58
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
-    SelectionStmt           go to state 72
-    SwitchStmt              go to state 73
-    CaseLabel               go to state 74
-    IterStmt                go to state 75
-    StmtNoNewScope          go to state 152
+    AssignOp  go to state 125
 
 
 state 142
 
-  104 Conditionopt: ";" .
+   93 IterStmt: T_While T_LeftParen Condition T_RightParen . StmtNoNewScope
 
-    $default  reduce using rule 104 (Conditionopt)
+    T_Void           shift, and go to state 1
+    T_Bool           shift, and go to state 2
+    T_Int            shift, and go to state 3
+    T_Float          shift, and go to state 4
+    T_While          shift, and go to state 32
+    T_For            shift, and go to state 33
+    T_If             shift, and go to state 34
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_Switch         shift, and go to state 37
+    T_Case           shift, and go to state 38
+    T_Default        shift, and go to state 39
+    T_LeftParen      shift, and go to state 40
+    T_Vec2           shift, and go to state 5
+    T_Vec3           shift, and go to state 6
+    T_Vec4           shift, and go to state 7
+    T_Mat2           shift, and go to state 8
+    T_Mat3           shift, and go to state 9
+    T_Mat4           shift, and go to state 10
+    T_Semicolon      shift, and go to state 41
+    T_LeftBrace      shift, and go to state 24
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
+
+    CompoundStmtNoNewScope  go to state 151
+    SimpleStmt              go to state 152
+    VarDecl                 go to state 54
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
+    FnDeclarator            go to state 18
+    FnHeaderWithParameters  go to state 19
+    FnHeader                go to state 20
+    ExprStmt                go to state 57
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
+    SelectionStmt           go to state 71
+    SwitchStmt              go to state 72
+    CaseLabel               go to state 73
+    IterStmt                go to state 74
+    StmtNoNewScope          go to state 153
 
 
 state 143
 
-  103 Conditionopt: Condition .
+  105 Conditionopt: ";" .
 
-    $default  reduce using rule 103 (Conditionopt)
+    $default  reduce using rule 105 (Conditionopt)
 
 
 state 144
 
-   93 IterStmt: T_For T_LeftParen ForInitStmt ForRestStmt . T_RightParen StmtNoNewScope
+  104 Conditionopt: Condition .
 
-    T_RightParen  shift, and go to state 153
+    $default  reduce using rule 104 (Conditionopt)
 
 
 state 145
 
-  101 ForRestStmt: Conditionopt . T_Semicolon
-  102            | Conditionopt . T_Semicolon Expr
+   94 IterStmt: T_For T_LeftParen ForInitStmt ForRestStmt . T_RightParen StmtNoNewScope
 
-    T_Semicolon  shift, and go to state 154
+    T_RightParen  shift, and go to state 154
 
 
 state 146
 
-   82 SelectionStmt: T_If T_LeftParen Expr T_RightParen . SelectionRestStmt
+  102 ForRestStmt: Conditionopt . T_Semicolon
+  103            | Conditionopt . T_Semicolon Expr
 
-    T_Void           shift, and go to state 1
-    T_Bool           shift, and go to state 2
-    T_Int            shift, and go to state 3
-    T_Float          shift, and go to state 4
-    T_While          shift, and go to state 33
-    T_For            shift, and go to state 34
-    T_If             shift, and go to state 35
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_Switch         shift, and go to state 38
-    T_Case           shift, and go to state 39
-    T_Default        shift, and go to state 40
-    T_LeftParen      shift, and go to state 41
-    T_Vec2           shift, and go to state 5
-    T_Vec3           shift, and go to state 6
-    T_Vec4           shift, and go to state 7
-    T_Mat2           shift, and go to state 8
-    T_Mat3           shift, and go to state 9
-    T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_LeftBrace      shift, and go to state 25
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
-
-    CompoundStmtNoNewScope  go to state 155
-    SimpleStmt              go to state 156
-    VarDecl                 go to state 55
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
-    FnDeclarator            go to state 18
-    FnHeaderWithParameters  go to state 19
-    FnHeader                go to state 20
-    ExprStmt                go to state 58
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
-    SelectionStmt           go to state 72
-    SelectionRestStmt       go to state 157
-    StmtWithScope           go to state 158
-    SwitchStmt              go to state 73
-    CaseLabel               go to state 74
-    IterStmt                go to state 75
+    T_Semicolon  shift, and go to state 155
 
 
 state 147
 
-   87 SwitchStmt: T_Switch T_LeftParen Expr T_RightParen . T_LeftBrace SwitchStmtList T_RightBrace
-
-    T_LeftBrace  shift, and go to state 159
-
-
-state 148
-
-   45 AssignExpr: TypeSpecifier T_Identifier AssignOp AssignExpr .
-
-    $default  reduce using rule 45 (AssignExpr)
-
-
-state 149
-
-   47 AssignOp: T_Equal .
-   97 Condition: TypeSpecifier T_Identifier T_Equal . Initializer
+   83 SelectionStmt: T_If T_LeftParen Expr T_RightParen . SelectionRestStmt
 
     T_Void           shift, and go to state 1
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
+    T_While          shift, and go to state 32
+    T_For            shift, and go to state 33
+    T_If             shift, and go to state 34
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_Switch         shift, and go to state 37
+    T_Case           shift, and go to state 38
+    T_Default        shift, and go to state 39
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Semicolon      shift, and go to state 41
+    T_LeftBrace      shift, and go to state 24
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    T_Void           [reduce using rule 47 (AssignOp)]
-    T_Bool           [reduce using rule 47 (AssignOp)]
-    T_Int            [reduce using rule 47 (AssignOp)]
-    T_Float          [reduce using rule 47 (AssignOp)]
-    T_Inc            [reduce using rule 47 (AssignOp)]
-    T_Dec            [reduce using rule 47 (AssignOp)]
-    T_LeftParen      [reduce using rule 47 (AssignOp)]
-    T_Vec2           [reduce using rule 47 (AssignOp)]
-    T_Vec3           [reduce using rule 47 (AssignOp)]
-    T_Vec4           [reduce using rule 47 (AssignOp)]
-    T_Mat2           [reduce using rule 47 (AssignOp)]
-    T_Mat3           [reduce using rule 47 (AssignOp)]
-    T_Mat4           [reduce using rule 47 (AssignOp)]
-    T_Plus           [reduce using rule 47 (AssignOp)]
-    T_Dash           [reduce using rule 47 (AssignOp)]
-    T_Identifier     [reduce using rule 47 (AssignOp)]
-    T_IntConstant    [reduce using rule 47 (AssignOp)]
-    T_FloatConstant  [reduce using rule 47 (AssignOp)]
-    T_BoolConstant   [reduce using rule 47 (AssignOp)]
+    CompoundStmtNoNewScope  go to state 156
+    SimpleStmt              go to state 157
+    VarDecl                 go to state 54
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
+    FnDeclarator            go to state 18
+    FnHeaderWithParameters  go to state 19
+    FnHeader                go to state 20
+    ExprStmt                go to state 57
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
+    SelectionStmt           go to state 71
+    SelectionRestStmt       go to state 158
+    StmtWithScope           go to state 159
+    SwitchStmt              go to state 72
+    CaseLabel               go to state 73
+    IterStmt                go to state 74
 
-    TypeSpecifier    go to state 84
-    AssignExpr       go to state 160
-    ConditionalExpr  go to state 61
-    LogicalOrExpr    go to state 62
-    LogicalAndExpr   go to state 63
-    EqualExpr        go to state 64
-    RelationalExpr   go to state 65
-    AddExpr          go to state 66
-    MultExpr         go to state 67
-    UnaryExpr        go to state 68
-    UnaryOp          go to state 69
-    PostfixExpr      go to state 70
-    PrimExpr         go to state 71
-    Initializer      go to state 161
+
+state 148
+
+   88 SwitchStmt: T_Switch T_LeftParen Expr T_RightParen . T_LeftBrace SwitchStmtList T_RightBrace
+
+    T_LeftBrace  shift, and go to state 160
+
+
+state 149
+
+   46 AssignExpr: TypeSpecifier T_Identifier AssignOp AssignExpr .
+
+    $default  reduce using rule 46 (AssignExpr)
 
 
 state 150
 
-   94 StmtNoNewScope: CompoundStmtNoNewScope .
+   48 AssignOp: T_Equal .
+   98 Condition: TypeSpecifier T_Identifier T_Equal . Initializer
 
-    $default  reduce using rule 94 (StmtNoNewScope)
+    T_Void           shift, and go to state 1
+    T_Bool           shift, and go to state 2
+    T_Int            shift, and go to state 3
+    T_Float          shift, and go to state 4
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Vec2           shift, and go to state 5
+    T_Vec3           shift, and go to state 6
+    T_Vec4           shift, and go to state 7
+    T_Mat2           shift, and go to state 8
+    T_Mat3           shift, and go to state 9
+    T_Mat4           shift, and go to state 10
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
+
+    T_Void           [reduce using rule 48 (AssignOp)]
+    T_Bool           [reduce using rule 48 (AssignOp)]
+    T_Int            [reduce using rule 48 (AssignOp)]
+    T_Float          [reduce using rule 48 (AssignOp)]
+    T_Inc            [reduce using rule 48 (AssignOp)]
+    T_Dec            [reduce using rule 48 (AssignOp)]
+    T_LeftParen      [reduce using rule 48 (AssignOp)]
+    T_Vec2           [reduce using rule 48 (AssignOp)]
+    T_Vec3           [reduce using rule 48 (AssignOp)]
+    T_Vec4           [reduce using rule 48 (AssignOp)]
+    T_Mat2           [reduce using rule 48 (AssignOp)]
+    T_Mat3           [reduce using rule 48 (AssignOp)]
+    T_Mat4           [reduce using rule 48 (AssignOp)]
+    T_Plus           [reduce using rule 48 (AssignOp)]
+    T_Dash           [reduce using rule 48 (AssignOp)]
+    T_Identifier     [reduce using rule 48 (AssignOp)]
+    T_IntConstant    [reduce using rule 48 (AssignOp)]
+    T_FloatConstant  [reduce using rule 48 (AssignOp)]
+    T_BoolConstant   [reduce using rule 48 (AssignOp)]
+
+    TypeSpecifier    go to state 83
+    AssignExpr       go to state 161
+    ConditionalExpr  go to state 60
+    LogicalOrExpr    go to state 61
+    LogicalAndExpr   go to state 62
+    EqualExpr        go to state 63
+    RelationalExpr   go to state 64
+    AddExpr          go to state 65
+    MultExpr         go to state 66
+    UnaryExpr        go to state 67
+    UnaryOp          go to state 68
+    PostfixExpr      go to state 69
+    PrimExpr         go to state 70
+    Initializer      go to state 162
 
 
 state 151
 
-   95 StmtNoNewScope: SimpleStmt .
+   95 StmtNoNewScope: CompoundStmtNoNewScope .
 
     $default  reduce using rule 95 (StmtNoNewScope)
 
 
 state 152
 
-   92 IterStmt: T_While T_LeftParen Condition T_RightParen StmtNoNewScope .
+   96 StmtNoNewScope: SimpleStmt .
 
-    $default  reduce using rule 92 (IterStmt)
+    $default  reduce using rule 96 (StmtNoNewScope)
 
 
 state 153
 
-   93 IterStmt: T_For T_LeftParen ForInitStmt ForRestStmt T_RightParen . StmtNoNewScope
+   93 IterStmt: T_While T_LeftParen Condition T_RightParen StmtNoNewScope .
 
-    T_Void           shift, and go to state 1
-    T_Bool           shift, and go to state 2
-    T_Int            shift, and go to state 3
-    T_Float          shift, and go to state 4
-    T_While          shift, and go to state 33
-    T_For            shift, and go to state 34
-    T_If             shift, and go to state 35
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_Switch         shift, and go to state 38
-    T_Case           shift, and go to state 39
-    T_Default        shift, and go to state 40
-    T_LeftParen      shift, and go to state 41
-    T_Vec2           shift, and go to state 5
-    T_Vec3           shift, and go to state 6
-    T_Vec4           shift, and go to state 7
-    T_Mat2           shift, and go to state 8
-    T_Mat3           shift, and go to state 9
-    T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_LeftBrace      shift, and go to state 25
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
-
-    CompoundStmtNoNewScope  go to state 150
-    SimpleStmt              go to state 151
-    VarDecl                 go to state 55
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
-    FnDeclarator            go to state 18
-    FnHeaderWithParameters  go to state 19
-    FnHeader                go to state 20
-    ExprStmt                go to state 58
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
-    SelectionStmt           go to state 72
-    SwitchStmt              go to state 73
-    CaseLabel               go to state 74
-    IterStmt                go to state 75
-    StmtNoNewScope          go to state 162
+    $default  reduce using rule 93 (IterStmt)
 
 
 state 154
 
-  101 ForRestStmt: Conditionopt T_Semicolon .
-  102            | Conditionopt T_Semicolon . Expr
+   94 IterStmt: T_For T_LeftParen ForInitStmt ForRestStmt T_RightParen . StmtNoNewScope
 
     T_Void           shift, and go to state 1
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_LeftParen      shift, and go to state 41
+    T_While          shift, and go to state 32
+    T_For            shift, and go to state 33
+    T_If             shift, and go to state 34
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_Switch         shift, and go to state 37
+    T_Case           shift, and go to state 38
+    T_Default        shift, and go to state 39
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Semicolon      shift, and go to state 41
+    T_LeftBrace      shift, and go to state 24
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    $default  reduce using rule 101 (ForRestStmt)
-
-    TypeSpecifier    go to state 84
-    Expr             go to state 163
-    AssignExpr       go to state 60
-    ConditionalExpr  go to state 61
-    LogicalOrExpr    go to state 62
-    LogicalAndExpr   go to state 63
-    EqualExpr        go to state 64
-    RelationalExpr   go to state 65
-    AddExpr          go to state 66
-    MultExpr         go to state 67
-    UnaryExpr        go to state 68
-    UnaryOp          go to state 69
-    PostfixExpr      go to state 70
-    PrimExpr         go to state 71
+    CompoundStmtNoNewScope  go to state 151
+    SimpleStmt              go to state 152
+    VarDecl                 go to state 54
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
+    FnDeclarator            go to state 18
+    FnHeaderWithParameters  go to state 19
+    FnHeader                go to state 20
+    ExprStmt                go to state 57
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
+    SelectionStmt           go to state 71
+    SwitchStmt              go to state 72
+    CaseLabel               go to state 73
+    IterStmt                go to state 74
+    StmtNoNewScope          go to state 163
 
 
 state 155
 
-   85 StmtWithScope: CompoundStmtNoNewScope .
+  102 ForRestStmt: Conditionopt T_Semicolon .
+  103            | Conditionopt T_Semicolon . Expr
 
-    $default  reduce using rule 85 (StmtWithScope)
+    T_Void           shift, and go to state 1
+    T_Bool           shift, and go to state 2
+    T_Int            shift, and go to state 3
+    T_Float          shift, and go to state 4
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_LeftParen      shift, and go to state 40
+    T_Vec2           shift, and go to state 5
+    T_Vec3           shift, and go to state 6
+    T_Vec4           shift, and go to state 7
+    T_Mat2           shift, and go to state 8
+    T_Mat3           shift, and go to state 9
+    T_Mat4           shift, and go to state 10
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
+
+    $default  reduce using rule 102 (ForRestStmt)
+
+    TypeSpecifier    go to state 83
+    Expr             go to state 164
+    AssignExpr       go to state 59
+    ConditionalExpr  go to state 60
+    LogicalOrExpr    go to state 61
+    LogicalAndExpr   go to state 62
+    EqualExpr        go to state 63
+    RelationalExpr   go to state 64
+    AddExpr          go to state 65
+    MultExpr         go to state 66
+    UnaryExpr        go to state 67
+    UnaryOp          go to state 68
+    PostfixExpr      go to state 69
+    PrimExpr         go to state 70
 
 
 state 156
 
-   86 StmtWithScope: SimpleStmt .
+   86 StmtWithScope: CompoundStmtNoNewScope .
 
     $default  reduce using rule 86 (StmtWithScope)
 
 
 state 157
 
-   82 SelectionStmt: T_If T_LeftParen Expr T_RightParen SelectionRestStmt .
+   87 StmtWithScope: SimpleStmt .
 
-    $default  reduce using rule 82 (SelectionStmt)
+    $default  reduce using rule 87 (StmtWithScope)
 
 
 state 158
 
-   83 SelectionRestStmt: StmtWithScope . T_Else StmtWithScope
-   84                  | StmtWithScope .
+   83 SelectionStmt: T_If T_LeftParen Expr T_RightParen SelectionRestStmt .
 
-    T_Else  shift, and go to state 164
-
-    $default  reduce using rule 84 (SelectionRestStmt)
+    $default  reduce using rule 83 (SelectionStmt)
 
 
 state 159
 
-   87 SwitchStmt: T_Switch T_LeftParen Expr T_RightParen T_LeftBrace . SwitchStmtList T_RightBrace
+   84 SelectionRestStmt: StmtWithScope . T_Else StmtWithScope
+   85                  | StmtWithScope .
 
-    T_Void           shift, and go to state 1
-    T_Bool           shift, and go to state 2
-    T_Int            shift, and go to state 3
-    T_Float          shift, and go to state 4
-    T_While          shift, and go to state 33
-    T_For            shift, and go to state 34
-    T_If             shift, and go to state 35
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_Switch         shift, and go to state 38
-    T_Case           shift, and go to state 39
-    T_Default        shift, and go to state 40
-    T_LeftParen      shift, and go to state 41
-    T_Vec2           shift, and go to state 5
-    T_Vec3           shift, and go to state 6
-    T_Vec4           shift, and go to state 7
-    T_Mat2           shift, and go to state 8
-    T_Mat3           shift, and go to state 9
-    T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_LeftBrace      shift, and go to state 43
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
-    ";"              shift, and go to state 165
+    T_Else  shift, and go to state 165
 
-    CompoundStmtWithScope   go to state 51
-    StmtList                go to state 166
-    Stmt                    go to state 53
-    SimpleStmt              go to state 54
-    VarDecl                 go to state 55
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
-    FnDeclarator            go to state 18
-    FnHeaderWithParameters  go to state 19
-    FnHeader                go to state 20
-    ExprStmt                go to state 58
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
-    SelectionStmt           go to state 72
-    SwitchStmt              go to state 73
-    SwitchStmtList          go to state 167
-    CaseLabel               go to state 74
-    IterStmt                go to state 75
+    $default  reduce using rule 85 (SelectionRestStmt)
 
 
 state 160
 
-   98 Initializer: AssignExpr .
+   88 SwitchStmt: T_Switch T_LeftParen Expr T_RightParen T_LeftBrace . SwitchStmtList T_RightBrace
 
-    $default  reduce using rule 98 (Initializer)
+    T_Void           shift, and go to state 1
+    T_Bool           shift, and go to state 2
+    T_Int            shift, and go to state 3
+    T_Float          shift, and go to state 4
+    T_While          shift, and go to state 32
+    T_For            shift, and go to state 33
+    T_If             shift, and go to state 34
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_Switch         shift, and go to state 37
+    T_Case           shift, and go to state 38
+    T_Default        shift, and go to state 39
+    T_LeftParen      shift, and go to state 40
+    T_Vec2           shift, and go to state 5
+    T_Vec3           shift, and go to state 6
+    T_Vec4           shift, and go to state 7
+    T_Mat2           shift, and go to state 8
+    T_Mat3           shift, and go to state 9
+    T_Mat4           shift, and go to state 10
+    T_Semicolon      shift, and go to state 41
+    T_LeftBrace      shift, and go to state 42
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
+    ";"              shift, and go to state 166
+
+    CompoundStmtWithScope   go to state 50
+    StmtList                go to state 167
+    Stmt                    go to state 52
+    SimpleStmt              go to state 53
+    VarDecl                 go to state 54
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
+    FnDeclarator            go to state 18
+    FnHeaderWithParameters  go to state 19
+    FnHeader                go to state 20
+    ExprStmt                go to state 57
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
+    SelectionStmt           go to state 71
+    SwitchStmt              go to state 72
+    SwitchStmtList          go to state 168
+    CaseLabel               go to state 73
+    IterStmt                go to state 74
 
 
 state 161
 
-   97 Condition: TypeSpecifier T_Identifier T_Equal Initializer .
+   99 Initializer: AssignExpr .
 
-    $default  reduce using rule 97 (Condition)
+    $default  reduce using rule 99 (Initializer)
 
 
 state 162
 
-   93 IterStmt: T_For T_LeftParen ForInitStmt ForRestStmt T_RightParen StmtNoNewScope .
+   98 Condition: TypeSpecifier T_Identifier T_Equal Initializer .
 
-    $default  reduce using rule 93 (IterStmt)
+    $default  reduce using rule 98 (Condition)
 
 
 state 163
 
-  102 ForRestStmt: Conditionopt T_Semicolon Expr .
+   94 IterStmt: T_For T_LeftParen ForInitStmt ForRestStmt T_RightParen StmtNoNewScope .
 
-    $default  reduce using rule 102 (ForRestStmt)
+    $default  reduce using rule 94 (IterStmt)
 
 
 state 164
 
-   83 SelectionRestStmt: StmtWithScope T_Else . StmtWithScope
+  103 ForRestStmt: Conditionopt T_Semicolon Expr .
 
-    T_Void           shift, and go to state 1
-    T_Bool           shift, and go to state 2
-    T_Int            shift, and go to state 3
-    T_Float          shift, and go to state 4
-    T_While          shift, and go to state 33
-    T_For            shift, and go to state 34
-    T_If             shift, and go to state 35
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_Switch         shift, and go to state 38
-    T_Case           shift, and go to state 39
-    T_Default        shift, and go to state 40
-    T_LeftParen      shift, and go to state 41
-    T_Vec2           shift, and go to state 5
-    T_Vec3           shift, and go to state 6
-    T_Vec4           shift, and go to state 7
-    T_Mat2           shift, and go to state 8
-    T_Mat3           shift, and go to state 9
-    T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_LeftBrace      shift, and go to state 25
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
-
-    CompoundStmtNoNewScope  go to state 155
-    SimpleStmt              go to state 156
-    VarDecl                 go to state 55
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
-    FnDeclarator            go to state 18
-    FnHeaderWithParameters  go to state 19
-    FnHeader                go to state 20
-    ExprStmt                go to state 58
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
-    SelectionStmt           go to state 72
-    StmtWithScope           go to state 168
-    SwitchStmt              go to state 73
-    CaseLabel               go to state 74
-    IterStmt                go to state 75
+    $default  reduce using rule 103 (ForRestStmt)
 
 
 state 165
 
-   89 SwitchStmtList: ";" .
-
-    $default  reduce using rule 89 (SwitchStmtList)
-
-
-state 166
-
-   12 StmtList: StmtList . Stmt
-   88 SwitchStmtList: StmtList .
+   84 SelectionRestStmt: StmtWithScope T_Else . StmtWithScope
 
     T_Void           shift, and go to state 1
     T_Bool           shift, and go to state 2
     T_Int            shift, and go to state 3
     T_Float          shift, and go to state 4
-    T_While          shift, and go to state 33
-    T_For            shift, and go to state 34
-    T_If             shift, and go to state 35
-    T_Inc            shift, and go to state 36
-    T_Dec            shift, and go to state 37
-    T_Switch         shift, and go to state 38
-    T_Case           shift, and go to state 39
-    T_Default        shift, and go to state 40
-    T_LeftParen      shift, and go to state 41
+    T_While          shift, and go to state 32
+    T_For            shift, and go to state 33
+    T_If             shift, and go to state 34
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_Switch         shift, and go to state 37
+    T_Case           shift, and go to state 38
+    T_Default        shift, and go to state 39
+    T_LeftParen      shift, and go to state 40
     T_Vec2           shift, and go to state 5
     T_Vec3           shift, and go to state 6
     T_Vec4           shift, and go to state 7
     T_Mat2           shift, and go to state 8
     T_Mat3           shift, and go to state 9
     T_Mat4           shift, and go to state 10
-    T_Semicolon      shift, and go to state 42
-    T_LeftBrace      shift, and go to state 43
-    T_Plus           shift, and go to state 45
-    T_Dash           shift, and go to state 46
-    T_Identifier     shift, and go to state 47
-    T_IntConstant    shift, and go to state 48
-    T_FloatConstant  shift, and go to state 49
-    T_BoolConstant   shift, and go to state 50
+    T_Semicolon      shift, and go to state 41
+    T_LeftBrace      shift, and go to state 24
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
 
-    $default  reduce using rule 88 (SwitchStmtList)
-
-    CompoundStmtWithScope   go to state 51
-    Stmt                    go to state 91
-    SimpleStmt              go to state 54
-    VarDecl                 go to state 55
-    TypeSpecifier           go to state 56
-    FnPrototype             go to state 57
+    CompoundStmtNoNewScope  go to state 156
+    SimpleStmt              go to state 157
+    VarDecl                 go to state 54
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
     FnDeclarator            go to state 18
     FnHeaderWithParameters  go to state 19
     FnHeader                go to state 20
-    ExprStmt                go to state 58
-    Expr                    go to state 59
-    AssignExpr              go to state 60
-    ConditionalExpr         go to state 61
-    LogicalOrExpr           go to state 62
-    LogicalAndExpr          go to state 63
-    EqualExpr               go to state 64
-    RelationalExpr          go to state 65
-    AddExpr                 go to state 66
-    MultExpr                go to state 67
-    UnaryExpr               go to state 68
-    UnaryOp                 go to state 69
-    PostfixExpr             go to state 70
-    PrimExpr                go to state 71
-    SelectionStmt           go to state 72
-    SwitchStmt              go to state 73
-    CaseLabel               go to state 74
-    IterStmt                go to state 75
+    ExprStmt                go to state 57
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
+    SelectionStmt           go to state 71
+    StmtWithScope           go to state 169
+    SwitchStmt              go to state 72
+    CaseLabel               go to state 73
+    IterStmt                go to state 74
+
+
+state 166
+
+   90 SwitchStmtList: ";" .
+
+    $default  reduce using rule 90 (SwitchStmtList)
 
 
 state 167
 
-   87 SwitchStmt: T_Switch T_LeftParen Expr T_RightParen T_LeftBrace SwitchStmtList . T_RightBrace
+   12 StmtList: StmtList . Stmt
+   89 SwitchStmtList: StmtList .
 
-    T_RightBrace  shift, and go to state 169
+    T_Void           shift, and go to state 1
+    T_Bool           shift, and go to state 2
+    T_Int            shift, and go to state 3
+    T_Float          shift, and go to state 4
+    T_While          shift, and go to state 32
+    T_For            shift, and go to state 33
+    T_If             shift, and go to state 34
+    T_Inc            shift, and go to state 35
+    T_Dec            shift, and go to state 36
+    T_Switch         shift, and go to state 37
+    T_Case           shift, and go to state 38
+    T_Default        shift, and go to state 39
+    T_LeftParen      shift, and go to state 40
+    T_Vec2           shift, and go to state 5
+    T_Vec3           shift, and go to state 6
+    T_Vec4           shift, and go to state 7
+    T_Mat2           shift, and go to state 8
+    T_Mat3           shift, and go to state 9
+    T_Mat4           shift, and go to state 10
+    T_Semicolon      shift, and go to state 41
+    T_LeftBrace      shift, and go to state 42
+    T_Plus           shift, and go to state 44
+    T_Dash           shift, and go to state 45
+    T_Identifier     shift, and go to state 46
+    T_IntConstant    shift, and go to state 47
+    T_FloatConstant  shift, and go to state 48
+    T_BoolConstant   shift, and go to state 49
+
+    $default  reduce using rule 89 (SwitchStmtList)
+
+    CompoundStmtWithScope   go to state 50
+    Stmt                    go to state 90
+    SimpleStmt              go to state 53
+    VarDecl                 go to state 54
+    TypeSpecifier           go to state 55
+    FnPrototype             go to state 56
+    FnDeclarator            go to state 18
+    FnHeaderWithParameters  go to state 19
+    FnHeader                go to state 20
+    ExprStmt                go to state 57
+    Expr                    go to state 58
+    AssignExpr              go to state 59
+    ConditionalExpr         go to state 60
+    LogicalOrExpr           go to state 61
+    LogicalAndExpr          go to state 62
+    EqualExpr               go to state 63
+    RelationalExpr          go to state 64
+    AddExpr                 go to state 65
+    MultExpr                go to state 66
+    UnaryExpr               go to state 67
+    UnaryOp                 go to state 68
+    PostfixExpr             go to state 69
+    PrimExpr                go to state 70
+    SelectionStmt           go to state 71
+    SwitchStmt              go to state 72
+    CaseLabel               go to state 73
+    IterStmt                go to state 74
 
 
 state 168
 
-   83 SelectionRestStmt: StmtWithScope T_Else StmtWithScope .
+   88 SwitchStmt: T_Switch T_LeftParen Expr T_RightParen T_LeftBrace SwitchStmtList . T_RightBrace
 
-    $default  reduce using rule 83 (SelectionRestStmt)
+    T_RightBrace  shift, and go to state 170
 
 
 state 169
 
-   87 SwitchStmt: T_Switch T_LeftParen Expr T_RightParen T_LeftBrace SwitchStmtList T_RightBrace .
+   84 SelectionRestStmt: StmtWithScope T_Else StmtWithScope .
 
-    $default  reduce using rule 87 (SwitchStmt)
+    $default  reduce using rule 84 (SelectionRestStmt)
+
+
+state 170
+
+   88 SwitchStmt: T_Switch T_LeftParen Expr T_RightParen T_LeftBrace SwitchStmtList T_RightBrace .
+
+    $default  reduce using rule 88 (SwitchStmt)
