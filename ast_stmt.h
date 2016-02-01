@@ -177,8 +177,12 @@ class SwitchStmtError : public SwitchStmt
     const char *GetPrintNameForNode() { return "SwitchStmtError"; }
 };
 
- struct MyBlock {
-    List<VarDecl *> *vars;
-    List<Stmt *> *stmts;
-};
+ class MyBlock  
+ {
+    public:
+        List<VarDecl *> *vars;
+        List<Stmt *> *stmts;
+    public:
+        MyBlock() : vars(new List<VarDecl *>), stmts(new List<Stmt *>) {}
+ };
 #endif

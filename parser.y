@@ -159,15 +159,13 @@ Decl      :     FnDef                            { printf("Decl\n");}
           // line was working and drilling into our PrimExpr. I'm trying to get 
           // it to eventually be our original line. 
           
-FnDef    : //FnPrototype CompoundStmtNoNewScope { $$ = $1; printf("FnDef\n"); }// $1->SetFunctionBody($2); $$=$1;}
-//            FnPrototype T_LeftBrace UnaryExpr AssignOp ConditionalExpr T_Semicolon T_RightBrace { printf("hello"); } //T_LeftBrace AssignExpr T_RightBrace 
-//            FnPrototype T_LeftBrace UnaryExpr AssignOp AssignExpr T_Semicolon T_RightBrace { 
-//              FnPrototype T_LeftBrace AssignExpr T_Semicolon T_RightBrace {
-//                FnPrototype T_LeftBrace ExprStmt T_RightBrace {
-//                FnPrototype T_LeftBrace SimpleStmt T_RightBrace {
-                FnPrototype T_LeftBrace Stmt T_RightBrace {
-                            StmtBlock *sb = new StmtBlock(new List<VarDecl*>, myblock->stmts);
-                            $1->SetFunctionBody(sb);
+FnDef    : FnPrototype CompoundStmtNoNewScope {
+//                            myblock->vars = new List<VarDecl*>;
+//                            myblock->stmts = new List<Stmt*>;
+//                            StmtBlock *sb = new StmtBlock(myblock->vars, myblock->stmts);
+//                            myblock->vars = new List<VarDecl*>;
+//                            myblock->stmts = new List<Stmt*>;
+                            $1->SetFunctionBody($2);
                             $$=$1;
                             printf("hello"); }
 ;
@@ -178,7 +176,9 @@ CompoundStmtNoNewScope : T_LeftBrace T_RightBrace {
                        // Seg fault ahead
                         | T_LeftBrace StmtList T_RightBrace { printf("compound");
                                             $$ = new StmtBlock(myblock->vars, myblock->stmts);
-                                                          printf("compound");  }
+                                            myblock->vars = new List<VarDecl*>;
+                                            myblock->stmts = new List<Stmt*>;
+                                            printf("compound");  }
                        ;
 
 CompoundStmtWithScope : T_LeftBrace T_RightBrace { 
@@ -186,12 +186,14 @@ CompoundStmtWithScope : T_LeftBrace T_RightBrace {
                             $$ = new StmtBlock(new List<VarDecl*>, new List<Stmt*>); }
                       | T_LeftBrace StmtList T_RightBrace { 
                            printf("compound");
-                          $$ = new StmtBlock(myblock->vars, myblock->stmts); }
+                            $$ = new StmtBlock(myblock->vars, myblock->stmts); 
+                            myblock->vars = new List<VarDecl*>;
+                            myblock->stmts = new List<Stmt*>;}
                       ;
 
 // Type MyBlock is stmtlist
 StmtList :  Stmt {  printf("Stmt\n");}
-//         |  StmtList Stmt { printf("Stmt List\n"); }
+         |  StmtList Stmt { printf("Stmt List\n"); }
          ;
 
 Stmt : CompoundStmtWithScope {printf("FnDef\n");}//{ myblock->stmts -> Append ($1)} //stmtblock
@@ -283,15 +285,14 @@ Expr : AssignExpr { printf( "Reaches Assign Expr \n"); }
 // Simplifying: ConditionalExpr
 AssignExpr : ConditionalExpr {}
            | TypeSpecifier T_Identifier AssignOp AssignExpr { 
-                                            (myblock->vars = new List<VarDecl*>)->Append(new VarDecl(new Identifier(yylloc, $2), $1));
+                                            myblock->vars->Append(new VarDecl(new Identifier(yylloc, $2), $1));
                                             VarExpr *var = new VarExpr(yylloc, new Identifier(yylloc,$2));
-                                            (myblock->stmts = new List<Stmt*>)->Append(new AssignExpr(var, $3, $4)); 
+                                            myblock->stmts->Append(new AssignExpr(var, $3, $4)); 
                                                 }
              
            | UnaryExpr AssignOp AssignExpr { 
                                 printf("Assigning"); 
-                                myblock->vars = new List<VarDecl*>; 
-                                (myblock->stmts = new List<Stmt*>)->Append(new AssignExpr($1, $2, $3)); 
+                                myblock->stmts->Append(new AssignExpr($1, $2, $3)); 
                                 }
            ;
 
