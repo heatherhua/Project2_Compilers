@@ -1,3 +1,12 @@
 void main(){
-  v2 = vec(1.2,2.2);
+int i =3;
+  if (b) {
+    int i = 2;
+  }
+
+  if (b) {
+    int i = 5;
+  } else {
+    int i = 6;
+  }
 }
