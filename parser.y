@@ -60,7 +60,13 @@ void yyerror(const char *msg); // standard error-handling routine
     Operator *op;
     Expr *expr;
     MyBlock *myBlock;
+    SwitchBlock *switchBlock;
     List<Expr*> *exprList;
+    Case *mycase;
+    Default *mydefault;
+    List<Case *> *mycaseList;
+    SwitchLabel *switchLabel;
+    List<SwitchLabel *> *switchLabelList;
 }
 
 
@@ -114,16 +120,19 @@ void yyerror(const char *msg); // standard error-handling routine
 %type <vardecl>   VarDecl ParameterDecl
 %type <type>      TypeSpecifier
 %type <fndecl>    FnHeader FnHeaderWithParameters FnPrototype FnDeclarator
-%type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope
+%type <stmtblock> CompoundStmtNoNewScope CompoundStmtWithScope 
 %type <stmtList>  SelectionRestStmt
-%type <exprList>  ForRestStmt
+%type <exprList>  ForRestStmt 
 %type <stmt>      SelectionStmt Stmt StmtWithScope ExprStmt IterStmt
-                  StmtNoNewScope
-%type <op>        UnaryOp AssignOp
+                  StmtNoNewScope SwitchStmt
+%type <mycase>    CaseLabel
+%type <mydefault> DefaultLabel
+%type <op>        UnaryOp AssignOp 
 %type <myBlock>   StmtList SimpleStmt 
+%type <switchBlock> SwitchStmtList SwitchBlock
 %type <expr>      PrimExpr AssignExpr UnaryExpr RelationalExpr AddExpr MultExpr Condition
                   PostfixExpr Expr LogicalOrExpr LogicalAndExpr EqualExpr ConditionalExpr
-                  Conditionopt ForInitStmt
+                  Conditionopt ForInitStmt //SwitchStmt
 %nonassoc NO_ELSE
 %nonassoc T_Else                 
 %%
@@ -187,11 +196,24 @@ CompoundStmtWithScope : T_LeftBrace T_RightBrace {
                      
 // Type MyBlock is stmtlist
 StmtList :  Stmt { $$ = new MyBlock(); ($$->stmts)->Append($1);printf("Stmt\n");}
+//         |  CaseLabel {     $$ = new MyBlock(); 
+//                            ($$->switchblock->cases)->Append($1); } 
+//         |  DefaultLabel { $$->def = $1; }
          |  VarDecl { $$ = new MyBlock(); ($$->vars)->Append($1); printf("Simple -> VarDecl\n"); }
          |  StmtList Stmt { $1->stmts->Append($2); $$ = $1; }
+//         |  StmtList CaseLabel { $1->switchblock->cases->Append($2); $$ = $1; }
          |  StmtList VarDecl { $1->vars->Append($2); $$ = $1; printf("List of varDecls"); }
+//         |  StmtList DefaultLabel { $1->switchblock->def = $2; } 
+//         | StmtList SwitchBlock { $1->stmts->Append($2); $$ = $1;}
          ;
-                        
+
+SwitchBlock : CaseLabel {           $$ = new SwitchBlock(); 
+//                                    $1->label = new IntConstant(yylloc, ($1->label->value));
+                                    ($$->cases)->Append(new Case($1->label, $1->stmts)); } 
+            | SwitchBlock CaseLabel { 
+//                                $2->label = new IntConstant(yylloc, ($2->label->value));
+                                ($1->cases)->Append(new Case($2->label, $2->stmts)); }
+            | SwitchBlock DefaultLabel { $1->def = $2; }
 
 Stmt : CompoundStmtWithScope { printf("FnDef\n");}
      | SimpleStmt { printf("FnDef\n");} // 
@@ -203,7 +225,8 @@ SimpleStmt  : //VarDecl { }
              ExprStmt { }
             | SelectionStmt {}
             | SwitchStmt {}
-            | CaseLabel {}
+//            | CaseLabel {}
+//            | DefaultLabel {}
             | IterStmt {}
             ;
             
@@ -433,19 +456,20 @@ StmtWithScope : CompoundStmtNoNewScope {}
 /*********************/
 /************** BEGIN SwitchStmt *********************/
 // Expr defined earlier
-//    SwitchStmt(Expr *expr, List<Case*> *cases, Default *def);
-
-              
+//    SwitchStmt(Expr *expr, List<Case*> *cases, Default *def);            
 //Case(IntConstant *label, List<Stmt*> *stmts) : SwitchLabel
-              
+// switch (expr) { switchstmtlist }
 SwitchStmt : T_Switch T_LeftParen Expr T_RightParen T_LeftBrace 
                       SwitchStmtList T_RightBrace {
-//                        $$ = new SwitchStmt($3,)
+                                $$ = new SwitchStmt($3, $6->cases, $6->def);
                             }
             ;
 
 // StmtList defined earlier
+            //MyBlock
+// List of cases and default
 SwitchStmtList : StmtList { }
+               | SwitchBlock { }
                /* ";" means empty */
                | ";" {printf("EMPTY");}
                ;
@@ -459,10 +483,19 @@ SwitchStmtList : StmtList { }
 /************** BEGIN CaseLabel *********************/
 // Expr defined earlier
  //CaseLabel is SimpleStmt
-CaseLabel : T_Case Expr T_Colon {}
-          | T_Default T_Colon {}
+// Case(IntConstant *label, List<Stmt*> *stmts)}
+               
+               //case (expr): & default:
+CaseLabel : T_Case T_IntConstant T_Colon  { $$ = new Case(new IntConstant(yylloc, $2), new List<Stmt *>);}// $$ = new Case(new IntConstant(yylloc,$2), new List<Stmt*>);}
+//            OG: T_Case Expr T_Colon  { $$ = new Case($2, new List<Stmt*>);}
+            | T_Case T_IntConstant T_Colon StmtList { $$ = new Case(new IntConstant(yylloc, $2), $4->stmts);}//$$ = new Case(new IntConstant(yylloc,$2), $4->stmts); }
+//            | T_Case Expr T_Colon StmtList { $$ = new Case($2, $4->stmts); }
+//          | T_Default T_Colon { }
           ;
-
+          
+DefaultLabel : T_Default T_Colon { $$ = new Default( new List<Stmt *>);}
+             | T_Default T_Colon StmtList { $$ = new Default($3->stmts); }
+             ;       
 /************** END CaseLabel *********************/
 
 /******* 6 ************/

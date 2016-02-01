@@ -1,6 +1,9 @@
 void main(){
- int j;
- while (true) {
-  int k = 3;
+ switch(i){
+  case 1:
+   int x = 4;
+  default:
+   int y =3;
  }
 }
+

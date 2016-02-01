@@ -130,7 +130,7 @@ class ReturnStmt : public Stmt
 
 class SwitchLabel : public Stmt
 {
-  protected:
+  public:
     IntConstant *label;
     List<Stmt*> *stmts;
 
@@ -182,8 +182,20 @@ class SwitchStmtError : public SwitchStmt
     public:
         List<VarDecl *> *vars;
         List<Stmt *> *stmts;
+//        SwitchBlock *switchblock;
+        
     public:
         MyBlock() : vars(new List<VarDecl *>), stmts(new List<Stmt *>) {}
+ };
+
+ class SwitchBlock
+ {
+ public:
+        List<Case *> *cases;
+        Default *def;
+ public:
+     SwitchBlock() : cases(new List<Case *>), 
+             def(new Default( new List<Stmt*>)) {}
  };
  
 // struct MyBlock {

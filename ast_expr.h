@@ -44,7 +44,7 @@ class EmptyExpr : public Expr
 
 class IntConstant : public Expr 
 {
-  protected:
+  public:
     int value;
   
   public:
