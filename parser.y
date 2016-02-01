@@ -310,10 +310,10 @@ AssignExpr : ConditionalExpr {}
            ;
 
 AssignOp : T_Equal     { const char *tok = "="; $$ = new Operator(yylloc, tok); }
-         | T_MulAssign { const char *tok = "*"; $$ = new Operator(yylloc, tok);}
-         | T_DivAssign { const char *tok = "/"; $$ = new Operator(yylloc, tok);}
-         | T_AddAssign { const char *tok = "+"; $$ = new Operator(yylloc, tok);}
-         | T_SubAssign { const char *tok = "-"; $$ = new Operator(yylloc, tok);}
+         | T_MulAssign { const char *tok = "*="; $$ = new Operator(yylloc, tok);}
+         | T_DivAssign { const char *tok = "/="; $$ = new Operator(yylloc, tok);}
+         | T_AddAssign { const char *tok = "+="; $$ = new Operator(yylloc, tok);}
+         | T_SubAssign { const char *tok = "-="; $$ = new Operator(yylloc, tok);}
          ;
 
 /******* BEGIN ConditionalExpr ********/
@@ -350,12 +350,12 @@ EqualExpr : RelationalExpr {}
 // Simplifying ShiftExpr -> AddExpr
 RelationalExpr : AddExpr {}
                | RelationalExpr T_LeftAngle AddExpr { 
-                                const char *tok = "<";
+                                const char *tok = ">";
                                 Operator *op = new Operator(yylloc, tok);
                                 $$ = new RelationalExpr($1, op, $3);
                             }
                | RelationalExpr T_RightAngle AddExpr {
-                                const char *tok = ">";
+                                const char *tok = "<";
                                 Operator *op = new Operator(yylloc, tok);
                                 $$ = new RelationalExpr($1, op, $3);}
                

@@ -4,10 +4,10 @@
 
 LIST=
 if [ "$#" = "0" ]; then
-	LIST=`ls samples/*.out`
+	LIST=`ls vs/*.out`
 else
 	for test in "$@"; do
-		LIST="$LIST samples/$test.out"
+		LIST="$LIST vs/$test.out"
 	done
 fi
 
@@ -24,7 +24,7 @@ for file in $LIST; do
 		exit 1
 	fi
 
-	tmp=${TMP:-"/tmp"}/check.tmp
+	tmp=check.tmp
 	./dcc < $base.$ext 1>$tmp 2>&1
 
 	printf "Checking %-27s: " $file

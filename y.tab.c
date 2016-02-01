@@ -1916,7 +1916,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 210 "parser.y"
     {           (yyval.switchBlock) = new SwitchBlock(); 
-                                    (yyvsp[(1) - (1)].mycase)->label = new IntConstant(yylloc, ((yyvsp[(1) - (1)].mycase)->label->value));
+//                                    $1->label = new IntConstant(yylloc, ($1->label->value));
                                     ((yyval.switchBlock)->cases)->Append(new Case((yyvsp[(1) - (1)].mycase)->label, (yyvsp[(1) - (1)].mycase)->stmts)); }
     break;
 
@@ -1925,7 +1925,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 213 "parser.y"
     { 
-                                (yyvsp[(2) - (2)].mycase)->label = new IntConstant(yylloc, ((yyvsp[(2) - (2)].mycase)->label->value));
+//                                $2->label = new IntConstant(yylloc, ($2->label->value));
                                 ((yyvsp[(1) - (2)].switchBlock)->cases)->Append(new Case((yyvsp[(2) - (2)].mycase)->label, (yyvsp[(2) - (2)].mycase)->stmts)); }
     break;
 
@@ -2177,28 +2177,28 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 313 "parser.y"
-    { const char *tok = "*"; (yyval.op) = new Operator(yylloc, tok);}
+    { const char *tok = "*="; (yyval.op) = new Operator(yylloc, tok);}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
 #line 314 "parser.y"
-    { const char *tok = "/"; (yyval.op) = new Operator(yylloc, tok);}
+    { const char *tok = "/="; (yyval.op) = new Operator(yylloc, tok);}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
 #line 315 "parser.y"
-    { const char *tok = "+"; (yyval.op) = new Operator(yylloc, tok);}
+    { const char *tok = "+="; (yyval.op) = new Operator(yylloc, tok);}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
 #line 316 "parser.y"
-    { const char *tok = "-"; (yyval.op) = new Operator(yylloc, tok);}
+    { const char *tok = "-="; (yyval.op) = new Operator(yylloc, tok);}
     break;
 
   case 56:
@@ -2281,7 +2281,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 352 "parser.y"
     { 
-                                const char *tok = "<";
+                                const char *tok = ">";
                                 Operator *op = new Operator(yylloc, tok);
                                 (yyval.expr) = new RelationalExpr((yyvsp[(1) - (3)].expr), op, (yyvsp[(3) - (3)].expr));
                             }
@@ -2292,7 +2292,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 357 "parser.y"
     {
-                                const char *tok = ">";
+                                const char *tok = "<";
                                 Operator *op = new Operator(yylloc, tok);
                                 (yyval.expr) = new RelationalExpr((yyvsp[(1) - (3)].expr), op, (yyvsp[(3) - (3)].expr));}
     break;
