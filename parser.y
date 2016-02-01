@@ -138,9 +138,24 @@ void yyerror(const char *msg); // standard error-handling routine
                   Conditionopt ForInitStmt VecArg VecConstructor //SwitchStmt
 %type <intConstant> Expr2
 %type <id> VecQualifier
- // %type <identifier> VecQualifier
+
+ /* Precedence */
 %nonassoc NO_ELSE
-%nonassoc T_Else                 
+%nonassoc T_Else
+%left T_Comma
+%right T_MulAssign T_DivAssign
+%right T_AddAssign T_SubAssign
+%right T_Equal
+%left T_OrOp
+%left T_AndOp
+%left T_EqualOp T_NotEqual
+%left T_LeftAngle T_RightAngle T_LessEqual T_GreaterEqual
+%left T_Plus T_Dash
+%left T_Star T_Slash
+ // technically unary ops should be here
+%left T_Inc T_Dec
+%left T_Dot
+%nonassoc T_LeftParen T_RightParen              
 %%
 /* Rules
  * -----

@@ -6,7 +6,7 @@ Terminals unused in grammar
    T_Continue
 
 
-State 157 conflicts: 19 shift/reduce
+State 157 conflicts: 14 shift/reduce
 
 
 Grammar
@@ -2530,17 +2530,12 @@ state 157
     T_Bool           [reduce using rule 60 (AssignOp)]
     T_Int            [reduce using rule 60 (AssignOp)]
     T_Float          [reduce using rule 60 (AssignOp)]
-    T_Inc            [reduce using rule 60 (AssignOp)]
-    T_Dec            [reduce using rule 60 (AssignOp)]
-    T_LeftParen      [reduce using rule 60 (AssignOp)]
     T_Vec2           [reduce using rule 60 (AssignOp)]
     T_Vec3           [reduce using rule 60 (AssignOp)]
     T_Vec4           [reduce using rule 60 (AssignOp)]
     T_Mat2           [reduce using rule 60 (AssignOp)]
     T_Mat3           [reduce using rule 60 (AssignOp)]
     T_Mat4           [reduce using rule 60 (AssignOp)]
-    T_Plus           [reduce using rule 60 (AssignOp)]
-    T_Dash           [reduce using rule 60 (AssignOp)]
     T_Identifier     [reduce using rule 60 (AssignOp)]
     T_IntConstant    [reduce using rule 60 (AssignOp)]
     T_FloatConstant  [reduce using rule 60 (AssignOp)]
