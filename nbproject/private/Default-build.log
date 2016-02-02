@@ -1,7 +1,0 @@
-bison -dvty parser.y
-g++ -g -Wall -Wno-unused -Wno-sign-compare -c -o y.tab.o y.tab.c
-parser.y: In function 'int yyparse()':
-parser.y:170: error: no matching function for call to 'IdentifierConstant::IdentifierConstant(yyltype&, Identifier*)'
-ast_expr.h:62: note: candidates are: IdentifierConstant::IdentifierConstant(yyltype, Identifier)
-ast_expr.h:57: note:                 IdentifierConstant::IdentifierConstant(const IdentifierConstant&)
-gmake: *** [y.tab.o] Error 1
